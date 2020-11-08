@@ -24,8 +24,8 @@ from WindPy import w
 class Globals:
     def __init__(self):
         # 日期部分
-        self.dt_today = datetime.today()
-
+        # self.dt_today = datetime.today()
+        self.dt_today = datetime(2020, 11, 6)
         w.start()
         self.str_today = self.dt_today.strftime('%Y%m%d')
         self.dt_last_trddate = w.tdaysoffset(-1, self.str_today).Data[0][0]
@@ -110,7 +110,7 @@ class Globals:
         ret = formataddr((Header(name, 'utf-8').encode(), addr))
         return ret
 
-    def get_attachment(self, msg):
+    def get_attachment(self, msg, fpath_output_attachment):
         for part in msg.walk():
             # 获取附件名称类型
             file_name = part.get_filename()
@@ -125,11 +125,11 @@ class Globals:
                 # 下载附件
                 data = part.get_payload(decode=True)
                 # 在指定目录下创建文件，注意二进制文件需要用wb模式打开
-                with open(self.fpath_input_xlsx_marginable_secpools_from_hait, 'wb') as f:
+                with open(fpath_output_attachment, 'wb') as f:
                     f.write(data)  # 保存附件
                     print(f"The attachment {fn} download finished.")
 
-    def update_attachments_from_email(self):
+    def update_attachments_from_email(self, str_email_subject, fpath_output_attachment):
         # 从邮件中下载数据
         addr_pop3_server = 'pop.exmail.qq.com'
         server_pop3 = POP3_SSL(addr_pop3_server, 995)
@@ -138,18 +138,20 @@ class Globals:
         resp, mails, octets = server_pop3.list()
         index = len(mails)  # 若有30封邮件，第30封邮件为最新的邮件
 
+        mark_tgtmail_exist = 0
         for i in range(index, 0, -1):  # 倒叙遍历邮件
             resp, lines, octets = server_pop3.retr(i)
             msg_content = b'\r\n'.join(lines).decode('utf-8')
             msg = Parser().parsestr(msg_content)
             subject = self.decode_str(msg.get('Subject')).strip()
-            if subject in ['每日券池信息']:
-                dt_email_datetime = datetime.strptime(msg.get('Date')[0:19], '%Y-%m-%d %H:%M:%S')
-                str_email_date = datetime.strftime(dt_email_datetime, '%Y%m%d')
-                if str_email_date in [self.str_today]:
-                    self.get_attachment(msg)
-                    break
+            if subject in [str_email_subject]:
+                self.get_attachment(msg, fpath_output_attachment)
+                mark_tgtmail_exist = 1
+                break
+        if not mark_tgtmail_exist:
+            print(f'Warning: {str_email_subject} not found.')
         server_pop3.quit()
+        print('The attachment from email download finished.')
 
     def send_file_via_email(self, email_to_addr, subject, fpath_file, fn_attachment):
         # 通过邮件发送文件
@@ -172,7 +174,23 @@ class Globals:
         print('The mail has been sent.')
         server_smtp.quit()
 
+    @staticmethod
+    def get_list_str_trddate(str_startdate, str_enddate):
+        """
+        获得期间自然日期间的交易日，参数为闭区间两端
+        :param str_startdate: 起始日期，包括
+        :param str_enddate: 终止日期，包括
+        :return: list, 指定期间内交易日的列表
+        """
+        wtdays = w.tdays(str_startdate, str_enddate)
+        list_str_trddates = [x.strftime('%Y%m%d') for x in wtdays.Data[0]]
+        return list_str_trddates
+
 
 if __name__ == '__main__':
     task = Globals()
-    task.update_attachments_from_email()
+    a = task.get_list_str_trddate('20201019', '20201023')
+    print(a)
+
+
+

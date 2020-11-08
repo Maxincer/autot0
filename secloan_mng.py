@@ -29,7 +29,9 @@ from globals import Globals
 class SecLoanMng:
     def __init__(self):
         self.gl = Globals()
-        self.gl.update_attachments_from_email()
+        self.gl.update_attachments_from_email(
+            '每日券池信息', self.gl.fpath_input_xlsx_marginable_secpools_from_hait
+        )
         df_csv_tgtsecids = pd.read_csv(
             self.gl.fpath_input_csv_target_secids,
             converters={'SecurityID': lambda x: str(x).zfill(6)}
