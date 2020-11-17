@@ -18,20 +18,28 @@ import os
 from poplib import POP3_SSL
 import smtplib
 
+from pymongo import MongoClient
+
 from WindPy import w
+
+STR_TODAY = datetime.today().strftime('%Y%m%d')
 
 
 class Globals:
-    def __init__(self):
+    def __init__(self, str_today=STR_TODAY):
         # 日期部分
-        # self.dt_today = datetime.today()
-        self.dt_today = datetime(2020, 11, 6)
-        w.start()
-        self.str_today = self.dt_today.strftime('%Y%m%d')
-        self.dt_last_trddate = w.tdaysoffset(-1, self.str_today).Data[0][0]
-        self.str_last_trddate = self.dt_last_trddate.strftime('%Y%m%d')
-        self.dt_next_trddate = w.tdaysoffset(1, self.str_today).Data[0][0]
-        self.str_next_trddate = self.dt_next_trddate.strftime('%Y%m%d')
+        self.str_today = str_today  # 该日必为交易日
+        self.server_mongodb = MongoClient('mongodb://localhost:27017/')
+        self.db_global = self.server_mongodb['global']
+        self.col_trdcalendar = self.db_global['trade_calendar']
+        self.list_str_trdcalendar = list(self.col_trdcalendar.find({'Year': '2020'}))[0]['Data']
+        idx_str_today = self.list_str_trdcalendar.index(self.str_today)
+        self.str_last_trddate = self.list_str_trdcalendar[idx_str_today - 1]
+        self.str_next_trddate = self.list_str_trdcalendar[idx_str_today + 1]
+        self.str_last_last_trddate = self.list_str_trdcalendar[idx_str_today - 2]
+        self.str_next_next_trddate = self.list_str_trdcalendar[idx_str_today + 2]
+        self.acctidbymxz = '307_m_hait_2000'
+        self.prdalias = '鸣石满天星7号'
 
         # 路径部分
         # # SecLoanContractsPoolMng
@@ -82,6 +90,75 @@ class Globals:
         self.email_to_addr_haitsecpool_from_outside_src = '009995@htsec.com'
         self.email_subject_haitsecpool_from_outside_src = f'【券源需求】鸣石满天星七号-{self.str_today}'
 
+        # pre-trade
+        self.fpath_input_csv_grp_tgtsecids_by_cps = 'data/input/pretrddata/group_tgtsecids_by_composite.csv'
+        self.db_pretrddata = self.server_mongodb['pre_trade_data']
+        self.col_pretrd_grp_tgtsecids_by_cps = self.db_pretrddata['group_target_secids_by_composite']
+
+        # post-trade
+        # # database
+        self.db_posttrddata = self.server_mongodb['post_trade_data']
+        self.col_shortqty_from_secloan = self.db_posttrddata['shortqty_from_secloan']
+        self.col_posttrd_fmtdata_secloan_from_private_secpool = (
+            self.db_posttrddata['post_trade_fmtdata_secloan_from_private_secpool']
+        )
+        self.col_posttrd_fmtdata_secloan_from_public_secpool = (
+            self.db_posttrddata['post_trade_fmtdata_secloan_from_public_secpool']
+        )
+        self.col_ssquota_by_secid_from_private_secpool = self.db_posttrddata['ssquota_by_secid_from_private_secpool']
+        self.col_posttrd_rawdata_holding = self.db_posttrddata['post_trade_rawdata_holding']
+        self.col_posttrd_fmtdata_holding = self.db_posttrddata['post_trade_fmtdata_holding']
+        self.col_posttrd_rawdata_secloan_from_private_secpool = (
+            self.db_posttrddata['post_trade_rawdata_secloan_from_private_secpool']
+        )
+        self.col_posttrd_rawdata_secloan_from_public_secpool = (
+            self.db_posttrddata['post_trade_rawdata_secloan_from_public_secpool']
+        )
+        self.col_posttrd_rawdata_shortqty_from_secloan = (
+            self.db_posttrddata['post_trade_rawdata_shortqty_from_secloan']
+        )
+        self.col_posttrd_fmtdata_shortqty_from_secloan = (
+            self.db_posttrddata['post_trade_fmtdata_shortqty_from_secloan']
+        )
+        self.col_posttrd_position = self.db_posttrddata['post_trade_position']
+        self.col_posttrd_fmtdata_fee_from_secloan = self.db_posttrddata['post_trade_fmtdata_fee_from_secloan']
+        self.col_posttrd_fmtdata_ssquota_from_secloan = self.db_posttrddata['post_trade_fmtdata_ssquota_from_secloan']
+        self.col_posttrd_rawdata_fee_from_secloan = self.db_posttrddata['post_trade_rawdata_fee_from_secloan']
+        self.col_posttrd_rawdata_jgd = self.db_posttrddata['post_trade_rawdata_jgd']
+        self.col_posttrd_fmtdata_jgd = self.db_posttrddata['post_trade_fmtdata_jgd']
+        self.col_posttrd_pnl = self.db_posttrddata['post_trade_pnl']
+        self.col_posttrd_pnl_by_secid = self.db_posttrddata['post_trade_pnl_by_secid']
+        self.col_posttrd_pnl_by_acctidbymxz_cps = self.db_posttrddata['post_trade_pnl_by_acctidbymxz_cps']
+
+        # # posttrd_holding: 程序在T日运行，清算T-1日数据，部分文件名为T-1，文件包日期为T-1日期
+        self.fpath_input_xlsx_holding = (
+            f'data/input/post_trddata/{self.str_last_trddate}/两融_资产导出_{self.str_last_trddate}.xlsx'
+        )
+        self.fpath_output_csv_autot0_holding = (
+            f'data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/{self.str_today}_autot0_holding.csv'
+        )  # 尚未使用
+        self.fpath_input_xlsx_shortqty = (
+            f"data/input/post_trddata/{self.str_last_trddate}/融券明细_未了结仓单_{self.str_last_trddate}.xlsx"
+        )
+        self.fpath_input_xlsx_secloan_from_private_secpool = (
+            f"data/input/post_trddata/{self.str_last_trddate}/私用券源合约{self.str_today}.xls"
+        )
+        self.fpath_input_xlsx_secloan_from_public_secpool = (
+            f"data/input/post_trddata/{self.str_last_trddate}/融券公用合约_{self.str_last_trddate}.xlsx"
+        )
+        self.fpath_input_xls_fee_from_secloan = (
+            f"data/input/post_trddata/{self.str_last_trddate}/{self.prdalias}未结利息{self.str_today}.xls"
+        )
+        self.fpath_input_xlsx_jgd = (
+            f"data/input/post_trddata/{self.str_last_trddate}/{self.prdalias}每日交割单-{self.str_today}.xlsx"
+        )
+        self.fpath_output_xlsx_pnl_analysis = (
+            f"data/output/pnl/pnl_analysis_generated_on_{datetime.today().strftime('%Y%m%d')}.xlsx"
+        )
+
+        # 其他
+        self.dict_exchange2secidsrc = {'深A': 'SZSE', '沪A': 'SSE'}
+
     @classmethod
     def get_secid2windcode(cls, str_secid):
         # 将沪深交易所标的代码转为windcode
@@ -90,6 +167,9 @@ class Globals:
                 __windcode = str_secid + '.SZ'
                 return __windcode
             elif str_secid[0] in ['6']:
+                __windcode = str_secid + '.SH'
+                return __windcode
+            elif str_secid[0] in ['5']:
                 __windcode = str_secid + '.SH'
                 return __windcode
             else:
@@ -185,6 +265,59 @@ class Globals:
         wtdays = w.tdays(str_startdate, str_enddate)
         list_str_trddates = [x.strftime('%Y%m%d') for x in wtdays.Data[0]]
         return list_str_trddates
+
+    @staticmethod
+    def get_mingshi_sectype_from_code(str_code):
+        """
+        实际使用的函数
+        :param str_code: SecurityID.SecurityIDSource
+            1. SecuritySource:
+                1. SSE: 上交所
+                2. SZSE: 深交所
+                3. ITN: internal id
+        :return:
+            1. CE, Cash Equivalent, 货基，质押式国债逆回购
+            2. CS, Common Stock, 普通股
+            3. ETF, ETF, 注意：货币类ETF归类为CE，而不是ETF
+            4. SWAP, swap
+        """
+
+        list_split_wcode = str_code.split('.')
+        secid = list_split_wcode[0]
+        exchange = list_split_wcode[1]
+        if exchange in ['SH', 'SSE'] and len(secid) == 6:
+            if secid in ['511990', '511830', '511880', '511850', '511660', '511810', '511690']:
+                return 'CE'
+            elif secid in ['204001']:
+                return 'CE'
+            elif secid[:3] in ['600', '601', '603', '688']:
+                return 'CS'
+            elif secid in ['510500', '000905', '512500']:
+                return 'ETF'
+            else:
+                return 'IrrelevantItem'
+
+        elif exchange in ['SZ', 'SZSE'] and len(secid) == 6:
+            if secid[:3] in ['000', '001', '002', '003', '004', '300', '301', '302', '303', '304', '305', '306', '307',
+                             '308', '309']:
+                return 'CS'
+            elif secid[:3] in ['115', '120', '121', '122', '123', '124', '125', '126', '127', '128', '129']:
+                return '可转债'
+            elif secid[:3] in ['131']:
+                return 'CE'
+            elif secid in ['159001', '159005', '159003']:
+                return 'CE'
+            else:
+                return 'IrrelevantItem'
+        elif exchange in ['CFE', 'CFFEX']:
+            return 'Index Future'
+
+        elif exchange == 'ITN':
+            sectype = secid.split('_')[0]
+            return sectype
+
+        else:
+            raise ValueError(f'{str_code} has unknown exchange or digit number is not 6.')
 
 
 if __name__ == '__main__':

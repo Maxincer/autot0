@@ -4,31 +4,37 @@
 # CreateDateTime: 20201024T220000
 
 """
-This script is to manage the security loan contracts pool.
+This script is to deal with the pre-trade management:
+    1. manage the security loan contracts pool.
+
 Steps:
     1. Format the file.
     2. Filter the available securities by '两融标的'.
     3. Match the filtered demand with the available securities pools and marking the source.
     4. Output the report about how to reach the target.
+
 Assumption:
     1. 在公共券池和私用券池都有AvlQty的情况下，prefer使用私用券池(成本低)。(20201027)。核实：融券卖出会优先卖出锁券数量
     2. 目标券池会根据是否为两融标的筛选
     3. 最新收盘价小于5元的股票不借入 -> TgtQty 重置为0
     4. 融券利率超过9%的股票不借
 
+Todo:
+    1. 区分ManuT0与AutoT0
+
 """
+from datetime import datetime
 import json
 import os
 
 import pandas as pd
-from WindPy import *
 
-from globals import Globals
+from globals import Globals, STR_TODAY, w
 
 
-class SecLoanMng:
-    def __init__(self):
-        self.gl = Globals()
+class PreTrdMng:
+    def __init__(self, str_trddate=STR_TODAY):
+        self.gl = Globals(str_trddate)
         self.gl.update_attachments_from_email(
             '每日券池信息', self.gl.fpath_input_xlsx_marginable_secpools_from_hait
         )
@@ -78,16 +84,15 @@ class SecLoanMng:
         )
         self.list_dicts_secpool_from_outside_src = df_input_xlsx_secpool_from_outside_src.to_dict('records')
 
-        df_csv_ssquota_last_trddate = pd.read_csv(
-            self.gl.fpath_input_csv_ssquota,
-            dtype={'Quota': float, 'ShortQty': float, 'Holding': float},
-            converters={'Id': lambda x: str(x).zfill(6)}
+        self.list_dicts_posttrd_fmtdata_ssquota_from_secloan_last_trddate = list(
+            self.gl.col_posttrd_fmtdata_ssquota_from_secloan.find(
+               {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': self.gl.acctidbymxz}
+            )
         )
-        self.list_dicts_ssquota_last_trddate = df_csv_ssquota_last_trddate.to_dict('records')
         self.list_windcodes_ssquota_last_trddate = [
-            self.gl.get_secid2windcode(_['Id']) for _ in self.list_dicts_ssquota_last_trddate
+            self.gl.get_secid2windcode(_['SecurityID'])
+            for _ in self.list_dicts_posttrd_fmtdata_ssquota_from_secloan_last_trddate
         ]
-
         # 证券简称与两融标志数据, 从Wind下载
         list_windcodes_to_query = list(set(self.list_tgtwindcodes) | set(self.list_windcodes_ssquota_last_trddate))
         list_windcodes_to_query.sort()
@@ -97,6 +102,8 @@ class SecLoanMng:
                 self.dict_windcode2wssdata = json.load(f)
         else:
             str_list_windcodes_to_query = ','.join(list_windcodes_to_query)
+            w.start()
+
             wss_winddata = w.wss(
                 str_list_windcodes_to_query, 'sec_name,marginornot,pre_close', f'tradeDate={self.gl.str_today}'
             )
@@ -107,6 +114,19 @@ class SecLoanMng:
             }
             with open(self.gl.fpath_json_dict_windcode2wssdata, 'w') as f:
                 json.dump(self.dict_windcode2wssdata, f)
+
+    def upload_pretrd_rawdata(self):
+        df_grp_tgtsecids_by_cps = pd.read_csv(
+            self.gl.fpath_input_csv_grp_tgtsecids_by_cps, converters={'SecurityID': lambda x: str(x).zfill(6)}
+        )
+        df_grp_tgtsecids_by_cps['DataDate'] = self.gl.str_today
+        df_grp_tgtsecids_by_cps['AcctIDByMXZ'] = self.gl.acctidbymxz
+        list_dicts_grp_tgtsecids_by_cps = df_grp_tgtsecids_by_cps.to_dict('records')
+        self.gl.col_pretrd_grp_tgtsecids_by_cps.delete_many(
+            {'DataDate': self.gl.str_today, 'AcctIDByMXZ': self.gl.acctidbymxz}
+        )
+        if list_dicts_grp_tgtsecids_by_cps:
+            self.gl.col_pretrd_grp_tgtsecids_by_cps.insert_many(list_dicts_grp_tgtsecids_by_cps)
 
     def get_secloanmng_draft(self):
         # 先遍历tgtsecpool, 添加新增加的券
@@ -136,11 +156,13 @@ class SecLoanMng:
                 if tgtsecid == secid_in_public_secpool:
                     public_secpool_avlqty = dict_public_secpool['数量']
 
-            quota_last_trddate = 0
-            for dict_ssquota_last_trddate in self.list_dicts_ssquota_last_trddate:
-                secid_ssquota_last_trddate = dict_ssquota_last_trddate['Id']
-                if tgtsecid == secid_ssquota_last_trddate:
-                    quota_last_trddate = dict_ssquota_last_trddate['Quota']
+            quota_last_trddate = 0  # 清算后Quota
+            for dict_posttrd_fmtdata_ssquota_from_secloan_last_trddate in (
+                    self.list_dicts_posttrd_fmtdata_ssquota_from_secloan_last_trddate
+            ):
+                if tgtsecid == dict_posttrd_fmtdata_ssquota_from_secloan_last_trddate['SecurityID']:
+                    quota_last_trddate = dict_posttrd_fmtdata_ssquota_from_secloan_last_trddate['SSQuota']
+
             tgtqty = 1000
             if pre_close <= 5:
                 tgtqty = 0
@@ -175,11 +197,12 @@ class SecLoanMng:
             }
             list_dicts_secpool_analysis.append(dict_secpool_analysis)
 
-        for dict_ssquota_last_trddate in self.list_dicts_ssquota_last_trddate:
-            secid_ssquota_last_trddate = dict_ssquota_last_trddate['Id']
+        for dict_posttrd_fmtdata_ssquota_from_secloan_last_trddate in (
+                self.list_dicts_posttrd_fmtdata_ssquota_from_secloan_last_trddate
+        ):
+            secid_ssquota_last_trddate = dict_posttrd_fmtdata_ssquota_from_secloan_last_trddate['SecurityID']
             windcode_ssquota_last_trddate = self.gl.get_secid2windcode(secid_ssquota_last_trddate)
-            quota_last_trddate = dict_ssquota_last_trddate['Quota']
-
+            quota_last_trddate = dict_posttrd_fmtdata_ssquota_from_secloan_last_trddate['SSQuota']
             if secid_ssquota_last_trddate not in self.list_tgtsecids:
                 private_secpool_ready_avlqty = 0
                 for dict_private_secpool_ready in self.list_dicts_private_secpool_ready:
@@ -260,11 +283,13 @@ class SecLoanMng:
         )
 
     def run(self):
-        self.get_secloanmng_draft()
-        self.get_and_send_xlsx_demand_of_secpool_from_outside_src()
-        print('SecLoanMng Finished.')
+        # 先运行T日的post_trddata_mng, 将T-1的清算数据上传
+        self.upload_pretrd_rawdata()
+        # self.get_secloanmng_draft()
+        # self.get_and_send_xlsx_demand_of_secpool_from_outside_src()
+        print('PreTrdMng Finished.')
 
 
 if __name__ == '__main__':
-    task = SecLoanMng()
+    task = PreTrdMng('20201020')
     task.run()
