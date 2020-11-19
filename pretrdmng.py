@@ -21,10 +21,26 @@ Assumption:
 
 Todo:
     1. 区分ManuT0与AutoT0
+    2. 根据目标融券金额估算：
+        1. 保证金占用金额
+    3. 建设rawdata -> fmtdata
 
+Note:
+    1. 融券完全对冲交易策略下，required minimum net asset、保证金、融券卖出市值的初始关系（没有市值波动，融券卖出证券市值=融券卖出金额=融券卖出所得资金）。
+        0. 假设所有的担保品折算率为0
+        1. 净资产 = 3 * 保证金 = 3 * (0.5 * 融券卖出市值)
+        2. 总资产 = 现金 + 担保品市值 = 融券卖出所得资金 + 非融券卖出所得资金 + 担保品市值
+        3. 保证金 = 融券卖出所得资金 + 非融券卖出所得资金 - 融券卖出金额
+        4. 保证金占用 = 融券卖出证券市值 * 融券保证金比例 + 利息及费用 = 0.5 * 融券卖出证券市值
+        5. 可用保证金 = 保证金 - 保证金占用 = 非融券卖出所得资金 - 融券卖出证券市值 * 0.5 + 0
+        6. 令可用保证金 = 0
+            得： 非融券卖出所得资金 = 0.5融券卖出证券市值
+            即： 总资产 = 融券卖出所得资金 + 0.5 * 融券卖出所得资金 + 担保品市值 = 2.5 * 融券卖出所得资金 = 2.5 * 融券卖出证券市值
+                净资产 = 总资产 - 融券卖出证券市值 = 1.5 * 融券卖出证券市值 = 3 * 保证金占用
 """
 from datetime import datetime
 import json
+from math import floor
 import os
 
 import pandas as pd
@@ -38,6 +54,7 @@ class PreTrdMng:
         self.gl.update_attachments_from_email(
             '每日券池信息', self.gl.fpath_input_xlsx_marginable_secpools_from_hait
         )
+
         df_csv_tgtsecids = pd.read_csv(
             self.gl.fpath_input_csv_target_secids,
             converters={'SecurityID': lambda x: str(x).zfill(6)}
@@ -66,7 +83,7 @@ class PreTrdMng:
         )
         self.list_dicts_public_secpool = df_public_secpool.to_dict('records')
 
-        # todo 添加外部询券反馈表, 需要讨论工作流。目前自定义
+        # todo 自定义券池， 未使用
         df_input_xlsx_secpool_from_outside_src = pd.read_excel(
             self.gl.fpath_input_xlsx_secpool_from_outside_src,
             dtype={
@@ -93,6 +110,7 @@ class PreTrdMng:
             self.gl.get_secid2windcode(_['SecurityID'])
             for _ in self.list_dicts_posttrd_fmtdata_ssquota_from_secloan_last_trddate
         ]
+
         # 证券简称与两融标志数据, 从Wind下载
         list_windcodes_to_query = list(set(self.list_tgtwindcodes) | set(self.list_windcodes_ssquota_last_trddate))
         list_windcodes_to_query.sort()
@@ -115,7 +133,15 @@ class PreTrdMng:
             with open(self.gl.fpath_json_dict_windcode2wssdata, 'w') as f:
                 json.dump(self.dict_windcode2wssdata, f)
 
+    def get_pretrd_rawdata_from_email(self):
+        # 下载每日券池信息
+        self.gl.update_attachments_from_email(
+            '每日券池信息', self.gl.fpath_input_xlsx_marginable_secpools_from_hait
+        )
+
     def upload_pretrd_rawdata(self):
+        # grp_tgtsecids_by_cps
+        # todo 升级到fmtdata
         df_grp_tgtsecids_by_cps = pd.read_csv(
             self.gl.fpath_input_csv_grp_tgtsecids_by_cps, converters={'SecurityID': lambda x: str(x).zfill(6)}
         )
@@ -129,11 +155,23 @@ class PreTrdMng:
             self.gl.col_pretrd_grp_tgtsecids_by_cps.insert_many(list_dicts_grp_tgtsecids_by_cps)
 
     def get_secloanmng_draft(self):
+        # todo 业务假设： 从机器T0目标持仓中剔除人工T0所需股票
+        # 获取非机器T0股票
+        iter_dicts_grp_tgtsecids_by_cps_not_autot0 = self.gl.col_pretrd_grp_tgtsecids_by_cps.find(
+            {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': self.gl.acctidbymxz}
+        )
+        set_secids_in_grp_tgtsecids_by_cps_not_autot0 = set()
+        for dict_grp_tgtsecids_by_cps_manut0 in iter_dicts_grp_tgtsecids_by_cps_not_autot0:
+            tgtsecids = dict_grp_tgtsecids_by_cps_manut0['SecurityID']
+            set_secids_in_grp_tgtsecids_by_cps_not_autot0.add(tgtsecids)
+
         # 先遍历tgtsecpool, 添加新增加的券
         # 再遍历已锁定合约列表, 得到应减少的券
         list_dicts_secpool_analysis = []
         for tgtwindcode in self.list_tgtwindcodes:
             tgtsecid = tgtwindcode[:6]
+            if tgtsecid in set_secids_in_grp_tgtsecids_by_cps_not_autot0:
+                continue
             margin_or_not = self.dict_windcode2wssdata['marginornot'][tgtwindcode]
             secname = self.dict_windcode2wssdata['sec_name'][tgtwindcode]
             pre_close = self.dict_windcode2wssdata['pre_close'][tgtwindcode]
@@ -163,9 +201,15 @@ class PreTrdMng:
                 if tgtsecid == dict_posttrd_fmtdata_ssquota_from_secloan_last_trddate['SecurityID']:
                     quota_last_trddate = dict_posttrd_fmtdata_ssquota_from_secloan_last_trddate['SSQuota']
 
-            tgtqty = 1000
+            # 根据tgtamt计算tgtqty
+            # 每只股票标杆10万元。单只股票上限30万。（800万券池， 80支股票 * 10万）
+            # 借券单位最小为200股（考虑到科创板）
+            # 近似后取ceiling
+            tgtamt = 100000  #
+            tgtqty = floor((tgtamt / pre_close) / 200) * 200
             if pre_close <= 5:
                 tgtqty = 0
+
             qty2lock = min(tgtqty - quota_last_trddate, private_secpool_ready_avlqty)
             qty2borrow_from_public_secpool = min(tgtqty - quota_last_trddate - qty2lock, public_secpool_avlqty)
 
@@ -201,6 +245,8 @@ class PreTrdMng:
                 self.list_dicts_posttrd_fmtdata_ssquota_from_secloan_last_trddate
         ):
             secid_ssquota_last_trddate = dict_posttrd_fmtdata_ssquota_from_secloan_last_trddate['SecurityID']
+            if secid_ssquota_last_trddate in set_secids_in_grp_tgtsecids_by_cps_not_autot0:
+                continue
             windcode_ssquota_last_trddate = self.gl.get_secid2windcode(secid_ssquota_last_trddate)
             quota_last_trddate = dict_posttrd_fmtdata_ssquota_from_secloan_last_trddate['SSQuota']
             if secid_ssquota_last_trddate not in self.list_tgtsecids:
@@ -221,7 +267,7 @@ class PreTrdMng:
                     'AvlQtyInPrivatePool': private_secpool_ready_avlqty,
                     'QuotaOnLastTrdDate': quota_last_trddate,
                     'QtyToLock': qty2lock,
-                    'QtyToBorrowFromPublicSecPool': 0,  # todo 目前为0。当已有数量未达到tgt数量时，需要区分合约来源
+                    'QtyToBorrowFromPublicSecPool': 0,
                     'QtyToBorrowFromOutsideSource': 0,
                 }
                 list_dicts_secpool_analysis.append(dict_secpool_analysis)
@@ -251,13 +297,19 @@ class PreTrdMng:
 
         list_dicts_demand_of_secpool_from_outside_src = []
         for dict_tgtsecloan_mngdraft in list_dicts_tgtsecloan_mngdraft:
-            if dict_tgtsecloan_mngdraft['QtyToBorrowFromOutsideSource'] > 0:
+            qty2borrow_from_outside_source = dict_tgtsecloan_mngdraft['QtyToBorrowFromOutsideSource']
+            if qty2borrow_from_outside_source > 0:
                 secid = dict_tgtsecloan_mngdraft['SecurityID']
+                # 筛选最小数量限制：外界询券状态下，非双创最少10000股，双创最少1000股
+                if (secid[:3] not in ['688', '300']) and qty2borrow_from_outside_source < 10000:
+                    continue
+                if (secid[:3] in ['688', '300']) and qty2borrow_from_outside_source < 1000:
+                    continue
                 secname = dict_tgtsecloan_mngdraft['SecName']
                 dict_demand_of_secpool_from_outside_src = {
                     '证券代码': secid,
                     '证券名称': secname,
-                    '需求数量（股）': 10000,
+                    '需求数量（股）': qty2borrow_from_outside_source,
                     '期限（天）': 28,
                     '营业部名称': '贵阳长岭北路',
                     '客户号': '1882842000',
@@ -285,11 +337,11 @@ class PreTrdMng:
     def run(self):
         # 先运行T日的post_trddata_mng, 将T-1的清算数据上传
         self.upload_pretrd_rawdata()
-        # self.get_secloanmng_draft()
-        # self.get_and_send_xlsx_demand_of_secpool_from_outside_src()
+        self.get_secloanmng_draft()
+        self.get_and_send_xlsx_demand_of_secpool_from_outside_src()
         print('PreTrdMng Finished.')
 
 
 if __name__ == '__main__':
-    task = PreTrdMng('20201020')
+    task = PreTrdMng()
     task.run()

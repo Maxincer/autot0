@@ -92,6 +92,7 @@ class Globals:
 
         # pre-trade
         self.fpath_input_csv_grp_tgtsecids_by_cps = 'data/input/pretrddata/group_tgtsecids_by_composite.csv'
+        # # database
         self.db_pretrddata = self.server_mongodb['pre_trade_data']
         self.col_pretrd_grp_tgtsecids_by_cps = self.db_pretrddata['group_target_secids_by_composite']
 
@@ -152,9 +153,7 @@ class Globals:
         self.fpath_input_xlsx_jgd = (
             f"data/input/post_trddata/{self.str_last_trddate}/{self.prdalias}每日交割单-{self.str_today}.xlsx"
         )
-        self.fpath_output_xlsx_pnl_analysis = (
-            f"data/output/pnl/pnl_analysis_generated_on_{datetime.today().strftime('%Y%m%d')}.xlsx"
-        )
+        self.fpath_output_xlsx_pnl_analysis = "data/output/pnl/pnl_analysis.xlsx"
 
         # 其他
         self.dict_exchange2secidsrc = {'深A': 'SZSE', '沪A': 'SSE'}

@@ -108,7 +108,6 @@ class PostTrdMng:
         # posttrd_rawdata_secloan_from_private_secpool
         df_input_xlsx_secloan_from_private_secpool = pd.read_excel(
             self.gl.fpath_input_xlsx_secloan_from_private_secpool,
-            skiprows=3,
             dtype={
                 '营业部代码': str,
                 '客户号': str,
@@ -189,7 +188,6 @@ class PostTrdMng:
         # posttrd_rawdata_fee_from_secloan
         df_xls_fee_from_secloan = pd.read_excel(
             self.gl.fpath_input_xls_fee_from_secloan,
-            skiprows=1,
             dtype={
                 '合约号': str,
                 '发生日期': str,
@@ -225,7 +223,6 @@ class PostTrdMng:
         # posttrd_rawdata_jgd
         df_xlsx_jgd = pd.read_excel(
             self.gl.fpath_input_xlsx_jgd,
-            skiprows=1,
             dtype={
                 '成交日期': str,
                 '成交时间': str,
@@ -585,6 +582,7 @@ class PostTrdMng:
             )
         )
         list_dicts_posttrd_fmtdata_fee_from_secloan = []
+        i_contract_not_found = 0
         for dict_posttrd_rawdata_fee_from_secloan in list_dicts_posttrd_rawdata_fee_from_secloan:
             serial_number = dict_posttrd_rawdata_fee_from_secloan['流水号']
             loan_type = dict_posttrd_rawdata_fee_from_secloan['合约类型'].strip()
@@ -622,7 +620,8 @@ class PostTrdMng:
                         (dict_posttrd_fmtdata_secloan_from_private_secpool is None)
                         and (dict_posttrd_fmtdata_secloan_from_private_secpool_last_last_trddate is None)
                 ):
-                    print(f'利息表中的私用合约号{serial_number}不在私用券源合约中。')
+                    i_contract_not_found += 1
+                    print(f'利息表中的私用合约号{serial_number}不在私用券源合约中，已发现{i_contract_not_found}个')
                     continue
                 else:
                     if dict_posttrd_fmtdata_secloan_from_private_secpool is None:
@@ -748,22 +747,30 @@ class PostTrdMng:
         # todo 重要假设： 1. 目前由于按照股票进行策略区分，不涉及股数，所以出于成本考虑，直接从pnl层次进行分组;
         # todo 重要假设： 2. 约定: 不在人工T0 tgtlist 的股票，为机器T0策略;
 
-        # # 从pre_trddata中读取数据， 获取人工T0的目标股票列表
-        list_dicts_grp_tgtsecids_by_cps = self.gl.col_pretrd_grp_tgtsecids_by_cps.find(
+        # # 从pre_trddata中读取数据， 获取非AutoT0证券
+        iter_dicts_grp_tgtsecids_by_cps_manut0 = self.gl.col_pretrd_grp_tgtsecids_by_cps.find(
             {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': self.gl.acctidbymxz, 'Composite': 'ManuT0'}
         )
 
-        set_secids_in_grp_tgtsecids_by_cps = set()
-        for dict_grp_tgtsecids_by_cps in list_dicts_grp_tgtsecids_by_cps:
-            tgtsecids = dict_grp_tgtsecids_by_cps['SecurityID']
-            set_secids_in_grp_tgtsecids_by_cps.add(tgtsecids)
+        set_secids_in_grp_tgtsecids_by_cps_manut0 = set()
+        for dict_grp_tgtsecids_by_cps_manut0 in iter_dicts_grp_tgtsecids_by_cps_manut0:
+            tgtsecids = dict_grp_tgtsecids_by_cps_manut0['SecurityID']
+            set_secids_in_grp_tgtsecids_by_cps_manut0.add(tgtsecids)
+
+        iter_dicts_grp_tgtsecids_by_cps_nic = self.gl.col_pretrd_grp_tgtsecids_by_cps.find(
+            {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': self.gl.acctidbymxz, 'Composite': 'NotInComposite'}
+        )
+        set_secids_in_grp_tgtsecids_by_cps_nic = set()
+        for dict_grp_tgtsecids_by_cps_manut0 in iter_dicts_grp_tgtsecids_by_cps_nic:
+            tgtsecids = dict_grp_tgtsecids_by_cps_manut0['SecurityID']
+            set_secids_in_grp_tgtsecids_by_cps_nic.add(tgtsecids)
 
         list_dicts_posttrd_jgd = list(self.gl.col_posttrd_fmtdata_jgd.find({'DataDate': self.gl.str_last_trddate}))
         list_dicts_posttrd_pnl_by_secid = []
         for secid_in_position_and_jgd_and_fee_from_secloan in set_secids_in_position_and_jgd_and_fee_from_secloan:
-            if secid_in_position_and_jgd_and_fee_from_secloan in set_secids_in_grp_tgtsecids_by_cps:
+            if secid_in_position_and_jgd_and_fee_from_secloan in set_secids_in_grp_tgtsecids_by_cps_manut0:
                 cpssrc = 'ManuT0'
-            elif secid_in_position_and_jgd_and_fee_from_secloan in ['511990']:
+            elif secid_in_position_and_jgd_and_fee_from_secloan in set_secids_in_grp_tgtsecids_by_cps_nic:
                 cpssrc = 'NotInComposite'
             else:
                 cpssrc = 'AutoT0'
@@ -879,26 +886,30 @@ class PostTrdMng:
         df_output_xlsx_pnl_analysis['PNL_Part1'] = df_output_xlsx_pnl_analysis['PNL_Part1'].apply(lambda x: round(x, 2))
         df_output_xlsx_pnl_analysis['PNL_Part2'] = df_output_xlsx_pnl_analysis['PNL_Part2'].apply(lambda x: round(x, 2))
         df_output_xlsx_pnl_analysis['PNL_Part3'] = df_output_xlsx_pnl_analysis['PNL_Part3'].apply(lambda x: round(x, 2))
-        df_output_xlsx_pnl_analysis['PNL_PartSum'] = df_output_xlsx_pnl_analysis['PNL_PartSum'].apply(lambda x: round(x, 2))
+        df_output_xlsx_pnl_analysis['PNL_PartSum'] = (
+            df_output_xlsx_pnl_analysis['PNL_PartSum'].apply(lambda x: round(x, 2))
+        )
         df_output_xlsx_pnl_analysis['FeeFromTradingActivity'] = (
             df_output_xlsx_pnl_analysis['FeeFromTradingActivity'].apply(lambda x: round(x, 2))
         )
         df_output_xlsx_pnl_analysis['FeeFromSecLoan'] = (
             df_output_xlsx_pnl_analysis['FeeFromSecLoan'].apply(lambda x: round(x, 2))
         )
-        df_output_xlsx_pnl_analysis['PNLBySecID'] = df_output_xlsx_pnl_analysis['PNLBySecID'].apply(lambda x: round(x, 2))
+        df_output_xlsx_pnl_analysis['PNLBySecID'] = (
+            df_output_xlsx_pnl_analysis['PNLBySecID'].apply(lambda x: round(x, 2))
+        )
 
         df_output_xlsx_pnl_analysis.to_excel(self.gl.fpath_output_xlsx_pnl_analysis, index=False)
         print('Output pnl_analysis.xlsx Finished')
 
     def run(self):
-        # self.upload_posttrd_rawdata()
-        # self.upload_posttrd_fmtdata()
-        # self.get_and_upload_col_post_trddata_pnl()
+        self.upload_posttrd_rawdata()
+        self.upload_posttrd_fmtdata()
+        self.get_and_upload_col_post_trddata_pnl()
         self.output_xlsx_pnl_analysis()
 
 
 if __name__ == '__main__':
-    task = PostTrdMng('20201021')
+    task = PostTrdMng()
     task.run()
     print('Done')

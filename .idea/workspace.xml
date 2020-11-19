@@ -22,27 +22,11 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="94617ebe-9a89-4ddb-bd66-872b475c77a4" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/posttrdmng.py" afterDir="false" />
+    <list default="true" id="94617ebe-9a89-4ddb-bd66-872b475c77a4" name="Default Changelist" comment="pnl_analysis finished">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/doc/alphaT0_notes.md" beforeDir="false" afterPath="$PROJECT_DIR$/data/doc/alphaT0_notes.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/marginable_secpools/20201102_marginable_secpools_from_hait.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/data/input/marginable_secpools/20201102_marginable_secpools_from_hait.xlsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/marginable_secpools/20201103_marginable_secpools_from_hait.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/data/input/marginable_secpools/20201103_marginable_secpools_from_hait.xlsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/marginable_secpools/20201104_marginable_secpools_from_hait.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/data/input/marginable_secpools/20201104_marginable_secpools_from_hait.xlsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/marginable_secpools/20201105_marginable_secpools_from_hait.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/data/input/marginable_secpools/20201105_marginable_secpools_from_hait.xlsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/marginable_secpools/20201106_marginable_secpools_from_hait.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/data/input/marginable_secpools/20201106_marginable_secpools_from_hait.xlsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/post_trddata/20201105/融券私用合约_20201105.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/post_trddata/20201105/鸣石满天星7号20201105融券未结利息.xls" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/post_trddata/20201105/鸣石满天星7号私用券源未结利息.xls" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/globals.py" beforeDir="false" afterPath="$PROJECT_DIR$/globals.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/post_trdmng.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/secloan_mng.py" beforeDir="false" afterPath="$PROJECT_DIR$/pretrdmng.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/temp.py" beforeDir="false" afterPath="$PROJECT_DIR$/temp.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/posttrdmng.py" beforeDir="false" afterPath="$PROJECT_DIR$/posttrdmng.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pretrdmng.py" beforeDir="false" afterPath="$PROJECT_DIR$/pretrdmng.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -74,7 +58,7 @@
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
-  <component name="RunManager" selected="Python.posttrdmng">
+  <component name="RunManager" selected="Python.pretrdmng (1)">
     <configuration name="globals" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="autot0" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -187,8 +171,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.posttrdmng" />
         <item itemvalue="Python.pretrdmng (1)" />
+        <item itemvalue="Python.posttrdmng" />
         <item itemvalue="Python.globals" />
         <item itemvalue="Python.pretrdmng" />
         <item itemvalue="Python.temp" />
@@ -209,7 +193,8 @@
       <workItem from="1605146417918" duration="42772000" />
       <workItem from="1605252211573" duration="335000" />
       <workItem from="1605258957983" duration="42285000" />
-      <workItem from="1605512911220" duration="22706000" />
+      <workItem from="1605512911220" duration="34256000" />
+      <workItem from="1605679644249" duration="31627000" />
     </task>
     <task id="LOCAL-00001" summary="initialize">
       <created>1604806214551</created>
@@ -225,7 +210,14 @@
       <option name="project" value="LOCAL" />
       <updated>1604813680625</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="pnl_analysis finished">
+      <created>1605616011524</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1605616011529</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -246,17 +238,18 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="initialize" />
     <MESSAGE value="交割单数据下载" />
-    <option name="LAST_COMMIT_MESSAGE" value="交割单数据下载" />
+    <MESSAGE value="pnl_analysis finished" />
+    <option name="LAST_COMMIT_MESSAGE" value="pnl_analysis finished" />
   </component>
   <component name="WindowStateProjectService">
     <state x="-948" y="603" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1605015781465">
       <screen x="-1080" y="0" width="1080" height="1890" />
     </state>
     <state x="-948" y="603" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1080.1890/-1080.0.1080.1890@-1080.0.1080.1890" timestamp="1605015781465" />
-    <state width="1078" height="440" key="DebuggerActiveHint" timestamp="1605604240302">
+    <state width="1078" height="440" key="DebuggerActiveHint" timestamp="1605676870976">
       <screen x="-1080" y="0" width="1080" height="1890" />
     </state>
-    <state width="1078" height="440" key="DebuggerActiveHint/0.0.1080.1890/-1080.0.1080.1890@-1080.0.1080.1890" timestamp="1605604240302" />
+    <state width="1078" height="440" key="DebuggerActiveHint/0.0.1080.1890/-1080.0.1080.1890@-1080.0.1080.1890" timestamp="1605676870976" />
     <state x="-760" y="686" key="FileChooserDialogImpl" timestamp="1605263301586">
       <screen x="-1080" y="0" width="1080" height="1890" />
     </state>
@@ -265,46 +258,46 @@
       <screen x="-1080" y="0" width="1080" height="1890" />
     </state>
     <state x="-668" y="842" key="Github.ShareDialog/0.0.1080.1890/-1080.0.1080.1890@-1080.0.1080.1890" timestamp="1604806238362" />
-    <state width="1037" height="732" key="GridCell.Tab.0.bottom" timestamp="1605611198111">
+    <state width="1037" height="440" key="GridCell.Tab.0.bottom" timestamp="1605797880114">
       <screen x="-1080" y="0" width="1080" height="1890" />
     </state>
-    <state width="1037" height="732" key="GridCell.Tab.0.bottom/0.0.1080.1890/-1080.0.1080.1890@-1080.0.1080.1890" timestamp="1605611198111" />
-    <state width="1037" height="696" key="GridCell.Tab.0.bottom/0.0.1080.1890/-1080.0.1080.1890@0.0.1080.1890" timestamp="1605575326974" />
-    <state width="1037" height="732" key="GridCell.Tab.0.center" timestamp="1605611198111">
+    <state width="1037" height="440" key="GridCell.Tab.0.bottom/0.0.1080.1890/-1080.0.1080.1890@-1080.0.1080.1890" timestamp="1605797880114" />
+    <state width="1037" height="327" key="GridCell.Tab.0.bottom/0.0.1080.1890/-1080.0.1080.1890@0.0.1080.1890" timestamp="1605664434692" />
+    <state width="1037" height="440" key="GridCell.Tab.0.center" timestamp="1605797880114">
       <screen x="-1080" y="0" width="1080" height="1890" />
     </state>
-    <state width="1037" height="732" key="GridCell.Tab.0.center/0.0.1080.1890/-1080.0.1080.1890@-1080.0.1080.1890" timestamp="1605611198111" />
-    <state width="1037" height="696" key="GridCell.Tab.0.center/0.0.1080.1890/-1080.0.1080.1890@0.0.1080.1890" timestamp="1605575326974" />
-    <state width="1037" height="732" key="GridCell.Tab.0.left" timestamp="1605611198111">
+    <state width="1037" height="440" key="GridCell.Tab.0.center/0.0.1080.1890/-1080.0.1080.1890@-1080.0.1080.1890" timestamp="1605797880114" />
+    <state width="1037" height="327" key="GridCell.Tab.0.center/0.0.1080.1890/-1080.0.1080.1890@0.0.1080.1890" timestamp="1605664434692" />
+    <state width="1037" height="440" key="GridCell.Tab.0.left" timestamp="1605797880114">
       <screen x="-1080" y="0" width="1080" height="1890" />
     </state>
-    <state width="1037" height="732" key="GridCell.Tab.0.left/0.0.1080.1890/-1080.0.1080.1890@-1080.0.1080.1890" timestamp="1605611198111" />
-    <state width="1037" height="696" key="GridCell.Tab.0.left/0.0.1080.1890/-1080.0.1080.1890@0.0.1080.1890" timestamp="1605575326974" />
-    <state width="1037" height="732" key="GridCell.Tab.0.right" timestamp="1605611198111">
+    <state width="1037" height="440" key="GridCell.Tab.0.left/0.0.1080.1890/-1080.0.1080.1890@-1080.0.1080.1890" timestamp="1605797880114" />
+    <state width="1037" height="327" key="GridCell.Tab.0.left/0.0.1080.1890/-1080.0.1080.1890@0.0.1080.1890" timestamp="1605664434692" />
+    <state width="1037" height="440" key="GridCell.Tab.0.right" timestamp="1605797880114">
       <screen x="-1080" y="0" width="1080" height="1890" />
     </state>
-    <state width="1037" height="732" key="GridCell.Tab.0.right/0.0.1080.1890/-1080.0.1080.1890@-1080.0.1080.1890" timestamp="1605611198111" />
-    <state width="1037" height="696" key="GridCell.Tab.0.right/0.0.1080.1890/-1080.0.1080.1890@0.0.1080.1890" timestamp="1605575326974" />
-    <state width="1037" height="732" key="GridCell.Tab.1.bottom" timestamp="1605611197977">
+    <state width="1037" height="440" key="GridCell.Tab.0.right/0.0.1080.1890/-1080.0.1080.1890@-1080.0.1080.1890" timestamp="1605797880114" />
+    <state width="1037" height="327" key="GridCell.Tab.0.right/0.0.1080.1890/-1080.0.1080.1890@0.0.1080.1890" timestamp="1605664434692" />
+    <state width="1037" height="440" key="GridCell.Tab.1.bottom" timestamp="1605797879758">
       <screen x="-1080" y="0" width="1080" height="1890" />
     </state>
-    <state width="1037" height="732" key="GridCell.Tab.1.bottom/0.0.1080.1890/-1080.0.1080.1890@-1080.0.1080.1890" timestamp="1605611197977" />
-    <state width="1037" height="696" key="GridCell.Tab.1.bottom/0.0.1080.1890/-1080.0.1080.1890@0.0.1080.1890" timestamp="1605575326829" />
-    <state width="1037" height="732" key="GridCell.Tab.1.center" timestamp="1605611197976">
+    <state width="1037" height="440" key="GridCell.Tab.1.bottom/0.0.1080.1890/-1080.0.1080.1890@-1080.0.1080.1890" timestamp="1605797879758" />
+    <state width="1037" height="327" key="GridCell.Tab.1.bottom/0.0.1080.1890/-1080.0.1080.1890@0.0.1080.1890" timestamp="1605664434548" />
+    <state width="1037" height="440" key="GridCell.Tab.1.center" timestamp="1605797879758">
       <screen x="-1080" y="0" width="1080" height="1890" />
     </state>
-    <state width="1037" height="732" key="GridCell.Tab.1.center/0.0.1080.1890/-1080.0.1080.1890@-1080.0.1080.1890" timestamp="1605611197976" />
-    <state width="1037" height="696" key="GridCell.Tab.1.center/0.0.1080.1890/-1080.0.1080.1890@0.0.1080.1890" timestamp="1605575326829" />
-    <state width="1037" height="732" key="GridCell.Tab.1.left" timestamp="1605611197976">
+    <state width="1037" height="440" key="GridCell.Tab.1.center/0.0.1080.1890/-1080.0.1080.1890@-1080.0.1080.1890" timestamp="1605797879758" />
+    <state width="1037" height="327" key="GridCell.Tab.1.center/0.0.1080.1890/-1080.0.1080.1890@0.0.1080.1890" timestamp="1605664434548" />
+    <state width="1037" height="440" key="GridCell.Tab.1.left" timestamp="1605797879758">
       <screen x="-1080" y="0" width="1080" height="1890" />
     </state>
-    <state width="1037" height="732" key="GridCell.Tab.1.left/0.0.1080.1890/-1080.0.1080.1890@-1080.0.1080.1890" timestamp="1605611197976" />
-    <state width="1037" height="696" key="GridCell.Tab.1.left/0.0.1080.1890/-1080.0.1080.1890@0.0.1080.1890" timestamp="1605575326829" />
-    <state width="1037" height="732" key="GridCell.Tab.1.right" timestamp="1605611197977">
+    <state width="1037" height="440" key="GridCell.Tab.1.left/0.0.1080.1890/-1080.0.1080.1890@-1080.0.1080.1890" timestamp="1605797879758" />
+    <state width="1037" height="327" key="GridCell.Tab.1.left/0.0.1080.1890/-1080.0.1080.1890@0.0.1080.1890" timestamp="1605664434548" />
+    <state width="1037" height="440" key="GridCell.Tab.1.right" timestamp="1605797879758">
       <screen x="-1080" y="0" width="1080" height="1890" />
     </state>
-    <state width="1037" height="732" key="GridCell.Tab.1.right/0.0.1080.1890/-1080.0.1080.1890@-1080.0.1080.1890" timestamp="1605611197977" />
-    <state width="1037" height="696" key="GridCell.Tab.1.right/0.0.1080.1890/-1080.0.1080.1890@0.0.1080.1890" timestamp="1605575326829" />
+    <state width="1037" height="440" key="GridCell.Tab.1.right/0.0.1080.1890/-1080.0.1080.1890@-1080.0.1080.1890" timestamp="1605797879758" />
+    <state width="1037" height="327" key="GridCell.Tab.1.right/0.0.1080.1890/-1080.0.1080.1890@0.0.1080.1890" timestamp="1605664434548" />
     <state width="220" height="477" key="HiddenNamespacesPopup" timestamp="1605015798626">
       <screen x="-1080" y="0" width="1080" height="1890" />
     </state>
@@ -313,10 +306,10 @@
       <screen x="-1080" y="0" width="1080" height="1890" />
     </state>
     <state x="-1039" y="589" key="SettingsEditor/0.0.1080.1890/-1080.0.1080.1890@-1080.0.1080.1890" timestamp="1604806343111" />
-    <state x="-948" y="678" key="Vcs.Push.Dialog.v2" timestamp="1604813688274">
+    <state x="-948" y="678" key="Vcs.Push.Dialog.v2" timestamp="1605616021525">
       <screen x="-1080" y="0" width="1080" height="1890" />
     </state>
-    <state x="-948" y="678" key="Vcs.Push.Dialog.v2/0.0.1080.1890/-1080.0.1080.1890@-1080.0.1080.1890" timestamp="1604813688274" />
+    <state x="-948" y="678" key="Vcs.Push.Dialog.v2/0.0.1080.1890/-1080.0.1080.1890@-1080.0.1080.1890" timestamp="1605616021525" />
     <state width="548" height="953" key="XDebugger.FullValuePopup" timestamp="1605351473896">
       <screen x="-1080" y="0" width="1080" height="1890" />
     </state>
@@ -329,29 +322,38 @@
       <screen x="-1080" y="0" width="1080" height="1890" />
     </state>
     <state x="-960" y="600" key="com.intellij.database.dbimport.ImportDialog/0.0.1080.1890/-1080.0.1080.1890@-1080.0.1080.1890" timestamp="1605147883777" />
+    <state x="-933" y="555" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1605676914601">
+      <screen x="-1080" y="0" width="1080" height="1890" />
+    </state>
+    <state x="-933" y="555" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/0.0.1080.1890/-1080.0.1080.1890@-1080.0.1080.1890" timestamp="1605676914601" />
     <state x="343" y="858" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1604975337203">
       <screen x="0" y="0" width="1080" height="1890" />
     </state>
     <state x="343" y="858" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1080.1890/-1080.0.1080.1890@-1080.0.1080.1890" timestamp="1604975337203" />
-    <state x="88" y="48" width="1053" height="1153" maximized="true" key="dock-window-1" timestamp="1605613739103">
+    <state x="-253" y="56" width="1053" height="1877" maximized="true" key="dock-window-1" timestamp="1605687928389">
       <screen x="0" y="0" width="1080" height="1890" />
     </state>
-    <state x="88" y="48" width="1053" height="1153" maximized="true" key="dock-window-1/0.0.1080.1890/-1080.0.1080.1890@-1080.0.1080.1890" timestamp="1605613739103" />
-    <state x="0" y="0" width="1053" height="1527" maximized="true" key="dock-window-2" timestamp="1605080711550">
+    <state x="-253" y="56" width="1053" height="1877" maximized="true" key="dock-window-1/0.0.1080.1890/-1080.0.1080.1890@-1080.0.1080.1890" timestamp="1605687928389" />
+    <state x="136" y="0" width="773" height="1409" maximized="true" key="dock-window-2" timestamp="1605770607596">
       <screen x="0" y="0" width="1080" height="1890" />
     </state>
-    <state x="0" y="0" width="1053" height="1527" maximized="true" key="dock-window-2/0.0.1080.1890/-1080.0.1080.1890@-1080.0.1080.1890" timestamp="1605080711550" />
-    <state x="-877" y="437" width="672" height="678" key="search.everywhere.popup" timestamp="1605417326565">
+    <state x="136" y="0" width="773" height="1409" maximized="true" key="dock-window-2/0.0.1080.1890/-1080.0.1080.1890@-1080.0.1080.1890" timestamp="1605768682170" />
+    <state x="136" y="0" width="773" height="1409" maximized="true" key="dock-window-2/0.0.1080.1890/-1080.0.1080.1890@0.0.1080.1890" timestamp="1605770607596" />
+    <state x="0" y="0" width="1053" height="1409" maximized="true" key="dock-window-3" timestamp="1605798172525">
+      <screen x="0" y="0" width="1080" height="1890" />
+    </state>
+    <state x="0" y="0" width="1053" height="1409" maximized="true" key="dock-window-3/0.0.1080.1890/-1080.0.1080.1890@-1080.0.1080.1890" timestamp="1605798172525" />
+    <state x="-877" y="437" width="672" height="678" key="search.everywhere.popup" timestamp="1605794941018">
       <screen x="-1080" y="0" width="1080" height="1890" />
     </state>
-    <state x="-877" y="437" width="672" height="678" key="search.everywhere.popup/0.0.1080.1890/-1080.0.1080.1890@-1080.0.1080.1890" timestamp="1605417326565" />
+    <state x="-877" y="437" width="672" height="678" key="search.everywhere.popup/0.0.1080.1890/-1080.0.1080.1890@-1080.0.1080.1890" timestamp="1605794941018" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/autot0$pretrdmng.coverage" NAME="pretrdmng Coverage Results" MODIFIED="1605430139055" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/autot0$globals.coverage" NAME="globals Coverage Results" MODIFIED="1605605518229" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/autot0$secloan_mng.coverage" NAME="secloan_mng Coverage Results" MODIFIED="1604989924798" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/autot0$posttrdmng.coverage" NAME="posttrdmng Coverage Results" MODIFIED="1605611197947" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/autot0$pretrdmng__1_.coverage" NAME="pretrdmng (1) Coverage Results" MODIFIED="1605610496461" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/autot0$posttrdmng.coverage" NAME="posttrdmng Coverage Results" MODIFIED="1605754195935" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/autot0$pretrdmng__1_.coverage" NAME="pretrdmng (1) Coverage Results" MODIFIED="1605797879727" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/autot0$temp.coverage" NAME="temp Coverage Results" MODIFIED="1604890099758" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
