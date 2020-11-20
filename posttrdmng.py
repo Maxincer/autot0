@@ -64,7 +64,6 @@ Naming Convention:
     1. 目前假设只有一个账户需要处理，需要扩展到多账户
     2. 目前人工区分公用合约与私用合约。替代方案：可在T+1日收到的利息结算单中根据流水号，反推T日的合约构成。
     3. position 中 添加SecurityType 和 SecurityIDSource 字段
-
 """
 import pandas as pd
 
@@ -79,10 +78,55 @@ class PostTrdMng:
         """
         将需要的原始数据上传至数据库：
             1. holding
-            2. secloan from private secpool
+            2. secloan from private secpool： 注，该表中的收回数量指的是额度，不是空头数量。
             3. shortqty from secloan
             4. fee_from_secloan
         """
+        # posttrd_rawdata_fund
+        df_input_xlsx_fund = pd.read_excel(
+            self.gl.fpath_input_xlsx_fund,
+            skiprows=1,
+            nrows=1,
+            dtype={
+                # '资金余额': float,
+                '可用金额': float,
+                '融资市值': float,
+                '融券金额': float,
+                '总市值(公允价)': float,
+                '总资产(公允价)': float,
+                '净资产(公允价)': float,
+                '总负债': float,
+                '资金负债': float,
+                '融券负债': float,
+                '利息/费用': float,
+                '现金资产': float,
+                '担保证券市值': float,
+                '可用保证金': float,
+                '融资已用保证金': float,
+                '融券已用保证金': float,
+                '授信额度': float,
+                '融资保证金比例': float,
+                '融券保证金比例': float,
+                '维持担保比例(扣除非担保品)': str,
+
+            },
+            # converters={
+            #     '融资保证金比例': lambda x: round(float(str(x).strip('%')) / 100, 2),
+            #     '融券保证金比例': lambda x: round(float(str(x).strip('%')) / 100, 2),
+            #     '维持担保比例(扣除非担保品)': lambda x: round(float(str(x).strip('%')) / 100, 4),
+            # }
+        )
+
+        df_input_xlsx_fund = df_input_xlsx_fund.where(df_input_xlsx_fund.notnull(), None)
+        df_input_xlsx_fund['DataDate'] = self.gl.str_last_trddate
+        df_input_xlsx_fund['AcctIDByMXZ'] = self.gl.acctidbymxz
+        list_dicts_fund = df_input_xlsx_fund.to_dict('records')
+        self.gl.col_posttrd_rawdata_fund.delete_many(
+            {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': self.gl.acctidbymxz}
+        )
+        if list_dicts_fund:
+            self.gl.col_posttrd_rawdata_fund.insert_many(list_dicts_fund)
+
         # posttrd_rawdata_holding
         df_input_xlsx_holding = pd.read_excel(
             self.gl.fpath_input_xlsx_holding,
@@ -116,6 +160,7 @@ class PostTrdMng:
                 '私用转融券费率': float,
                 '发生日期': str,
                 '合约数量': float,
+                '收回数量': float,
                 '合约预计利息': float,
                 '合约理论到期日期': str,
                 '合约流水号': str,
@@ -267,6 +312,65 @@ class PostTrdMng:
             1. position
             2. ssquota
         """
+        # col_posttrd_fmtdata_fund
+        list_dicts_posttrd_rawdata_fund = list(
+            self.gl.col_posttrd_rawdata_fund.find(
+                {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': self.gl.acctidbymxz}
+            )
+        )
+        list_dicts_posttrd_fmtdata_fund = []
+        for dict_posttrd_rawdata_fund in list_dicts_posttrd_rawdata_fund:
+            cash_balance = dict_posttrd_rawdata_fund['资金余额']
+            available_fund = dict_posttrd_rawdata_fund['可用金额']
+            finance_amt = dict_posttrd_rawdata_fund['融资市值']
+            ssamt = dict_posttrd_rawdata_fund['融券金额']
+            secmv = dict_posttrd_rawdata_fund['总市值(公允价)']
+            ttasset = dict_posttrd_rawdata_fund['总资产(公允价)']
+            ttliability = dict_posttrd_rawdata_fund['总负债']
+            liability_from_finance = dict_posttrd_rawdata_fund['资金负债']  # 资金负债与利息相等
+            liability_from_secloan = dict_posttrd_rawdata_fund['融券负债']
+            net_asset = dict_posttrd_rawdata_fund['净资产(公允价)']
+            cash = dict_posttrd_rawdata_fund['现金资产']
+            collateral_secmv = dict_posttrd_rawdata_fund['担保证券市值']
+            margin_ratio_finance = dict_posttrd_rawdata_fund['融资保证金比例']
+            margin_ratio_secloan = dict_posttrd_rawdata_fund['融券保证金比例']
+            avl_margin_amt = dict_posttrd_rawdata_fund['可用保证金']  # todo 猜测可能是margin excess
+            margin_deposit_from_finance = dict_posttrd_rawdata_fund['融资已用保证金']
+            margin_deposit_from_secloan = dict_posttrd_rawdata_fund['融券已用保证金']
+            credit_quota = dict_posttrd_rawdata_fund['授信额度']
+            maintenance_ratio = dict_posttrd_rawdata_fund['维持担保比例(扣除非担保品)']
+
+            dict_posttrd_fmtdata_fund = {
+                'DataDate': self.gl.str_today,
+                'AcctIDByMXZ': self.gl.acctidbymxz,
+                'CashBalance': cash_balance,
+                'AvailableFund': available_fund,
+                'FinanceAmt': finance_amt,
+                'ShortSellAmt': ssamt,
+                'SecurityMarketValue': secmv,
+                'TotalAsset': ttasset,
+                'TotalLiability': ttliability,
+                'LiabilityFromFinance': liability_from_finance,
+                'LiabilityFromSecLoan': liability_from_secloan,
+                'NetAsset': net_asset,
+                'Cash': cash,
+                'CollateralMarketValue': collateral_secmv,
+                'MarginRatioOfFinance': margin_ratio_finance,
+                'MarginRatioOfSecLoan': margin_ratio_secloan,
+                'AvailableMarginAmt': avl_margin_amt,
+                'MarginDepositFromFinance': margin_deposit_from_finance,
+                'MarginDepositFromSecLoan': margin_deposit_from_secloan,
+                'CreditQuota': credit_quota,
+                'MaintenanceRatio': maintenance_ratio,
+            }
+            list_dicts_posttrd_fmtdata_fund.append(dict_posttrd_fmtdata_fund)
+
+        self.gl.col_posttrd_fmtdata_fund.delete_many(
+            {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': self.gl.acctidbymxz}
+        )
+        if list_dicts_posttrd_fmtdata_fund:
+            self.gl.col_posttrd_fmtdata_fund.insert_many(list_dicts_posttrd_fmtdata_fund)
+
         # col_posttrd_fmtdata_holding
         list_dicts_posttrd_rawdata_holding = list(
             self.gl.col_posttrd_rawdata_holding.find(
@@ -407,7 +511,10 @@ class PostTrdMng:
         for dict_posttrd_rawdata_secloan_from_private_secpool in list_dicts_posttrd_rawdata_secloan_from_private_secpool:
             secid = dict_posttrd_rawdata_secloan_from_private_secpool['证券代码']
             serial_number = dict_posttrd_rawdata_secloan_from_private_secpool['合约流水号']
-            qty_to_be_charged_interest = dict_posttrd_rawdata_secloan_from_private_secpool['合约数量']
+            qty_to_be_charged_interest = (
+                dict_posttrd_rawdata_secloan_from_private_secpool['合约数量']
+                - dict_posttrd_rawdata_secloan_from_private_secpool['收回数量']
+            )
             interest = dict_posttrd_rawdata_secloan_from_private_secpool['私用转融券费率']
             str_startdate = dict_posttrd_rawdata_secloan_from_private_secpool['发生日期']
             str_maturity_date = dict_posttrd_rawdata_secloan_from_private_secpool['合约理论到期日期']
@@ -566,8 +673,10 @@ class PostTrdMng:
                 'ShortQty': shortqty,
                 'SSQuotaFromPrivateSecPool': ssquota_from_private_secpool,
                 'SSQuotaFromPublicSecPool': ssquota_from_public_secpool,
+                'AvailableSSQuota': ssquota - shortqty,
             }
             list_dicts_posttrd_fmtdata_ssquota_from_secloan.append(dict_posttrd_fmtdata_ssquota_from_secloan)
+
         self.gl.col_posttrd_fmtdata_ssquota_from_secloan.delete_many(
             {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': self.gl.acctidbymxz}
         )
@@ -621,7 +730,14 @@ class PostTrdMng:
                         and (dict_posttrd_fmtdata_secloan_from_private_secpool_last_last_trddate is None)
                 ):
                     i_contract_not_found += 1
-                    print(f'利息表中的私用合约号{serial_number}不在私用券源合约中，已发现{i_contract_not_found}个')
+                    fee_from_secloan_not_found = (
+                        dict_posttrd_rawdata_fee_from_secloan['利息'] + dict_posttrd_rawdata_fee_from_secloan['占用额度费']
+                    )
+                    if fee_from_secloan_not_found:
+                        print(
+                            f'利息表中的私用合约号{serial_number}不在私用券源合约中，'
+                            f'发生费用{fee_from_secloan_not_found}元无法归集。'
+                        )
                     continue
                 else:
                     if dict_posttrd_fmtdata_secloan_from_private_secpool is None:
@@ -684,6 +800,7 @@ class PostTrdMng:
                 'AccruedFeeFromSecLoan': accrued_fee_from_secloan
             }
             list_dicts_posttrd_fmtdata_fee_from_secloan.append(dict_posttrd_fmtdata_fee_from_secloan)
+        print(f'共发现{i_contract_not_found}个利息表条目不在私用券源合约中')
         self.gl.col_posttrd_fmtdata_fee_from_secloan.delete_many(
             {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': self.gl.acctidbymxz}
         )
@@ -898,7 +1015,7 @@ class PostTrdMng:
         df_output_xlsx_pnl_analysis['PNLBySecID'] = (
             df_output_xlsx_pnl_analysis['PNLBySecID'].apply(lambda x: round(x, 2))
         )
-
+        df_output_xlsx_pnl_analysis.sort_values(by=['CompositeSource', 'DataDate'], inplace=True)
         df_output_xlsx_pnl_analysis.to_excel(self.gl.fpath_output_xlsx_pnl_analysis, index=False)
         print('Output pnl_analysis.xlsx Finished')
 

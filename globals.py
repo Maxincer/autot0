@@ -130,8 +130,13 @@ class Globals:
         self.col_posttrd_pnl = self.db_posttrddata['post_trade_pnl']
         self.col_posttrd_pnl_by_secid = self.db_posttrddata['post_trade_pnl_by_secid']
         self.col_posttrd_pnl_by_acctidbymxz_cps = self.db_posttrddata['post_trade_pnl_by_acctidbymxz_cps']
+        self.col_posttrd_rawdata_fund = self.db_posttrddata['post_trade_rawdata_fund']
+        self.col_posttrd_fmtdata_fund = self.db_posttrddata['post_trade_fmtdata_fund']
 
         # # posttrd_holding: 程序在T日运行，清算T-1日数据，部分文件名为T-1，文件包日期为T-1日期
+        self.fpath_input_xlsx_fund = (
+            f'data/input/post_trddata/{self.str_last_trddate}/两融_资产导出_{self.str_last_trddate}.xlsx'
+        )
         self.fpath_input_xlsx_holding = (
             f'data/input/post_trddata/{self.str_last_trddate}/两融_资产导出_{self.str_last_trddate}.xlsx'
         )
