@@ -338,7 +338,7 @@ class PreTrdMng:
         # 先运行T日的post_trddata_mng, 将T-1的清算数据上传
         self.upload_pretrd_rawdata()
         self.get_secloanmng_draft()
-        self.get_and_send_xlsx_demand_of_secpool_from_outside_src()
+        # self.get_and_send_xlsx_demand_of_secpool_from_outside_src()
         print('PreTrdMng Finished.')
 
 

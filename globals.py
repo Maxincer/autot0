@@ -18,6 +18,7 @@ import os
 from poplib import POP3_SSL
 import smtplib
 
+import pandas as pd
 from pymongo import MongoClient
 
 from WindPy import w
@@ -26,7 +27,7 @@ STR_TODAY = datetime.today().strftime('%Y%m%d')
 
 
 class Globals:
-    def __init__(self, str_today=STR_TODAY):
+    def __init__(self, str_today=STR_TODAY, download_winddata_mark=1):
         # 日期部分
         self.str_today = str_today  # 该日必为交易日
         self.server_mongodb = MongoClient('mongodb://localhost:27017/')
@@ -97,6 +98,18 @@ class Globals:
         self.col_pretrd_grp_tgtsecids_by_cps = self.db_pretrddata['group_target_secids_by_composite']
 
         # post-trade
+        # # dict_map
+        # # # todo 重要假设： 根据股票代码区分策略归属，不计数量
+        self.dict_secid2composite = {}
+        for dict_pretrddata_grp_tgt_secids_by_composite in (
+                self.col_pretrd_grp_tgtsecids_by_cps.find(
+                    {'DataDate': self.str_last_trddate, 'AcctIDByMXZ': self.acctidbymxz}
+                )
+        ):
+            secid = dict_pretrddata_grp_tgt_secids_by_composite['SecurityID']
+            composite = dict_pretrddata_grp_tgt_secids_by_composite['Composite']
+            self.dict_secid2composite.update({secid: composite})
+
         # # database
         self.db_posttrddata = self.server_mongodb['post_trade_data']
         self.col_shortqty_from_secloan = self.db_posttrddata['shortqty_from_secloan']
@@ -132,6 +145,7 @@ class Globals:
         self.col_posttrd_pnl_by_acctidbymxz_cps = self.db_posttrddata['post_trade_pnl_by_acctidbymxz_cps']
         self.col_posttrd_rawdata_fund = self.db_posttrddata['post_trade_rawdata_fund']
         self.col_posttrd_fmtdata_fund = self.db_posttrddata['post_trade_fmtdata_fund']
+        self.col_posttrd_secloan_utility_analysis = self.db_posttrddata['post_trade_secloan_utility_analysis']
 
         # # posttrd_holding: 程序在T日运行，清算T-1日数据，部分文件名为T-1，文件包日期为T-1日期
         self.fpath_input_xlsx_fund = (
@@ -158,8 +172,34 @@ class Globals:
         self.fpath_input_xlsx_jgd = (
             f"data/input/post_trddata/{self.str_last_trddate}/{self.prdalias}每日交割单-{self.str_today}.xlsx"
         )
-        self.fpath_output_xlsx_pnl_analysis = "data/output/pnl/pnl_analysis.xlsx"
+        self.fpath_output_xlsx_posttrd_analysis = "data/output/report/posttrd_analysis.xlsx"
 
+        # # wind的公共数据下载， 下载的时间为自然时间， 交易日为查询日当天
+        self.col_fmtted_wssdata = self.db_global['fmtted_wssdata']
+        if download_winddata_mark:
+            w.start(showmenu=False)
+            wset = w.wset("sectorconstituent", f"date={self.str_today};sectorid=a001010100000000")
+            list_windcodes = wset.Data[1]
+            list_windcodes_patch = ['511990.SH']
+            str_windcodes = ','.join(list_windcodes + list_windcodes_patch)
+            wss_wssdata = w.wss(str_windcodes, "sec_name, close, pre_close, marginornot",
+                                f"tradeDate={self.str_today};priceAdj=U;cycle=D")
+            df_wssdata = pd.DataFrame(
+                wss_wssdata.Data,
+                index=['Symbol', 'Close', 'PreClose', 'MarginOrNot'],
+                columns=wss_wssdata.Codes
+            ).T.reset_index()
+            df_wssdata['MarginOrNotMark'] = df_wssdata['MarginOrNot'].map({'是': 1, '否': 0})
+            df_wssdata['DataDate'] = self.str_today
+            df_wssdata = df_wssdata.rename(columns={'index': 'WindCode'})
+            df_fmtted_wssdata = df_wssdata.loc[:, ['DataDate', 'WindCode', 'Symbol', 'Close', 'PreClose', 'MarginOrNotMark']].copy()
+            list_dicts_fmtted_wssdata = df_fmtted_wssdata.to_dict('records')
+            self.col_fmtted_wssdata.delete_many({'DataDate': self.str_today})
+            self.col_fmtted_wssdata.insert_many(list_dicts_fmtted_wssdata)
+        iter_fmtted_wssdata = self.col_fmtted_wssdata.find({'DataDate': self.str_today}, {'_id': 0})
+        df_fmtted_wssdata = pd.DataFrame(iter_fmtted_wssdata)
+        df_fmtted_wssdata = df_fmtted_wssdata.set_index('WindCode')
+        self.dict_fmtted_wssdata = df_fmtted_wssdata.to_dict()
         # 其他
         self.dict_exchange2secidsrc = {'深A': 'SZSE', '沪A': 'SSE'}
 
@@ -326,8 +366,5 @@ class Globals:
 
 if __name__ == '__main__':
     task = Globals()
-    a = task.get_list_str_trddate('20201019', '20201023')
-    print(a)
-
-
-
+    print('Done')
+    # a = task.get_list_str_trddate('20201019', '20201023')
