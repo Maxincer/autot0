@@ -52,7 +52,7 @@ class PreTrdMng:
     def __init__(self, str_trddate=STR_TODAY, download_winddata_mark=0):
         self.gl = Globals(str_trddate, download_winddata_mark)
         self.gl.update_attachments_from_email(
-            '每日券池信息', self.gl.fpath_input_xlsx_marginable_secpools_from_hait
+            '每日券池信息', self.gl.str_today, self.gl.dirpath_input_xlsx_marginable_secpools_from_hait
         )
 
         df_csv_tgtsecids = pd.read_csv(
@@ -132,12 +132,6 @@ class PreTrdMng:
             }
             with open(self.gl.fpath_json_dict_windcode2wssdata, 'w') as f:
                 json.dump(self.dict_windcode2wssdata, f)
-
-    def get_pretrd_rawdata_from_email(self):
-        # 下载每日券池信息
-        self.gl.update_attachments_from_email(
-            '每日券池信息', self.gl.fpath_input_xlsx_marginable_secpools_from_hait
-        )
 
     def upload_pretrd_rawdata(self):
         # grp_tgtsecids_by_cps
@@ -272,13 +266,12 @@ class PreTrdMng:
                     'QtyToBorrowFromOutsideSource': 0,
                 }
                 list_dicts_secpool_analysis.append(dict_secpool_analysis)
+        df_secpool_analysis = pd.DataFrame(list_dicts_secpool_analysis)
+        df_secpool_analysis.to_csv(self.gl.fpath_output_csv_tgtsecloan_mngdraft, index=False, encoding='ansi')
         self.gl.col_pretrd_tgtsecloan_mngdraft.delete_many(
             {'DataDate': self.gl.str_today, 'AcctIDByMXZ': self.gl.acctidbymxz}
         )
         self.gl.col_pretrd_tgtsecloan_mngdraft.insert_many(list_dicts_secpool_analysis)
-
-        df_secpool_analysis = pd.DataFrame(list_dicts_secpool_analysis)
-        df_secpool_analysis.to_csv(self.gl.fpath_output_csv_tgtsecloan_mngdraft, index=False, encoding='ansi')
         print(f"{self.gl.str_today}_tgtsecloan_mngdraft Finished.")
 
     def get_and_send_xlsx_demand_of_secpool_from_outside_src(self):
@@ -348,5 +341,5 @@ class PreTrdMng:
 
 
 if __name__ == '__main__':
-    task = PreTrdMng('20201124', download_winddata_mark=0)
+    task = PreTrdMng(download_winddata_mark=0)
     task.run()

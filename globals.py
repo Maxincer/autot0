@@ -75,12 +75,14 @@ class Globals:
 
         # 外部券源(预约券池)： 目前为自定义格式： 为提供给我们的可锁券数量（日更，全量）。主要来自于外部询券
         self.fpath_input_xlsx_secpool_from_outside_src = (
-            f"data/input/marginable_secpools/ts_secpool_from_outside_source.xlsx"
+            f"data/input/pretrddata/marginable_secpools/ts_secpool_from_outside_source.xlsx"
         )
         self.fpath_input_xlsx_marginable_secpools_from_hait = (
-            f"data/input/marginable_secpools/{self.str_today}_marginable_secpools_from_hait.xlsx"
+            f"data/input/pretrddata/marginable_secpools/hait/每日券池-{self.str_today}.xlsx"
         )
 
+        self.dirpath_input_xlsx_marginable_secpools_from_hait = "data/input/pretrddata/marginable_secpools/hait"
+        self.dirpath_posttrddata_from_email = f'data/input/post_trddata/{self.str_last_trddate}'
         # 预约券申请文件，模板 -> plan text version
         self.fpath_output_xlsx_demand_of_secpool_from_outside_src = (
             f"data/output/mode_files/{self.str_today}_demand_of_secpool_from_outside_src.xlsx"
@@ -237,7 +239,7 @@ class Globals:
         ret = formataddr((Header(name, 'utf-8').encode(), addr))
         return ret
 
-    def get_attachment(self, msg, fpath_output_attachment):
+    def get_attachment(self, msg, dirpath_output_attachment):
         for part in msg.walk():
             # 获取附件名称类型
             file_name = part.get_filename()
@@ -252,11 +254,15 @@ class Globals:
                 # 下载附件
                 data = part.get_payload(decode=True)
                 # 在指定目录下创建文件，注意二进制文件需要用wb模式打开
+                fpath_output_attachment = os.path.join(dirpath_output_attachment, fn)
+                if not os.path.exists(dirpath_output_attachment):
+                    os.mkdir(dirpath_output_attachment)
                 with open(fpath_output_attachment, 'wb') as f:
                     f.write(data)  # 保存附件
-                    print(f"The attachment {fn} download finished.")
+                    print(f"The attachment {fn} downloaded to {dirpath_output_attachment}.")
 
-    def update_attachments_from_email(self, str_email_subject, fpath_output_attachment):
+    def update_attachments_from_email(self, str_email_subject, str_email_tgtdate, dirpath_output_attachment):
+        # todo 下载指定邮件中的所有附件到指定文件夹中，如果文件夹不存在，则新建文件夹
         # 从邮件中下载数据
         addr_pop3_server = 'pop.exmail.qq.com'
         server_pop3 = POP3_SSL(addr_pop3_server, 995)
@@ -264,15 +270,27 @@ class Globals:
         server_pop3.pass_(self.email_pwd)
         resp, mails, octets = server_pop3.list()
         index = len(mails)  # 若有30封邮件，第30封邮件为最新的邮件
-
         mark_tgtmail_exist = 0
         for i in range(index, 0, -1):  # 倒叙遍历邮件
             resp, lines, octets = server_pop3.retr(i)
             msg_content = b'\r\n'.join(lines).decode('utf-8')
             msg = Parser().parsestr(msg_content)
             subject = self.decode_str(msg.get('Subject')).strip()
-            if subject in [str_email_subject]:
-                self.get_attachment(msg, fpath_output_attachment)
+            str_date_in_msg = self.decode_str(msg.get('date')).strip()
+            list_str_date_in_msg_split = str_date_in_msg.split()
+            i_split_str_date = len(list_str_date_in_msg_split)
+            if i_split_str_date == 2:
+                dt_email_recvdate = datetime.strptime(list_str_date_in_msg_split[0], '%Y-%m-%d')
+            elif i_split_str_date == 6:
+                dt_email_recvdate = datetime.strptime(str_date_in_msg, '%a, %d %b %Y %H:%M:%S +0800')
+            elif i_split_str_date == 7:
+                dt_email_recvdate = datetime.strptime(str_date_in_msg, '%a, %d %b %Y %H:%M:%S +0800 (GMT+08:00)')
+            else:
+                raise ValueError(f'Unknown date format from email: {str_date_in_msg}')
+
+            str_email_recvdate = dt_email_recvdate.strftime('%Y%m%d')
+            if subject == str_email_subject and str_email_recvdate == str_email_tgtdate:
+                self.get_attachment(msg, dirpath_output_attachment)
                 mark_tgtmail_exist = 1
                 break
         if not mark_tgtmail_exist:
@@ -368,5 +386,6 @@ class Globals:
 
 
 if __name__ == '__main__':
-    task = Globals()
+    task = Globals(download_winddata_mark=0)
+
     print('Done')

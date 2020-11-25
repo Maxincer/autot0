@@ -73,6 +73,9 @@ from globals import Globals, STR_TODAY, w
 class PostTrdMng:
     def __init__(self, str_trddate=STR_TODAY, download_winddata_mark=0):
         self.gl = Globals(str_trddate, download_winddata_mark)
+        self.gl.update_attachments_from_email(
+            f'鸣石满天星7号清算后数据{self.gl.str_today}', f'{self.gl.str_today}', self.gl.dirpath_posttrddata_from_email
+        )
 
     def upload_posttrd_rawdata(self):
         """
