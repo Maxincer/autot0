@@ -71,8 +71,8 @@ from globals import Globals, STR_TODAY, w
 
 
 class PostTrdMng:
-    def __init__(self, str_trddate=STR_TODAY):
-        self.gl = Globals(str_trddate)
+    def __init__(self, str_trddate=STR_TODAY, download_winddata_mark=0):
+        self.gl = Globals(str_trddate, download_winddata_mark)
 
     def upload_posttrd_rawdata(self):
         """
@@ -734,11 +734,11 @@ class PostTrdMng:
             serial_number = dict_posttrd_rawdata_fee_from_secloan['流水号']
             loan_type = dict_posttrd_rawdata_fee_from_secloan['合约类型'].strip()
             if loan_type in ['融券']:
-                dict_shortqty_from_secloan = self.gl.col_posttrd_fmtdata_shortqty_from_secloan.find_one(
+                dict_shortqty_from_secloan = self.gl.col_posttrd_fmtdata_secloan_from_public_secpool.find_one(
                     {
                         'DataDate': self.gl.str_last_trddate,
                         'AcctIDByMXZ': self.gl.acctidbymxz,
-                        'SerialNumber': serial_number,
+                        'ContractID': serial_number,
                     }
                 )
                 secid = dict_shortqty_from_secloan['SecurityID']
@@ -1060,6 +1060,16 @@ class PostTrdMng:
             set_secids_from_trading.add(secid)
         i_secids_from_trading = len(set_secids_from_trading)
 
+        # 计算目标融券支数
+        i_secids_from_tgtsecloan = 0
+        iter_dicts_pretrd_tgtsecloan_mngdraft = self.gl.col_pretrd_tgtsecloan_mngdraft.find(
+            {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': self.gl.acctidbymxz}
+        )
+        for dict_pretrd_tgtsecloan_mngdraft in iter_dicts_pretrd_tgtsecloan_mngdraft:
+            tgtqty = dict_pretrd_tgtsecloan_mngdraft['TgtQty']
+            if tgtqty:
+                i_secids_from_tgtsecloan += 1
+
         # 计算融券额度中股票的支数
         iter_dicts_posttrd_fmtdata_ssquota_from_secloan = self.gl.col_posttrd_fmtdata_ssquota_from_secloan.find(
             {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': self.gl.acctidbymxz, 'CompositeSource': 'AutoT0'}
@@ -1089,7 +1099,12 @@ class PostTrdMng:
             short_exposure += short_exposure_delta
         net_exposure = long_exposure - short_exposure
         gross_exposure = long_exposure + short_exposure
-        pct_trdamt2gross_exposure = trdamt_autot0 / gross_exposure
+        pct_trdamt2gross_exposure = round(trdamt_autot0 / gross_exposure, 2)
+        pct_i = round(i_secids_from_trading / i_secids_from_ssquota_from_secloan, 2)
+        pct_i_secids_from_ssquota_from_secloan2i_secids_from_tgtsecloan = (
+                round(i_secids_from_ssquota_from_secloan / i_secids_from_tgtsecloan, 2)
+        )
+        pct_short_exposure2ssquota_mv = round(short_exposure / ssquota_mv, 2)
         dict_secloan_utility_analysis = {
             'DataDate': self.gl.str_last_trddate,
             'AcctIDByMXZ': self.gl.acctidbymxz,
@@ -1098,12 +1113,18 @@ class PostTrdMng:
             'TradingAmt': trdamt_autot0,
             'SecuritiesCountInTrading': i_secids_from_trading,
             'SecuritiesCountInSecLoanQuota': i_secids_from_ssquota_from_secloan,
+            'SecuritiesCountInTargetSecurityLoanPool': i_secids_from_tgtsecloan,
             'LongExposure': long_exposure,
             'ShortExposure': short_exposure,
             'NetExposure': net_exposure,
             'GrossExposure': gross_exposure,
             'SecLoanQuotaMarketValue': ssquota_mv,
             'PctOfTradingAmtByGrossExposure': pct_trdamt2gross_exposure,
+            'PctOfSecCountInTradingBySecCountInSecLoanQuota': pct_i,
+            'PctOfSecCountInSecLoanQuotaBySecCountInTgtSecLoan': (
+                pct_i_secids_from_ssquota_from_secloan2i_secids_from_tgtsecloan
+            ),
+            'PctOfShortExposureBySecLoanQuotaMarketValue': pct_short_exposure2ssquota_mv,
         }
         self.gl.col_posttrd_secloan_utility_analysis.delete_many(
             {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': self.gl.acctidbymxz, 'CompositeSource': 'AutoT0'}
@@ -1143,6 +1164,7 @@ class PostTrdMng:
         )
         df_output_sheet_fund_rpt = pd.DataFrame(iter_dicts_posttrd_fund_by_acctidbymxz)
         df_output_sheet_fund_rpt.sort_values(by=['DataDate'], inplace=True)
+        df_output_sheet_fund_rpt.sort_values(by=['DataDate'], inplace=True)
 
         # 输出security_loan_utility_analysis
         iter_dicts_posttrd_security_loan_utility_analysis = self.gl.col_posttrd_secloan_utility_analysis.find(
@@ -1169,6 +1191,6 @@ class PostTrdMng:
 
 
 if __name__ == '__main__':
-    task = PostTrdMng()
+    task = PostTrdMng(download_winddata_mark=0)
     task.run()
     print('Done')

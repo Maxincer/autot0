@@ -96,6 +96,7 @@ class Globals:
         # # database
         self.db_pretrddata = self.server_mongodb['pre_trade_data']
         self.col_pretrd_grp_tgtsecids_by_cps = self.db_pretrddata['group_target_secids_by_composite']
+        self.col_pretrd_tgtsecloan_mngdraft = self.db_pretrddata['tgtsecloan_mngdraft']
 
         # post-trade
         # # dict_map
@@ -192,7 +193,9 @@ class Globals:
             df_wssdata['MarginOrNotMark'] = df_wssdata['MarginOrNot'].map({'是': 1, '否': 0})
             df_wssdata['DataDate'] = self.str_today
             df_wssdata = df_wssdata.rename(columns={'index': 'WindCode'})
-            df_fmtted_wssdata = df_wssdata.loc[:, ['DataDate', 'WindCode', 'Symbol', 'Close', 'PreClose', 'MarginOrNotMark']].copy()
+            df_fmtted_wssdata = (
+                df_wssdata.loc[:, ['DataDate', 'WindCode', 'Symbol', 'Close', 'PreClose', 'MarginOrNotMark']].copy()
+            )
             list_dicts_fmtted_wssdata = df_fmtted_wssdata.to_dict('records')
             self.col_fmtted_wssdata.delete_many({'DataDate': self.str_today})
             self.col_fmtted_wssdata.insert_many(list_dicts_fmtted_wssdata)
@@ -367,4 +370,3 @@ class Globals:
 if __name__ == '__main__':
     task = Globals()
     print('Done')
-    # a = task.get_list_str_trddate('20201019', '20201023')

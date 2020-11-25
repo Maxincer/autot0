@@ -49,8 +49,8 @@ from globals import Globals, STR_TODAY, w
 
 
 class PreTrdMng:
-    def __init__(self, str_trddate=STR_TODAY):
-        self.gl = Globals(str_trddate)
+    def __init__(self, str_trddate=STR_TODAY, download_winddata_mark=0):
+        self.gl = Globals(str_trddate, download_winddata_mark)
         self.gl.update_attachments_from_email(
             '每日券池信息', self.gl.fpath_input_xlsx_marginable_secpools_from_hait
         )
@@ -172,16 +172,9 @@ class PreTrdMng:
             tgtsecid = tgtwindcode[:6]
             if tgtsecid in set_secids_in_grp_tgtsecids_by_cps_not_autot0:
                 continue
-            margin_or_not = self.dict_windcode2wssdata['marginornot'][tgtwindcode]
-            secname = self.dict_windcode2wssdata['sec_name'][tgtwindcode]
-            pre_close = self.dict_windcode2wssdata['pre_close'][tgtwindcode]
-            if margin_or_not in ['是']:
-                margin_or_not_mark = 1
-            elif margin_or_not in ['否']:
-                margin_or_not_mark = 0
-            else:
-                raise ValueError('Unknown MarginOrNot Value.')
-
+            margin_or_not_mark = self.gl.dict_fmtted_wssdata['MarginOrNotMark'][tgtwindcode]
+            symbol = self.gl.dict_fmtted_wssdata['Symbol'][tgtwindcode]
+            pre_close = self.gl.dict_fmtted_wssdata['PreClose'][tgtwindcode]
             private_secpool_ready_avlqty = 0
             for dict_private_secpool_ready in self.list_dicts_private_secpool_ready:
                 secid_in_private_secpool_ready = dict_private_secpool_ready['证券代码']
@@ -205,9 +198,15 @@ class PreTrdMng:
             # 每只股票标杆10万元。单只股票上限30万。（800万券池， 80支股票 * 10万）
             # 借券单位最小为200股（考虑到科创板）
             # 近似后取ceiling
-            tgtamt = 100000  #
+            tgtamt = 150000
             tgtqty = floor((tgtamt / pre_close) / 200) * 200
-            if pre_close <= 5:
+            # todo 由于现有交易系统无法进行挂单成交，故对盘口价差大的股票交易成本很大，导致实际收益与策略收益偏离。暂时不建仓。
+            if pre_close <= 5 or pre_close > 300:
+                tgtqty = 0
+            # todo 由于现有交易系统无法交易200股以下的科创板股票，故在规模小的情况下，剔除科创板
+            if tgtsecid[:3] in ['688']:
+                tgtqty = 0
+            if not margin_or_not_mark:
                 tgtqty = 0
 
             qty2lock = min(tgtqty - quota_last_trddate, private_secpool_ready_avlqty)
@@ -226,9 +225,10 @@ class PreTrdMng:
 
             dict_secpool_analysis = {
                 'DataDate': self.gl.str_today,
+                'AcctIDByMXZ': self.gl.acctidbymxz,
                 'SecurityID': tgtsecid,
                 'WindCode': tgtwindcode,
-                'SecName': secname,
+                'SecName': symbol,
                 'TgtQty': tgtqty,
                 'MarginOrNotMark': margin_or_not_mark,
                 'AvlQtyInPrivatePool': private_secpool_ready_avlqty,
@@ -259,6 +259,7 @@ class PreTrdMng:
                 qty2lock = min(tgtqty - quota_last_trddate, private_secpool_ready_avlqty)
                 dict_secpool_analysis = {
                     'DataDate': self.gl.str_today,
+                    'AcctIDByMXZ': self.gl.acctidbymxz,
                     'SecurityID': secid_ssquota_last_trddate,
                     'WindCode': windcode_ssquota_last_trddate,
                     'SecName': self.dict_windcode2wssdata['sec_name'][windcode_ssquota_last_trddate],
@@ -271,6 +272,10 @@ class PreTrdMng:
                     'QtyToBorrowFromOutsideSource': 0,
                 }
                 list_dicts_secpool_analysis.append(dict_secpool_analysis)
+        self.gl.col_pretrd_tgtsecloan_mngdraft.delete_many(
+            {'DataDate': self.gl.str_today, 'AcctIDByMXZ': self.gl.acctidbymxz}
+        )
+        self.gl.col_pretrd_tgtsecloan_mngdraft.insert_many(list_dicts_secpool_analysis)
 
         df_secpool_analysis = pd.DataFrame(list_dicts_secpool_analysis)
         df_secpool_analysis.to_csv(self.gl.fpath_output_csv_tgtsecloan_mngdraft, index=False, encoding='ansi')
@@ -326,13 +331,13 @@ class PreTrdMng:
         )
         print('券源需求已生成.')
 
-        # 邮件发送
-        self.gl.send_file_via_email(
-            self.gl.email_to_addr_haitsecpool_from_outside_src,
-            self.gl.email_subject_haitsecpool_from_outside_src,
-            self.gl.fpath_output_xlsx_demand_of_secpool_from_outside_src,
-            '需要预约的券源需求.xlsx'
-        )
+        # # 邮件发送
+        # self.gl.send_file_via_email(
+        #     self.gl.email_to_addr_haitsecpool_from_outside_src,
+        #     self.gl.email_subject_haitsecpool_from_outside_src,
+        #     self.gl.fpath_output_xlsx_demand_of_secpool_from_outside_src,
+        #     '需要预约的券源需求.xlsx'
+        # )
 
     def run(self):
         # 先运行T日的post_trddata_mng, 将T-1的清算数据上传
@@ -343,5 +348,5 @@ class PreTrdMng:
 
 
 if __name__ == '__main__':
-    task = PreTrdMng()
+    task = PreTrdMng('20201124', download_winddata_mark=0)
     task.run()
