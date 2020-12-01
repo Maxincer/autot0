@@ -111,27 +111,9 @@ class PreTrdMng:
             for _ in self.list_dicts_posttrd_fmtdata_ssquota_from_secloan_last_trddate
         ]
 
-        # 证券简称与两融标志数据, 从Wind下载
-        list_windcodes_to_query = list(set(self.list_tgtwindcodes) | set(self.list_windcodes_ssquota_last_trddate))
-        list_windcodes_to_query.sort()
-
-        if os.path.exists(self.gl.fpath_json_dict_windcode2wssdata):
-            with open(self.gl.fpath_json_dict_windcode2wssdata) as f:
-                self.dict_windcode2wssdata = json.load(f)
-        else:
-            str_list_windcodes_to_query = ','.join(list_windcodes_to_query)
-            w.start()
-
-            wss_winddata = w.wss(
-                str_list_windcodes_to_query, 'sec_name,marginornot,pre_close', f'tradeDate={self.gl.str_today}'
-            )
-            self.dict_windcode2wssdata = {
-                'sec_name': dict(zip(wss_winddata.Codes, wss_winddata.Data[0])),
-                'marginornot': dict(zip(wss_winddata.Codes, wss_winddata.Data[1])),
-                'pre_close': dict(zip(wss_winddata.Codes, wss_winddata.Data[2]))
-            }
-            with open(self.gl.fpath_json_dict_windcode2wssdata, 'w') as f:
-                json.dump(self.dict_windcode2wssdata, f)
+        iter_dict_fmtted_wssdata = self.gl.col_fmtted_wssdata.find({'DataDate': self.gl.str_today}, {'_id': 0})
+        df_fmtted_wssdata_today = pd.DataFrame(iter_dict_fmtted_wssdata)
+        self.dict_fmtted_wssdata_of_today = df_fmtted_wssdata_today.set_index('WindCode').to_dict()
 
     def upload_pretrd_rawdata(self):
         # grp_tgtsecids_by_cps
@@ -192,7 +174,7 @@ class PreTrdMng:
             # 每只股票标杆10万元。单只股票上限30万。（800万券池， 80支股票 * 10万）
             # 借券单位最小为200股（考虑到科创板）
             # 近似后取ceiling
-            tgtamt = 150000
+            tgtamt = 200000
             tgtqty = floor((tgtamt / pre_close) / 200) * 200
             # todo 由于现有交易系统无法进行挂单成交，故对盘口价差大的股票交易成本很大，导致实际收益与策略收益偏离。暂时不建仓。
             if pre_close <= 5 or pre_close > 300:
@@ -256,7 +238,7 @@ class PreTrdMng:
                     'AcctIDByMXZ': self.gl.acctidbymxz,
                     'SecurityID': secid_ssquota_last_trddate,
                     'WindCode': windcode_ssquota_last_trddate,
-                    'SecName': self.dict_windcode2wssdata['sec_name'][windcode_ssquota_last_trddate],
+                    'SecName': self.dict_fmtted_wssdata_of_today['Symbol'][windcode_ssquota_last_trddate],
                     'TgtQty': tgtqty,
                     'MarginOrNotMark': 1,
                     'AvlQtyInPrivatePool': private_secpool_ready_avlqty,
@@ -324,19 +306,19 @@ class PreTrdMng:
         )
         print('券源需求已生成.')
 
-        # # 邮件发送
-        # self.gl.send_file_via_email(
-        #     self.gl.email_to_addr_haitsecpool_from_outside_src,
-        #     self.gl.email_subject_haitsecpool_from_outside_src,
-        #     self.gl.fpath_output_xlsx_demand_of_secpool_from_outside_src,
-        #     '需要预约的券源需求.xlsx'
-        # )
+        # 邮件发送
+        self.gl.send_file_via_email(
+            self.gl.email_to_addr_haitsecpool_from_outside_src,
+            self.gl.email_subject_haitsecpool_from_outside_src,
+            self.gl.fpath_output_xlsx_demand_of_secpool_from_outside_src,
+            '需要预约的券源需求.xlsx'
+        )
 
     def run(self):
         # 先运行T日的post_trddata_mng, 将T-1的清算数据上传
         self.upload_pretrd_rawdata()
         self.get_secloanmng_draft()
-        # self.get_and_send_xlsx_demand_of_secpool_from_outside_src()
+        self.get_and_send_xlsx_demand_of_secpool_from_outside_src()
         print('PreTrdMng Finished.')
 
 

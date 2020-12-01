@@ -27,7 +27,7 @@ STR_TODAY = datetime.today().strftime('%Y%m%d')
 
 
 class Globals:
-    def __init__(self, str_today=STR_TODAY, download_winddata_mark=1):
+    def __init__(self, str_today=STR_TODAY, download_winddata_mark=0):
         # 日期部分
         self.str_today = str_today  # 该日必为交易日
         self.server_mongodb = MongoClient('mongodb://localhost:27017/')
@@ -99,6 +99,21 @@ class Globals:
         self.db_pretrddata = self.server_mongodb['pre_trade_data']
         self.col_pretrd_grp_tgtsecids_by_cps = self.db_pretrddata['group_target_secids_by_composite']
         self.col_pretrd_tgtsecloan_mngdraft = self.db_pretrddata['tgtsecloan_mngdraft']
+
+        # trading
+        # # filepath
+        # todo rename the rawdata file
+        self.fpath_input_csv_margin_account_fund = 'Z:/hait/hait_xtpb/margin_account_fund.csv'
+        self.fpath_input_csv_margin_account_holding = 'Z:/hait/hait_xtpb/margin_account_position.csv'
+        self.fpath_input_csv_margin_account_entrust = 'Z:/hait/hait_xtpb/margin_account_entrust.csv'
+        self.fpath_input_csv_margin_account_secloan = 'Z:/hait/hait_xtpb/margin_account_security_loan_contract.csv'
+
+        # # database
+        self.db_trading_data = self.server_mongodb['trading_data']
+        self.col_trading_rawdata_fund = self.db_trading_data['trading_rawdata_fund']
+        self.col_trading_rawdata_holding = self.db_trading_data['trading_rawdata_holding']
+        self.col_trading_rawdata_entrust = self.db_trading_data['trading_rawdata_entrust']
+        self.col_trading_rawdata_secloan = self.db_trading_data['trading_rawdata_secloan']
 
         # post-trade
         # # dict_map
@@ -284,7 +299,11 @@ class Globals:
             elif i_split_str_date == 6:
                 dt_email_recvdate = datetime.strptime(str_date_in_msg, '%a, %d %b %Y %H:%M:%S +0800')
             elif i_split_str_date == 7:
-                dt_email_recvdate = datetime.strptime(str_date_in_msg, '%a, %d %b %Y %H:%M:%S +0800 (GMT+08:00)')
+                try:
+                    dt_email_recvdate = datetime.strptime(str_date_in_msg, '%a, %d %b %Y %H:%M:%S +0800 (GMT+08:00)')
+                except ValueError:
+                    dt_email_recvdate = datetime.strptime(str_date_in_msg, '%a, %d %b %Y %H:%M:%S +0800 (CST)')
+
             else:
                 raise ValueError(f'Unknown date format from email: {str_date_in_msg}')
 
@@ -386,6 +405,7 @@ class Globals:
 
 
 if __name__ == '__main__':
-    task = Globals(download_winddata_mark=0)
+    # 盘后运行, 更新数据库
+    task = Globals(download_winddata_mark=1)
 
     print('Done')

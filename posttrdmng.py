@@ -65,14 +65,15 @@ Naming Convention:
     2. 目前人工区分公用合约与私用合约。替代方案：可在T+1日收到的利息结算单中根据流水号，反推T日的合约构成。
     3. position 中 添加SecurityType 和 SecurityIDSource 字段
 """
+import matplotlib.pyplot as plt
 import pandas as pd
 
-from globals import Globals, STR_TODAY, w
+from globals import Globals, STR_TODAY
 
 
 class PostTrdMng:
     def __init__(self, str_trddate=STR_TODAY, download_winddata_mark=0):
-        self.gl = Globals(str_trddate, download_winddata_mark)
+        self.gl = Globals(str_trddate)
         self.gl.update_attachments_from_email(
             f'鸣石满天星7号清算后数据{self.gl.str_today}', f'{self.gl.str_today}', self.gl.dirpath_posttrddata_from_email
         )
@@ -733,6 +734,7 @@ class PostTrdMng:
         )
         list_dicts_posttrd_fmtdata_fee_from_secloan = []
         i_contract_not_found = 0
+        i_contract_fee_charged_equal_to_0 = 0
         for dict_posttrd_rawdata_fee_from_secloan in list_dicts_posttrd_rawdata_fee_from_secloan:
             serial_number = dict_posttrd_rawdata_fee_from_secloan['流水号']
             loan_type = dict_posttrd_rawdata_fee_from_secloan['合约类型'].strip()
@@ -774,11 +776,14 @@ class PostTrdMng:
                     fee_from_secloan_not_found = (
                         dict_posttrd_rawdata_fee_from_secloan['利息'] + dict_posttrd_rawdata_fee_from_secloan['占用额度费']
                     )
+
                     if fee_from_secloan_not_found:
                         print(
                             f'利息表中的私用合约号{serial_number}不在私用券源合约中，'
                             f'发生费用{fee_from_secloan_not_found}元无法归集。'
                         )
+                    else:
+                        i_contract_fee_charged_equal_to_0 += 1
                     continue
                 else:
                     if dict_posttrd_fmtdata_secloan_from_private_secpool is None:
@@ -847,7 +852,8 @@ class PostTrdMng:
                 'AccruedFeeFromSecLoan': accrued_fee_from_secloan
             }
             list_dicts_posttrd_fmtdata_fee_from_secloan.append(dict_posttrd_fmtdata_fee_from_secloan)
-        print(f'共发现{i_contract_not_found}个利息表条目不在私用券源合约中')
+        print(f'共发现{i_contract_not_found}个利息表条目不在私用券源合约中,'
+              f'{i_contract_fee_charged_equal_to_0}条利息及额度占用费为0')
         self.gl.col_posttrd_fmtdata_fee_from_secloan.delete_many(
             {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': self.gl.acctidbymxz}
         )
@@ -871,7 +877,7 @@ class PostTrdMng:
         Output:
             1. col_posttrd_pnl
         """
-        # 1. 取需要查询股票行情的并集
+        # 1. 取需清算数据中所有股票的集合
         set_secids_in_jgd = set()
         for _ in self.gl.col_posttrd_fmtdata_jgd.find({'DataDate': self.gl.str_last_trddate}):
             set_secids_in_jgd.add(_['SecurityID'])
@@ -894,18 +900,12 @@ class PostTrdMng:
                 | set_secids_in_jgd
                 | set_secids_in_fee_from_secloan
         )
-        list_windcodes_to_query = [
-            self.gl.get_secid2windcode(_) for _ in set_secids_in_position_and_jgd_and_fee_from_secloan
-        ]
-        list_windcodes_to_query.sort()
 
-        str_windcodes_to_query = ','.join(list_windcodes_to_query)
-        w.start()
-        wss_close_preclose = w.wss(
-            str_windcodes_to_query, 'close, pre_close', f'tradeDate={self.gl.str_last_trddate}'
-        )
-        dict_windcodes2close = dict(zip(wss_close_preclose.Codes, wss_close_preclose.Data[0]))
-        dict_windcodes2preclose = dict(zip(wss_close_preclose.Codes, wss_close_preclose.Data[1]))
+        iter_dict_fmtted_wssdata = self.gl.col_fmtted_wssdata.find({'DataDate': self.gl.str_last_trddate}, {'_id': 0})
+        df_fmtted_wssdata = pd.DataFrame(iter_dict_fmtted_wssdata)
+        dict_fmtted_wssdata = df_fmtted_wssdata.set_index('WindCode').to_dict()
+        dict_windcodes2close = dict_fmtted_wssdata['Close']
+        dict_windcodes2preclose = dict_fmtted_wssdata['PreClose']
 
         # 2. 计算: 按股票归集  # todo 添加时间参数
         # todo 重要假设： 1. 目前由于按照股票进行策略区分，不涉及股数，所以出于成本考虑，直接从pnl层次进行分组;
@@ -1185,12 +1185,23 @@ class PostTrdMng:
             writer.save()
         print('Output posttrd_analysis.xlsx Finished')
 
+    def get_longamt_histogram(self):
+        iter_position = self.gl.col_posttrd_position.find(
+            {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': self.gl.acctidbymxz, 'CompositeSource': 'AutoT0'},
+            {'_id': 0}
+        )
+        df_position = pd.DataFrame(iter_position)
+        s_longamt = df_position['LongAmt']
+        s_longamt.plot(kind='hist')
+        plt.show()
+
     def run(self):
         self.upload_posttrd_rawdata()
         self.upload_posttrd_fmtdata()
         self.get_and_upload_col_post_trddata_pnl()
         self.get_col_secloan_utility_analysis()
         self.output_xlsx_posttrd_analysis()
+        self.get_longamt_histogram()
 
 
 if __name__ == '__main__':
