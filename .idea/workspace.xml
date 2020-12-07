@@ -22,137 +22,59 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="94617ebe-9a89-4ddb-bd66-872b475c77a4" name="Default Changelist" comment="email auto dld">
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201127/两融_资产导出_20201127.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201127/私用券源合约20201130.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201127/融券明细_未了结仓单_20201127.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201127/鸣石满天星7号未结利息20201130.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201127/鸣石满天星7号每日交割单-20201130.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201130/两融_资产导出_20201130.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201130/私用券源合约20201201.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201130/融券公用合约_20201130.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201130/融券明细_未了结仓单_20201130.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201130/鸣石满天星7号未结利息20201201.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201130/鸣石满天星7号每日交割单-20201201.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201201/融券公用合约_20201130.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20201130.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20201201.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/tgt_secpools/20201201_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201019/holding_pt.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201019/holding_xy.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201019/trade_pt.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201019/trade_xy.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201020/alphaT0_holding.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201020/alphaT0_short_selling_quota.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201020/holding_pt.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201020/holding_xy.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201020/trade_pt.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201020/trade_xy.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201021/alphaT0_holding.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201021/holding_pt.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201021/holding_xy.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201021/trade_pt.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201021/trade_xy.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201022/holding_pt.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201022/holding_xy.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201022/trade_pt.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201022/trade_xy.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201023/holding_pt.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201023/holding_xy.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201023/trade_pt.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201023/trade_xy.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201026/holding_pt.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201026/holding_xy.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201026/trade_pt.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201026/trade_xy.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201027/holding_pt.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201027/holding_xy.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201027/trade_pt.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201027/trade_xy.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201028/holding_pt.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201028/holding_xy.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201028/trade_pt.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201028/trade_xy.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201029/holding_pt.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201029/holding_xy.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201029/trade_pt.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201029/trade_xy.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201030/holding_pt.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201030/holding_xy.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201030/trade_pt.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201030/trade_xy.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201102/holding_pt.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201102/holding_xy.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201102/trade_pt.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201102/trade_xy.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201103/holding_pt.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201103/holding_xy.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201103/trade_pt.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201103/trade_xy.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201104/holding_pt.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201104/holding_xy.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201104/trade_pt.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201104/trade_xy.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201105/holding_pt.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201105/holding_xy.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201105/trade_pt.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201105/trade_xy.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201106/holding_pt.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201106/holding_xy.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201106/trade_pt.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201106/trade_xy.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201109/holding_pt.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201109/holding_xy.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201109/trade_pt.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201109/trade_xy.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201110/holding_pt.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201110/holding_xy.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201110/trade_pt.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201110/trade_xy.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201111/holding_pt.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201111/holding_xy.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201111/trade_pt.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201111/trade_xy.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201112/holding_pt.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201112/holding_xy.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201112/trade_pt.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201112/trade_xy.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201113/holding_pt.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201113/holding_xy.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201113/trade_pt.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/20201113/trade_xy.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/估值表/SJR847_鸣石满天星7号私募证券投资基金_2020-10-19估值表.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/估值表/SJR847_鸣石满天星7号私募证券投资基金_2020-10-20估值表.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/估值表/SJR847_鸣石满天星7号私募证券投资基金_2020-10-21估值表.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/估值表/SJR847_鸣石满天星7号私募证券投资基金_2020-10-22估值表.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/估值表/SJR847_鸣石满天星7号私募证券投资基金_2020-10-23估值表.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/估值表/SJR847_鸣石满天星7号私募证券投资基金_2020-10-26估值表.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/估值表/SJR847_鸣石满天星7号私募证券投资基金_2020-10-27估值表.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/估值表/SJR847_鸣石满天星7号私募证券投资基金_2020-10-28估值表.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/估值表/SJR847_鸣石满天星7号私募证券投资基金_2020-10-29估值表.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/估值表/SJR847_鸣石满天星7号私募证券投资基金_2020-11-02估值表.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/估值表/SJR847_鸣石满天星7号私募证券投资基金_2020-11-03估值表.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/估值表/SJR847_鸣石满天星7号私募证券投资基金_2020-11-04估值表.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/估值表/SJR847_鸣石满天星7号私募证券投资基金_2020-11-05估值表.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/估值表/SJR847_鸣石满天星7号私募证券投资基金_2020-11-06估值表.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/估值表/SJR847_鸣石满天星7号私募证券投资基金_2020-11-09估值表.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/估值表/SJR847_鸣石满天星7号私募证券投资基金_2020-11-10估值表.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/估值表/SJR847_鸣石满天星7号私募证券投资基金_2020-11-11估值表.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/memo/初期数据备份/估值表/SJR847_鸣石满天星7号私募证券投资基金_2020-11-12估值表.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201127_autot0_holding.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201130_autot0_holding.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/mode_files/20201130_demand_of_secpool_from_outside_src.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/mode_files/20201201_demand_of_secpool_from_outside_src.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/tgtsecloan_mngdraft/20201130_tgtsecloan_mngdraft.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/tgtsecloan_mngdraft/20201201_tgtsecloan_mngdraft.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/temp/trading_monitor_temporary_data.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/trading_mng.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+    <list default="true" id="94617ebe-9a89-4ddb-bd66-872b475c77a4" name="Default Changelist" comment="rawdata auto update">
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201201/私用券源合约20201202.xls" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201201/鸣石满天星7号未结利息20201202.xls" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201201/鸣石满天星7号每日交割单-20201202.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201202/两融_资产导出_20201202.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201202/私用券源合约20201203.xls" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201202/融券明细_未了结仓单_20201202.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201202/鸣石满天星7号未结利息20201203.xls" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201202/鸣石满天星7号每日交割单-20201203.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201203/两融_资产导出_20201203.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201203/私用券源合约20201204.xls" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201203/融券公用合约_20201203.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201203/融券明细_未了结仓单_20201203.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201203/鸣石满天星7号未结利息20201204.xls" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201203/鸣石满天星7号每日交割单-20201204.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201204/两融_资产导出_20201204.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201204/私用券源合约20201207.xls" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201204/融券公用合约_20201204.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201204/融券明细_未了结仓单_20201204.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201204/鸣石满天星7号未结利息20201207.xls" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201204/鸣石满天星7号每日交割单-20201207.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201207/两融_资产导出_20201207.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201207/融券公用合约_20201207.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201207/融券明细_未了结仓单_20201207.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/两融_资产导出_20201202.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/20201126_marginable_secpools_from_hait.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20201202.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20201203.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20201204.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20201207.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/tgt_secpools/20201203_target_secids.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/tgt_secpools/20201204_target_secids.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/tgt_secpools/20201207_target_secids.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201202_autot0_holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201203_autot0_holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201204_autot0_holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201207_autot0_holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/mode_files/20201202_demand_of_secpool_from_outside_src.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/mode_files/20201203_demand_of_secpool_from_outside_src.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/mode_files/20201204_demand_of_secpool_from_outside_src.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/mode_files/20201207_demand_of_secpool_from_outside_src.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/tgtsecloan_mngdraft/20201202_tgtsecloan_mngdraft.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/tgtsecloan_mngdraft/20201203_tgtsecloan_mngdraft.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/tgtsecloan_mngdraft/20201204_tgtsecloan_mngdraft.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/tgtsecloan_mngdraft/20201207_tgtsecloan_mngdraft.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/input/post_trddata/20201201/融券公用合约_20201130.xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201130_autot0_holding.csv" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/globals.py" beforeDir="false" afterPath="$PROJECT_DIR$/globals.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/posttrdmng.py" beforeDir="false" afterPath="$PROJECT_DIR$/posttrdmng.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pretrdmng.py" beforeDir="false" afterPath="$PROJECT_DIR$/pretrdmng.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/temp.py" beforeDir="false" afterPath="$PROJECT_DIR$/temp.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scheduler.py" beforeDir="false" afterPath="$PROJECT_DIR$/scheduler.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/trading_mng.py" beforeDir="false" afterPath="$PROJECT_DIR$/trading_mng.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -164,6 +86,17 @@
       <list>
         <option value="Python Script" />
       </list>
+    </option>
+  </component>
+  <component name="FlaskConsoleOptions" custom-start-script="import sys&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo&#10;locals().update(ScriptInfo(create_app=None).load_app().make_shell_context())&#10;print(&quot;Python %s on %s\nApp: %s [%s]\nInstance: %s&quot; % (sys.version, sys.platform, app.import_name, app.env, app.instance_path))">
+    <envs>
+      <env key="FLASK_APP" value="app" />
+    </envs>
+    <option name="myCustomStartScript" value="import sys&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo&#10;locals().update(ScriptInfo(create_app=None).load_app().make_shell_context())&#10;print(&quot;Python %s on %s\nApp: %s [%s]\nInstance: %s&quot; % (sys.version, sys.platform, app.import_name, app.env, app.instance_path))" />
+    <option name="myEnvs">
+      <map>
+        <entry key="FLASK_APP" value="app" />
+      </map>
     </option>
   </component>
   <component name="Git.Settings">
@@ -283,7 +216,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="temp" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="scheduler" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="autot0" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -296,9 +229,9 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/temp.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/scheduler.py" />
       <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="SHOW_COMMAND_LINE" value="true" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
       <option name="REDIRECT_INPUT" value="false" />
@@ -333,7 +266,7 @@
         <item itemvalue="Python.globals" />
         <item itemvalue="Python.posttrdmng" />
         <item itemvalue="Python.pretrdmng (1)" />
-        <item itemvalue="Python.temp" />
+        <item itemvalue="Python.scheduler" />
       </list>
     </recent_temporary>
   </component>
@@ -359,7 +292,14 @@
       <workItem from="1606440089267" duration="7454000" />
       <workItem from="1606697538535" duration="19144000" />
       <workItem from="1606732211389" duration="1063000" />
-      <workItem from="1606749784800" duration="28916000" />
+      <workItem from="1606749784800" duration="29674000" />
+      <workItem from="1606870275551" duration="25345000" />
+      <workItem from="1606959933601" duration="55000" />
+      <workItem from="1606960240987" duration="343000" />
+      <workItem from="1606961056179" duration="140000" />
+      <workItem from="1606961697041" duration="14558000" />
+      <workItem from="1606982394961" duration="42547000" />
+      <workItem from="1607329765773" duration="12442000" />
     </task>
     <task id="LOCAL-00001" summary="initialize">
       <created>1604806214551</created>
@@ -417,7 +357,14 @@
       <option name="project" value="LOCAL" />
       <updated>1606301421581</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="rawdata auto update">
+      <created>1606821887696</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1606821887696</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -445,129 +392,17 @@
     <MESSAGE value="finish two analysis" />
     <MESSAGE value="update format of utility report" />
     <MESSAGE value="email auto dld" />
-    <option name="LAST_COMMIT_MESSAGE" value="email auto dld" />
-  </component>
-  <component name="WindowStateProjectService">
-    <state x="-999" y="779" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1606787862113">
-      <screen x="-1080" y="0" width="1080" height="1890" />
-    </state>
-    <state x="-999" y="779" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1080.1890/-1080.0.1080.1890@-1080.0.1080.1890" timestamp="1606787862113" />
-    <state width="1078" height="440" key="DebuggerActiveHint" timestamp="1606811214159">
-      <screen x="-1080" y="0" width="1080" height="1890" />
-    </state>
-    <state width="1078" height="440" key="DebuggerActiveHint/0.0.1080.1890/-1080.0.1080.1890@-1080.0.1080.1890" timestamp="1606811214159" />
-    <state width="1078" height="440" key="DebuggerActiveHint/0.0.1080.1890/-1080.0.1080.1890@0.0.1080.1890" timestamp="1606732317142" />
-    <state x="-760" y="686" key="FileChooserDialogImpl" timestamp="1605263301586">
-      <screen x="-1080" y="0" width="1080" height="1890" />
-    </state>
-    <state x="-760" y="686" key="FileChooserDialogImpl/0.0.1080.1890/-1080.0.1080.1890@-1080.0.1080.1890" timestamp="1605263301586" />
-    <state x="-668" y="842" key="Github.ShareDialog" timestamp="1604806238362">
-      <screen x="-1080" y="0" width="1080" height="1890" />
-    </state>
-    <state x="-668" y="842" key="Github.ShareDialog/0.0.1080.1890/-1080.0.1080.1890@-1080.0.1080.1890" timestamp="1604806238362" />
-    <state width="1037" height="585" key="GridCell.Tab.0.bottom" timestamp="1606821678141">
-      <screen x="-1080" y="0" width="1080" height="1890" />
-    </state>
-    <state width="1037" height="585" key="GridCell.Tab.0.bottom/0.0.1080.1890/-1080.0.1080.1890@-1080.0.1080.1890" timestamp="1606821678141" />
-    <state width="1037" height="582" key="GridCell.Tab.0.bottom/0.0.1080.1890/-1080.0.1080.1890@0.0.1080.1890" timestamp="1606750114552" />
-    <state width="1037" height="585" key="GridCell.Tab.0.center" timestamp="1606821678141">
-      <screen x="-1080" y="0" width="1080" height="1890" />
-    </state>
-    <state width="1037" height="585" key="GridCell.Tab.0.center/0.0.1080.1890/-1080.0.1080.1890@-1080.0.1080.1890" timestamp="1606821678141" />
-    <state width="1037" height="582" key="GridCell.Tab.0.center/0.0.1080.1890/-1080.0.1080.1890@0.0.1080.1890" timestamp="1606750114552" />
-    <state width="1037" height="585" key="GridCell.Tab.0.left" timestamp="1606821678140">
-      <screen x="-1080" y="0" width="1080" height="1890" />
-    </state>
-    <state width="1037" height="585" key="GridCell.Tab.0.left/0.0.1080.1890/-1080.0.1080.1890@-1080.0.1080.1890" timestamp="1606821678140" />
-    <state width="1037" height="582" key="GridCell.Tab.0.left/0.0.1080.1890/-1080.0.1080.1890@0.0.1080.1890" timestamp="1606750114552" />
-    <state width="1037" height="585" key="GridCell.Tab.0.right" timestamp="1606821678141">
-      <screen x="-1080" y="0" width="1080" height="1890" />
-    </state>
-    <state width="1037" height="585" key="GridCell.Tab.0.right/0.0.1080.1890/-1080.0.1080.1890@-1080.0.1080.1890" timestamp="1606821678141" />
-    <state width="1037" height="582" key="GridCell.Tab.0.right/0.0.1080.1890/-1080.0.1080.1890@0.0.1080.1890" timestamp="1606750114552" />
-    <state width="1037" height="585" key="GridCell.Tab.1.bottom" timestamp="1606821677988">
-      <screen x="-1080" y="0" width="1080" height="1890" />
-    </state>
-    <state width="1037" height="585" key="GridCell.Tab.1.bottom/0.0.1080.1890/-1080.0.1080.1890@-1080.0.1080.1890" timestamp="1606821677988" />
-    <state width="1037" height="582" key="GridCell.Tab.1.bottom/0.0.1080.1890/-1080.0.1080.1890@0.0.1080.1890" timestamp="1606750114387" />
-    <state width="1037" height="585" key="GridCell.Tab.1.center" timestamp="1606821677988">
-      <screen x="-1080" y="0" width="1080" height="1890" />
-    </state>
-    <state width="1037" height="585" key="GridCell.Tab.1.center/0.0.1080.1890/-1080.0.1080.1890@-1080.0.1080.1890" timestamp="1606821677988" />
-    <state width="1037" height="582" key="GridCell.Tab.1.center/0.0.1080.1890/-1080.0.1080.1890@0.0.1080.1890" timestamp="1606750114387" />
-    <state width="1037" height="585" key="GridCell.Tab.1.left" timestamp="1606821677987">
-      <screen x="-1080" y="0" width="1080" height="1890" />
-    </state>
-    <state width="1037" height="585" key="GridCell.Tab.1.left/0.0.1080.1890/-1080.0.1080.1890@-1080.0.1080.1890" timestamp="1606821677987" />
-    <state width="1037" height="582" key="GridCell.Tab.1.left/0.0.1080.1890/-1080.0.1080.1890@0.0.1080.1890" timestamp="1606750114387" />
-    <state width="1037" height="585" key="GridCell.Tab.1.right" timestamp="1606821677988">
-      <screen x="-1080" y="0" width="1080" height="1890" />
-    </state>
-    <state width="1037" height="585" key="GridCell.Tab.1.right/0.0.1080.1890/-1080.0.1080.1890@-1080.0.1080.1890" timestamp="1606821677988" />
-    <state width="1037" height="582" key="GridCell.Tab.1.right/0.0.1080.1890/-1080.0.1080.1890@0.0.1080.1890" timestamp="1606750114387" />
-    <state width="220" height="477" key="HiddenNamespacesPopup" timestamp="1606730766730">
-      <screen x="-1080" y="0" width="1080" height="1890" />
-    </state>
-    <state width="220" height="477" key="HiddenNamespacesPopup/0.0.1080.1890/-1080.0.1080.1890@-1080.0.1080.1890" timestamp="1606730766730" />
-    <state x="-1039" y="589" key="SettingsEditor" timestamp="1604806343111">
-      <screen x="-1080" y="0" width="1080" height="1890" />
-    </state>
-    <state x="-1039" y="589" key="SettingsEditor/0.0.1080.1890/-1080.0.1080.1890@-1080.0.1080.1890" timestamp="1604806343111" />
-    <state x="-948" y="678" key="Vcs.Push.Dialog.v2" timestamp="1606301428917">
-      <screen x="-1080" y="0" width="1080" height="1890" />
-    </state>
-    <state x="-948" y="678" key="Vcs.Push.Dialog.v2/0.0.1080.1890/-1080.0.1080.1890@-1080.0.1080.1890" timestamp="1606301428917" />
-    <state width="548" height="953" key="XDebugger.FullValuePopup" timestamp="1606808965995">
-      <screen x="-1080" y="0" width="1080" height="1890" />
-    </state>
-    <state width="548" height="953" key="XDebugger.FullValuePopup/0.0.1080.1890/-1080.0.1080.1890@-1080.0.1080.1890" timestamp="1606808965995" />
-    <state x="-822" y="832" key="com.intellij.database.actions.DdlActions$DeleteProvider2$1" timestamp="1606808505193">
-      <screen x="-1080" y="0" width="1080" height="1890" />
-    </state>
-    <state x="-822" y="832" key="com.intellij.database.actions.DdlActions$DeleteProvider2$1/0.0.1080.1890/-1080.0.1080.1890@-1080.0.1080.1890" timestamp="1606808505193" />
-    <state x="-960" y="600" key="com.intellij.database.dbimport.ImportDialog" timestamp="1605147883777">
-      <screen x="-1080" y="0" width="1080" height="1890" />
-    </state>
-    <state x="-960" y="600" key="com.intellij.database.dbimport.ImportDialog/0.0.1080.1890/-1080.0.1080.1890@-1080.0.1080.1890" timestamp="1605147883777" />
-    <state x="-933" y="555" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1605676914601">
-      <screen x="-1080" y="0" width="1080" height="1890" />
-    </state>
-    <state x="-933" y="555" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/0.0.1080.1890/-1080.0.1080.1890@-1080.0.1080.1890" timestamp="1605676914601" />
-    <state x="343" y="858" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1604975337203">
-      <screen x="0" y="0" width="1080" height="1890" />
-    </state>
-    <state x="343" y="858" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1080.1890/-1080.0.1080.1890@-1080.0.1080.1890" timestamp="1604975337203" />
-    <state x="277" y="0" width="764" height="1264" maximized="true" key="dock-window-1" timestamp="1606816915382">
-      <screen x="0" y="0" width="1080" height="1890" />
-    </state>
-    <state x="277" y="0" width="764" height="1264" maximized="true" key="dock-window-1/0.0.1080.1890/-1080.0.1080.1890@-1080.0.1080.1890" timestamp="1606816915382" />
-    <state x="-1080" y="0" width="1053" height="1267" maximized="true" key="dock-window-1/0.0.1080.1890/-1080.0.1080.1890@0.0.1080.1890" timestamp="1606705360682" />
-    <state x="136" y="0" width="773" height="1409" maximized="true" key="dock-window-2" timestamp="1605770607596">
-      <screen x="0" y="0" width="1080" height="1890" />
-    </state>
-    <state x="136" y="0" width="773" height="1409" maximized="true" key="dock-window-2/0.0.1080.1890/-1080.0.1080.1890@-1080.0.1080.1890" timestamp="1605768682170" />
-    <state x="136" y="0" width="773" height="1409" maximized="true" key="dock-window-2/0.0.1080.1890/-1080.0.1080.1890@0.0.1080.1890" timestamp="1605770607596" />
-    <state x="0" y="0" width="1053" height="1409" maximized="true" key="dock-window-3" timestamp="1605798172525">
-      <screen x="0" y="0" width="1080" height="1890" />
-    </state>
-    <state x="0" y="0" width="1053" height="1409" maximized="true" key="dock-window-3/0.0.1080.1890/-1080.0.1080.1890@-1080.0.1080.1890" timestamp="1605798172525" />
-    <state x="24" y="86" width="1053" height="1409" maximized="true" key="dock-window-4" timestamp="1606118457995">
-      <screen x="0" y="0" width="1080" height="1890" />
-    </state>
-    <state x="24" y="86" width="1053" height="1409" maximized="true" key="dock-window-4/0.0.1080.1890/-1080.0.1080.1890@-1080.0.1080.1890" timestamp="1606118457995" />
-    <state x="-877" y="437" width="672" height="678" key="search.everywhere.popup" timestamp="1606816362408">
-      <screen x="-1080" y="0" width="1080" height="1890" />
-    </state>
-    <state x="-877" y="437" width="672" height="678" key="search.everywhere.popup/0.0.1080.1890/-1080.0.1080.1890@-1080.0.1080.1890" timestamp="1606816362408" />
-    <state x="203" y="437" width="672" height="678" key="search.everywhere.popup/0.0.1080.1890/-1080.0.1080.1890@0.0.1080.1890" timestamp="1606705535792" />
+    <MESSAGE value="rawdata auto update" />
+    <option name="LAST_COMMIT_MESSAGE" value="rawdata auto update" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/autot0$pretrdmng.coverage" NAME="pretrdmng Coverage Results" MODIFIED="1605430139055" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/autot0$globals.coverage" NAME="globals Coverage Results" MODIFIED="1606811662189" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/autot0$secloan_mng.coverage" NAME="secloan_mng Coverage Results" MODIFIED="1604989924798" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/autot0$posttrdmng.coverage" NAME="posttrdmng Coverage Results" MODIFIED="1606791916847" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/autot0$trading_mng.coverage" NAME="trading_mng Coverage Results" MODIFIED="1606821677951" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/autot0$pretrdmng__1_.coverage" NAME="pretrdmng (1) Coverage Results" MODIFIED="1606783851579" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/autot0$trading_mng.coverage" NAME="trading_mng Coverage Results" MODIFIED="1607357165365" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/autot0$temp.coverage" NAME="temp Coverage Results" MODIFIED="1606729435119" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/autot0$globals.coverage" NAME="globals Coverage Results" MODIFIED="1607356872226" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/autot0$secloan_mng.coverage" NAME="secloan_mng Coverage Results" MODIFIED="1604989924798" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/autot0$pretrdmng__1_.coverage" NAME="pretrdmng (1) Coverage Results" MODIFIED="1607302190500" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/autot0$scheduler.coverage" NAME="scheduler Coverage Results" MODIFIED="1607271714200" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/autot0$posttrdmng.coverage" NAME="posttrdmng Coverage Results" MODIFIED="1607305934451" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

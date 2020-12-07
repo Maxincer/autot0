@@ -180,7 +180,7 @@ class PreTrdMng:
             if pre_close <= 5 or pre_close > 300:
                 tgtqty = 0
             # todo 由于现有交易系统无法交易200股以下的科创板股票，故在规模小的情况下，剔除科创板
-            if tgtsecid[:3] in ['688']:
+            if tgtsecid[:3] in ['688'] and pre_close > 100:
                 tgtqty = 0
             if not margin_or_not_mark:
                 tgtqty = 0

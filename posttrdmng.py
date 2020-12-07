@@ -879,7 +879,9 @@ class PostTrdMng:
         """
         # 1. 取需清算数据中所有股票的集合
         set_secids_in_jgd = set()
-        for _ in self.gl.col_posttrd_fmtdata_jgd.find({'DataDate': self.gl.str_last_trddate}):
+        for _ in self.gl.col_posttrd_fmtdata_jgd.find(
+                {'DataDate': self.gl.str_last_trddate, 'TradeDate': self.gl.str_last_trddate}
+        ):
             set_secids_in_jgd.add(_['SecurityID'])
 
         set_secids_in_position_last_trddate = set()
@@ -929,7 +931,9 @@ class PostTrdMng:
             tgtsecids = dict_grp_tgtsecids_by_cps_manut0['SecurityID']
             set_secids_in_grp_tgtsecids_by_cps_nic.add(tgtsecids)
 
-        list_dicts_posttrd_jgd = list(self.gl.col_posttrd_fmtdata_jgd.find({'DataDate': self.gl.str_last_trddate}))
+        list_dicts_posttrd_jgd = list(self.gl.col_posttrd_fmtdata_jgd.find(
+            {'DataDate': self.gl.str_last_trddate, 'TradeDate': self.gl.str_last_trddate})
+        )
         list_dicts_posttrd_pnl_by_secid = []
         for secid_in_position_and_jgd_and_fee_from_secloan in set_secids_in_position_and_jgd_and_fee_from_secloan:
             if secid_in_position_and_jgd_and_fee_from_secloan in set_secids_in_grp_tgtsecids_by_cps_manut0:
@@ -983,6 +987,7 @@ class PostTrdMng:
                         'DataDate': self.gl.str_last_trddate,
                         'AcctIDByMXZ': self.gl.acctidbymxz,
                         'SecurityID': secid_in_position_and_jgd_and_fee_from_secloan,
+                        'TradeDate': self.gl.str_last_trddate
                     }
                 )
             )
@@ -1049,7 +1054,13 @@ class PostTrdMng:
         # todo 仅分析了autot0策略的
         # 计算策略交易额与交易股票的支数
         iter_dicts_postfmtdata_jgd = self.gl.col_posttrd_fmtdata_jgd.find(
-            {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': self.gl.acctidbymxz, 'CompositeSource': 'AutoT0'}
+            {
+                'DataDate': self.gl.str_last_trddate,
+                'AcctIDByMXZ': self.gl.acctidbymxz,
+                'CompositeSource': 'AutoT0',
+                'TradeDate': self.gl.str_last_trddate
+
+            }
         )
         trdamt_autot0 = 0
         set_secids_from_trading = set()

@@ -12,21 +12,23 @@ from datetime import datetime
 from apscheduler.schedulers.background import BlockingScheduler
 
 from globals import Globals
-from secloan_mng import SecLoanMng
+from posttrdmng import PostTrdMng
+from pretrdmng import PreTrdMng
 
 
 class Scheduler:
-    # def __init__(self):
-    #     self.gl = Globals()
-
     @staticmethod
-    def secloan_mng():
-        secloanmng = SecLoanMng()
-        secloanmng.run()
+    def task_at_0840():
+        str_today = datetime.today().strftime('%Y%m%d')
+        task1 = Globals(str_today, download_winddata_mark=1)
+        task2 = PostTrdMng(str_today, download_winddata_mark=0)
+        task2.run()
+        task3 = PreTrdMng(str_today, download_winddata_mark=0)
+        task3.run()
 
     def schedule(self):
         scheduler = BlockingScheduler()
-        scheduler.add_job(self.secloan_mng, 'date', run_date=datetime(2020, 11, 6, 8, 40, 0))
+        scheduler.add_job(self.task_at_0840, 'date', run_date=datetime(2020, 12, 7, 8, 40, 0))
         scheduler.start()
 
     def run(self):

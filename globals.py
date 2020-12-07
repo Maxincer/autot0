@@ -104,15 +104,15 @@ class Globals:
         # # filepath
         # todo rename the rawdata file
         self.fpath_input_csv_margin_account_fund = 'Z:/hait/hait_xtpb/margin_account_fund.csv'
-        self.fpath_input_csv_margin_account_holding = 'Z:/hait/hait_xtpb/margin_account_position.csv'
-        self.fpath_input_csv_margin_account_entrust = 'Z:/hait/hait_xtpb/margin_account_entrust.csv'
-        self.fpath_input_csv_margin_account_secloan = 'Z:/hait/hait_xtpb/margin_account_security_loan_contract.csv'
+        self.fpath_input_csv_margin_account_holding = 'Z:/hait/hait_xtpb/margin_account_holding.csv'
+        self.fpath_input_csv_margin_account_order = 'Z:/hait/hait_xtpb/margin_account_order.csv'
+        self.fpath_input_csv_margin_account_secloan = 'Z:/hait/hait_xtpb/margin_account_security_loan.csv'
 
         # # database
         self.db_trading_data = self.server_mongodb['trading_data']
         self.col_trading_rawdata_fund = self.db_trading_data['trading_rawdata_fund']
         self.col_trading_rawdata_holding = self.db_trading_data['trading_rawdata_holding']
-        self.col_trading_rawdata_entrust = self.db_trading_data['trading_rawdata_entrust']
+        self.col_trading_rawdata_order = self.db_trading_data['trading_rawdata_order']
         self.col_trading_rawdata_secloan = self.db_trading_data['trading_rawdata_secloan']
 
         # post-trade
@@ -350,8 +350,8 @@ class Globals:
         list_str_trddates = [x.strftime('%Y%m%d') for x in wtdays.Data[0]]
         return list_str_trddates
 
-    @staticmethod
-    def get_mingshi_sectype_from_code(str_code):
+    @classmethod
+    def get_mingshi_sectype_from_code(cls, str_code):
         """
         实际使用的函数
         :param str_code: SecurityID.SecurityIDSource
