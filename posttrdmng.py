@@ -73,7 +73,7 @@ from globals import Globals, STR_TODAY
 
 class PostTrdMng:
     def __init__(self, str_trddate=STR_TODAY, download_winddata_mark=0):
-        self.gl = Globals(str_trddate)
+        self.gl = Globals(str_trddate, download_winddata_mark=download_winddata_mark)
         self.gl.update_attachments_from_email(
             f'鸣石满天星7号清算后数据{self.gl.str_today}', f'{self.gl.str_today}', self.gl.dirpath_posttrddata_from_email
         )
@@ -436,9 +436,9 @@ class PostTrdMng:
                 str_entrust_datetime = f"{str_trddate}{str_entrust_time.replace(':', '')}"
             else:
                 str_entrust_datetime = ''
+
+            # todo 海通307备忘录：佣金包括证管费和经手费
             fee_from_trdactivity = (
-                dict_posttrd_rawdata_jgd['经手费']
-                + dict_posttrd_rawdata_jgd['证管费']
                 + dict_posttrd_rawdata_jgd['佣金']
                 + dict_posttrd_rawdata_jgd['印花税']
                 + dict_posttrd_rawdata_jgd['过户费']
@@ -733,65 +733,27 @@ class PostTrdMng:
             )
         )
         list_dicts_posttrd_fmtdata_fee_from_secloan = []
-        i_contract_not_found = 0
-        i_contract_fee_charged_equal_to_0 = 0
         for dict_posttrd_rawdata_fee_from_secloan in list_dicts_posttrd_rawdata_fee_from_secloan:
             serial_number = dict_posttrd_rawdata_fee_from_secloan['流水号']
             loan_type = dict_posttrd_rawdata_fee_from_secloan['合约类型'].strip()
+            # 流水号在时间维度上唯一
             if loan_type in ['融券']:
                 dict_shortqty_from_secloan = self.gl.col_posttrd_fmtdata_secloan_from_public_secpool.find_one(
-                    {
-                        'DataDate': self.gl.str_last_trddate,
-                        'AcctIDByMXZ': self.gl.acctidbymxz,
-                        'ContractID': serial_number,
-                    }
+                    {'AcctIDByMXZ': self.gl.acctidbymxz, 'ContractID': serial_number,}
                 )
                 secid = dict_shortqty_from_secloan['SecurityID']
                 loan_type = 'secloan_from_public'
             elif loan_type in ['私用融券', '私用券源']:
                 dict_posttrd_fmtdata_secloan_from_private_secpool = (
                     self.gl.col_posttrd_fmtdata_secloan_from_private_secpool.find_one(
-                        {
-                            'DataDate': self.gl.str_last_trddate,
-                            'AcctIDByMXZ': self.gl.acctidbymxz,
-                            'SerialNumber': serial_number
-                        }
-                    )
-                )
-                dict_posttrd_fmtdata_secloan_from_private_secpool_last_last_trddate = (
-                    self.gl.col_posttrd_fmtdata_secloan_from_private_secpool.find_one(
-                        {
-                            'DataDate': self.gl.str_last_last_trddate,
-                            'AcctIDByMXZ': self.gl.acctidbymxz,
-                            'SerialNumber': serial_number
-                        }
+                        {'AcctIDByMXZ': self.gl.acctidbymxz, 'SerialNumber': serial_number}
                     )
                 )
 
-                if (
-                        (dict_posttrd_fmtdata_secloan_from_private_secpool is None)
-                        and (dict_posttrd_fmtdata_secloan_from_private_secpool_last_last_trddate is None)
-                ):
-                    i_contract_not_found += 1
-                    fee_from_secloan_not_found = (
-                        dict_posttrd_rawdata_fee_from_secloan['利息'] + dict_posttrd_rawdata_fee_from_secloan['占用额度费']
-                    )
-
-                    if fee_from_secloan_not_found:
-                        print(
-                            f'利息表中的私用合约号{serial_number}不在私用券源合约中，'
-                            f'发生费用{fee_from_secloan_not_found}元无法归集。'
-                        )
-                    else:
-                        i_contract_fee_charged_equal_to_0 += 1
-                    continue
+                if dict_posttrd_fmtdata_secloan_from_private_secpool is None:
+                    raise ValueError(f'{serial_number}合约无法按股票代码归集。')
                 else:
-                    if dict_posttrd_fmtdata_secloan_from_private_secpool is None:
-                        secid = dict_posttrd_fmtdata_secloan_from_private_secpool_last_last_trddate['SecurityID']
-                    elif dict_posttrd_fmtdata_secloan_from_private_secpool_last_last_trddate is None:
-                        secid = dict_posttrd_fmtdata_secloan_from_private_secpool['SecurityID']
-                    else:
-                        secid = dict_posttrd_fmtdata_secloan_from_private_secpool['SecurityID']
+                    secid = dict_posttrd_fmtdata_secloan_from_private_secpool['SecurityID']
                     loan_type = 'secloan_from_private'
             else:
                 raise ValueError('Unknown loan_type.')
@@ -852,8 +814,6 @@ class PostTrdMng:
                 'AccruedFeeFromSecLoan': accrued_fee_from_secloan
             }
             list_dicts_posttrd_fmtdata_fee_from_secloan.append(dict_posttrd_fmtdata_fee_from_secloan)
-        print(f'共发现{i_contract_not_found}个利息表条目不在私用券源合约中,'
-              f'{i_contract_fee_charged_equal_to_0}条利息及额度占用费为0')
         self.gl.col_posttrd_fmtdata_fee_from_secloan.delete_many(
             {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': self.gl.acctidbymxz}
         )
@@ -869,10 +829,16 @@ class PostTrdMng:
             3. col_posttrd_fmtdata_fee_from_secloan: str_last_trddate
 
         Algo:
-            当日盈亏 =
-            ∑[(卖出成交价－当日结算价)×卖出量]
-            +∑[(当日结算价－买入成交价)×买入量]
-            +(上一交易日结算价－当日结算价)×(上一交易日卖出持仓量－上一交易日买入持仓量)
+            PNL_Sum
+            = PNL_Part1 + PNL_Part2 + PNL_Part3
+            = ∑[(卖出成交价－当日结算价)×卖出量]
+              +∑[(当日结算价－买入成交价)×买入量]
+              +(上一交易日结算价－当日结算价)×(上一交易日卖出持仓量－上一交易日买入持仓量)
+
+            FeeFromSecLoan: 券息计提费用，归集而来
+
+            FeeFromTradingActivity
+            = 佣金(包括经手费、证管费和风险金) + 过户费 + 印花税
 
         Output:
             1. col_posttrd_pnl
@@ -893,7 +859,7 @@ class PostTrdMng:
             set_secids_in_position_last_last_trddate.add(_['SecurityID'])
 
         set_secids_in_fee_from_secloan = set()
-        for _ in self.gl.col_posttrd_fmtdata_fee_from_secloan.find({'DataDate': self.gl.str_last_last_trddate}):
+        for _ in self.gl.col_posttrd_fmtdata_fee_from_secloan.find({'DataDate': self.gl.str_last_trddate}):
             set_secids_in_fee_from_secloan.add(_['SecurityID'])
 
         set_secids_in_position_and_jgd_and_fee_from_secloan = (
@@ -962,7 +928,7 @@ class PostTrdMng:
                     else:
                         raise ValueError('Unknown side when deal with jgd_data.')
 
-            # # 3. pnl_part3 = (上一交易日结算价－当日结算价)×(上一交易日卖出持仓量－上一交易日买入持仓量)
+            # # 3. pnl_part3 = (上一交易日结算价－当日结算价)×(上一交易日卖出持仓量－上一交易日买入持仓量) (历史持仓盈亏)
             dict_posttrd_position_last_last_trddate = (
                 self.gl.col_posttrd_position.find_one(
                     {
@@ -1046,6 +1012,22 @@ class PostTrdMng:
         )
         if list_dicts_posttrd_pnl_by_acctidbymxz_cps:
             self.gl.col_posttrd_pnl_by_acctidbymxz_cps.insert_many(list_dicts_posttrd_pnl_by_acctidbymxz_cps)
+
+        # 4. 计算： 按账户归集
+        if list_dicts_posttrd_pnl_by_secid:
+            df_posttrd_pnl_by_secid = pd.DataFrame(list_dicts_posttrd_pnl_by_secid)
+            df_posttrd_pnl_by_acctidbymxz = (
+                df_posttrd_pnl_by_secid.groupby(by=['DataDate', 'AcctIDByMXZ']).sum().reset_index()
+            )
+            list_dicts_posttrd_pnl_by_acctidbymxz = df_posttrd_pnl_by_acctidbymxz.to_dict('records')
+        else:
+            list_dicts_posttrd_pnl_by_acctidbymxz = []
+
+        self.gl.col_posttrd_pnl_by_acctidbymxz.delete_many(
+            {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': self.gl.acctidbymxz}
+        )
+        if list_dicts_posttrd_pnl_by_acctidbymxz:
+            self.gl.col_posttrd_pnl_by_acctidbymxz.insert_many(list_dicts_posttrd_pnl_by_acctidbymxz)
 
     def get_col_secloan_utility_analysis(self):
         """
@@ -1146,7 +1128,7 @@ class PostTrdMng:
         self.gl.col_posttrd_secloan_utility_analysis.insert_one(dict_secloan_utility_analysis)
 
     def output_xlsx_posttrd_analysis(self):
-        # 输出pnl_analysis
+        # 输出pnl_analysis （应当改名， 由于已经使用，故不改名）
         iter_dicts_posttrd_pnl_by_acctidbymxz_cps = self.gl.col_posttrd_pnl_by_acctidbymxz_cps.find(
             {'AcctIDByMXZ': self.gl.acctidbymxz}, {'_id': 0}
         )
@@ -1170,14 +1152,45 @@ class PostTrdMng:
             df_output_sheet_pnl_analysis['PNLBySecID'].apply(lambda x: round(x, 2))
         )
         df_output_sheet_pnl_analysis.sort_values(by=['CompositeSource', 'DataDate'], inplace=True)
-        df_output_sheet_pnl_analysis.to_excel(self.gl.fpath_output_xlsx_posttrd_analysis, index=False)
+
+        # df_output_sheet_pnl_analysis_by_acctidbymxz
+        iter_dicts_posttrd_pnl_by_acctidbymxz = self.gl.col_posttrd_pnl_by_acctidbymxz.find(
+            {'AcctIDByMXZ': self.gl.acctidbymxz}, {'_id': 0}
+        )
+        list_output_sheet_pnl_analysis_by_acctidbymxz = []
+        for dict_posttrd_pnl_by_acctidbymxz in iter_dicts_posttrd_pnl_by_acctidbymxz:
+            _datadate = dict_posttrd_pnl_by_acctidbymxz['DataDate']
+            pnl_part_sum = round(dict_posttrd_pnl_by_acctidbymxz['PNL_PartSum'], 2)
+            fee_from_trading_activity = round(dict_posttrd_pnl_by_acctidbymxz['FeeFromTradingActivity'], 2)
+            fee_from_secloan = round(dict_posttrd_pnl_by_acctidbymxz['FeeFromSecLoan'], 2)
+            pnl_by_acctidbymxz = round(dict_posttrd_pnl_by_acctidbymxz['PNLBySecID'], 2)
+            dict_posttrd_cf_from_indirect_method = self.gl.col_posttrd_cf_from_indirect_method.find_one(
+                {'DataDate': _datadate}
+            )
+            if dict_posttrd_cf_from_indirect_method:
+                dif_cf_from_indirect_method = round(dict_posttrd_cf_from_indirect_method['DifCFFromIndirectMethod'],2)
+            else:
+                dif_cf_from_indirect_method = None
+
+            dict_output_posttrd_pnl_by_acctidbymxz = {
+                'DataDate': _datadate,
+                'AcctIDByMXZ': dict_posttrd_pnl_by_acctidbymxz['AcctIDByMXZ'],
+                'PNL_PartSum': pnl_part_sum,
+                'FeeFromTradingActivity': fee_from_trading_activity,
+                'FeeFromSecLoan': fee_from_secloan,
+                'PNLByAcctIDByMXZ': pnl_by_acctidbymxz,
+                'DifCFFromIndirectMethod': dif_cf_from_indirect_method
+            }
+            list_output_sheet_pnl_analysis_by_acctidbymxz.append(dict_output_posttrd_pnl_by_acctidbymxz)
+        df_output_sheet_pnl_analysis_by_acctidbymxz = pd.DataFrame(list_output_sheet_pnl_analysis_by_acctidbymxz)
+        df_output_sheet_pnl_analysis_by_acctidbymxz.sort_values(by=['DataDate'], inplace=True)
+
 
         # 输出fund
         iter_dicts_posttrd_fund_by_acctidbymxz = self.gl.col_posttrd_fmtdata_fund.find(
             {'AcctIDByMXZ': self.gl.acctidbymxz}, {'_id': 0}
         )
         df_output_sheet_fund_rpt = pd.DataFrame(iter_dicts_posttrd_fund_by_acctidbymxz)
-        df_output_sheet_fund_rpt.sort_values(by=['DataDate'], inplace=True)
         df_output_sheet_fund_rpt.sort_values(by=['DataDate'], inplace=True)
 
         # 输出security_loan_utility_analysis
@@ -1189,10 +1202,13 @@ class PostTrdMng:
 
         with pd.ExcelWriter(self.gl.fpath_output_xlsx_posttrd_analysis) as writer:
             df_output_sheet_pnl_analysis.to_excel(writer, sheet_name='pnl_analysis', index=False)
+            df_output_sheet_pnl_analysis_by_acctidbymxz.to_excel(
+                writer, sheet_name='pnl_analysis_by_acctidbymxz', index=False
+            )
             df_output_sheet_fund_rpt.to_excel(writer, sheet_name='fund', index=False)
-            df_output_sheet_security_loan_utility_analysis.to_excel(writer,
-                                                                    sheet_name='security_loan_utility_analysis',
-                                                                    index=False)
+            df_output_sheet_security_loan_utility_analysis.to_excel(
+                writer, sheet_name='security_loan_utility_analysis', index=False
+            )
             writer.save()
         print('Output posttrd_analysis.xlsx Finished')
 
@@ -1206,16 +1222,117 @@ class PostTrdMng:
         s_longamt.plot(kind='hist')
         plt.show()
 
+    def check_pnl_via_indirect_method(self):
+        """
+        检查机制，根据PNL计算CF
+        # todo 账户级别 到 区分 策略
+        """
+        # 获取PNL
+        dict_posttrd_pnl_by_acctidbymxz = self.gl.col_posttrd_pnl_by_acctidbymxz.find_one(
+            {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': self.gl.acctidbymxz}
+        )
+        pnl = dict_posttrd_pnl_by_acctidbymxz['PNLBySecID']
+
+        # 获取清算数据 资产变动和负债变动
+        # # CF_T = PNL + Liability_delta - non-current_Asset_delta
+
+        # # last_last_trddate
+        # # # liability_last_last_trddate = shortamt + liability_from_secloan
+        list_posttrd_position_last_last_trddate = list(
+            self.gl.col_posttrd_position.find(
+                {'DataDate': self.gl.str_last_last_trddate, 'AcctIDByMXZ': self.gl.acctidbymxz}
+            )
+        )
+        shortamt_last_last_trddate = 0
+        for dict_posttrd_position_last_last_trddate in list_posttrd_position_last_last_trddate:
+            shortamt_last_last_trddate += dict_posttrd_position_last_last_trddate['ShortAmt']
+
+        longamt_last_last_trddate = 0
+        for dict_posttrd_position_last_last_trddate in list_posttrd_position_last_last_trddate:
+            longamt_last_last_trddate += dict_posttrd_position_last_last_trddate['LongAmt']
+
+        iter_posttrd_fee_from_secloan_last_last_trddate = self.gl.col_posttrd_fmtdata_fee_from_secloan.find(
+            {'DataDate': self.gl.str_last_last_trddate, 'AcctIDByMXZ': self.gl.acctidbymxz}
+        )
+        liability_from_secloan_last_last_trddate = 0
+        for dict_posttrd_fee_from_secloan_last_last_trddate in iter_posttrd_fee_from_secloan_last_last_trddate:
+            liability_from_secloan_last_last_trddate += (
+                dict_posttrd_fee_from_secloan_last_last_trddate['AccruedFeeFromSecLoan']
+            )
+        liability_last_last_trddate = shortamt_last_last_trddate + liability_from_secloan_last_last_trddate
+        non_current_asset_last_last_trddate = longamt_last_last_trddate
+
+        # # last_trddate
+        list_dicts_posttrd_position_last_trddate = list(
+            self.gl.col_posttrd_position.find(
+                {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': self.gl.acctidbymxz}
+            )
+        )
+        shortamt_last_trddate = 0
+        for dict_posttrd_position_last_trddate in list_dicts_posttrd_position_last_trddate:
+            shortamt_last_trddate += dict_posttrd_position_last_trddate['ShortAmt']
+
+        longamt_last_trddate = 0
+        for dict_posttrd_position_last_trddate in list_dicts_posttrd_position_last_trddate:
+            longamt_last_trddate += dict_posttrd_position_last_trddate['LongAmt']
+
+        iter_posttrd_fee_from_secloan_last_trddate = self.gl.col_posttrd_fmtdata_fee_from_secloan.find(
+            {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': self.gl.acctidbymxz}
+        )
+        liability_from_secloan_last_trddate = 0
+        for dict_posttrd_fee_from_secloan_last_trddate in iter_posttrd_fee_from_secloan_last_trddate:
+            liability_from_secloan_last_trddate += (
+                dict_posttrd_fee_from_secloan_last_trddate['AccruedFeeFromSecLoan']
+            )
+        liability_last_trddate = shortamt_last_trddate + liability_from_secloan_last_trddate
+        non_current_asset_last_trddate = longamt_last_trddate
+
+        cf_from_indirect_method = (
+                pnl
+                + liability_last_trddate
+                - liability_last_last_trddate
+                - non_current_asset_last_trddate
+                + non_current_asset_last_last_trddate
+        )
+
+        # 现金流
+        dict_posttrd_fmtdata_fund_last_trddate = self.gl.col_posttrd_fmtdata_fund.find_one(
+            {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': self.gl.acctidbymxz}
+        )
+        cash_ending_last_trddate = dict_posttrd_fmtdata_fund_last_trddate['CashBalance']
+
+        dict_posttrd_fmtdata_fund_last_last_trddate = self.gl.col_posttrd_fmtdata_fund.find_one(
+            {'DataDate': self.gl.str_last_last_trddate, 'AcctIDByMXZ': self.gl.acctidbymxz}
+        )
+        cash_ending_last_last_trddate = dict_posttrd_fmtdata_fund_last_last_trddate['CashBalance']
+        cf_posttrd = cash_ending_last_trddate - cash_ending_last_last_trddate
+
+        dict_posttrd_cf_from_indirect_method = {
+            'DataDate': self.gl.str_last_trddate,
+            'AcctIDByMXZ': self.gl.acctidbymxz,
+            'PNL': pnl,
+            'LiabilityChange': liability_last_trddate - liability_last_last_trddate,
+            'NonCurrentAssetChange': non_current_asset_last_trddate - non_current_asset_last_last_trddate,
+            'CFFromIndirectMethod': cf_from_indirect_method,
+            'CFFromPostTradeData': cf_posttrd,
+            'DifCFFromIndirectMethod': cf_from_indirect_method - cf_posttrd,
+        }
+        self.gl.col_posttrd_cf_from_indirect_method.delete_one(
+            {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': self.gl.acctidbymxz}
+        )
+        self.gl.col_posttrd_cf_from_indirect_method.insert_one(dict_posttrd_cf_from_indirect_method)
+
     def run(self):
         self.upload_posttrd_rawdata()
         self.upload_posttrd_fmtdata()
         self.get_and_upload_col_post_trddata_pnl()
         self.get_col_secloan_utility_analysis()
-        self.output_xlsx_posttrd_analysis()
         self.get_longamt_histogram()
+        self.check_pnl_via_indirect_method()
+        self.output_xlsx_posttrd_analysis()
 
 
 if __name__ == '__main__':
-    task = PostTrdMng(download_winddata_mark=0)
+    task = PostTrdMng('20201211', download_winddata_mark=0)
     task.run()
     print('Done')

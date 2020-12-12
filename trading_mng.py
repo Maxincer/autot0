@@ -350,11 +350,11 @@ class UpdateTradePosition(Thread):
                 set_secids_in_position_predate.add(secid_in_predate_position)
 
             # # 今日交易记录中的所有secid: todo 此处使用hait_xtpb格式(视野受限，假设划款事项与交易的完全记录都在同一张表里)：
-            iter_trade_fmtdata_order = col_trade_fmtdata_order.find(
-                {'DataDate': self.gl.str_today, 'AcctIDByMXZ': self.gl.acctidbymxz}
+            list_dicts_trade_fmtdata_order = list(
+                col_trade_fmtdata_order.find({'DataDate': self.gl.str_today, 'AcctIDByMXZ': self.gl.acctidbymxz})
             )
             set_secids_in_trade_fmtdata_order = set()
-            for dict_trade_fmtdata_order in iter_trade_fmtdata_order:
+            for dict_trade_fmtdata_order in list_dicts_trade_fmtdata_order:
                 secid_in_trade_order = dict_trade_fmtdata_order['SecurityID']
                 set_secids_in_trade_fmtdata_order.add(secid_in_trade_order)
 
@@ -392,7 +392,7 @@ class UpdateTradePosition(Thread):
                 else:
                     shortqty_last_trddate = 0
                 shortqty_delta_today = 0
-                for dict_trade_fmtdata_order in iter_trade_fmtdata_order:
+                for dict_trade_fmtdata_order in list_dicts_trade_fmtdata_order:
                     if dict_trade_fmtdata_order['SecurityID'] == secid and dict_trade_fmtdata_order['Side'] in ['5']:
                         shortqty_delta_today += dict_trade_fmtdata_order['LastQty']
                     if (dict_trade_fmtdata_order['SecurityID'] == secid
@@ -417,7 +417,7 @@ class UpdateTradePosition(Thread):
             sleep(30)
 
 
-class TrdMonitor:
+class UpdateTradeDataBase:
     def __init__(self, str_trddate=STR_TODAY):
         self.gl = Globals(str_today=str_trddate)
 
@@ -449,7 +449,7 @@ class TrdMonitor:
 
 
 if __name__ == '__main__':
-    task = TrdMonitor()
+    task = UpdateTradeDataBase()
     task.run()
 
 

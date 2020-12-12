@@ -33,7 +33,10 @@ class Globals:
         self.server_mongodb = MongoClient('mongodb://localhost:27017/')
         self.db_global = self.server_mongodb['global']
         self.col_trdcalendar = self.db_global['trade_calendar']
-        self.list_str_trdcalendar = list(self.col_trdcalendar.find({'Year': '2020'}))[0]['Data']
+
+        self.list_str_trdcalendar = []
+        for _ in self.col_trdcalendar.find():
+            self.list_str_trdcalendar += _['Data']
         idx_str_today = self.list_str_trdcalendar.index(self.str_today)
         self.str_last_trddate = self.list_str_trdcalendar[idx_str_today - 1]
         self.str_next_trddate = self.list_str_trdcalendar[idx_str_today + 1]
@@ -47,6 +50,10 @@ class Globals:
         self.fpath_input_csv_target_secids = f'data/input/tgt_secpools/{self.str_today}_target_secids.csv'
         if not os.path.exists(self.fpath_input_csv_target_secids):
             self.fpath_input_csv_target_secids = f'data/input/tgt_secpools/{self.str_last_trddate}_target_secids.csv'
+            if not os.path.exists(self.fpath_input_csv_target_secids):
+                self.fpath_input_csv_target_secids = (
+                    f'data/input/tgt_secpools/{self.str_last_last_trddate}_target_secids.csv'
+                )
 
         self.fpath_input_xlsx_private_secpool_ready = (
             f"data/input/marginable_secpools/{self.str_today}即时可用券池-发布.xlsx"
@@ -164,6 +171,8 @@ class Globals:
         self.col_posttrd_rawdata_fund = self.db_posttrddata['post_trade_rawdata_fund']
         self.col_posttrd_fmtdata_fund = self.db_posttrddata['post_trade_fmtdata_fund']
         self.col_posttrd_secloan_utility_analysis = self.db_posttrddata['post_trade_secloan_utility_analysis']
+        self.col_posttrd_pnl_by_acctidbymxz = self.db_posttrddata['post_trade_pnl_by_acctidbymxz']
+        self.col_posttrd_cf_from_indirect_method = self.db_posttrddata['post_trade_cf_from_indirect_method']
 
         # # posttrd_holding: 程序在T日运行，清算T-1日数据，部分文件名为T-1，文件包日期为T-1日期
         self.fpath_input_xlsx_fund = (
@@ -297,7 +306,11 @@ class Globals:
             if i_split_str_date == 2:
                 dt_email_recvdate = datetime.strptime(list_str_date_in_msg_split[0], '%Y-%m-%d')
             elif i_split_str_date == 6:
-                dt_email_recvdate = datetime.strptime(str_date_in_msg, '%a, %d %b %Y %H:%M:%S +0800')
+                try:
+                    dt_email_recvdate = datetime.strptime(str_date_in_msg, '%a, %d %b %Y %H:%M:%S +0800')
+                except ValueError:
+                    dt_email_recvdate = datetime.strptime(str_date_in_msg, '%a, %d %b %Y %H:%M:%S -0000')
+
             elif i_split_str_date == 7:
                 try:
                     dt_email_recvdate = datetime.strptime(str_date_in_msg, '%a, %d %b %Y %H:%M:%S +0800 (GMT+08:00)')

@@ -28,7 +28,7 @@ class Scheduler:
 
     def schedule(self):
         scheduler = BlockingScheduler()
-        scheduler.add_job(self.task_at_0840, 'date', run_date=datetime(2020, 12, 7, 8, 40, 0))
+        scheduler.add_job(self.task_at_0840, 'date', run_date=datetime(2020, 12, 11, 8, 35, 0))
         scheduler.start()
 
     def run(self):
