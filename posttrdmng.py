@@ -1122,6 +1122,15 @@ class PostTrdMng:
             ),
             'PctOfShortExposureBySecLoanQuotaMarketValue': pct_short_exposure2ssquota_mv,
         }
+        print(
+            f'昨日交易股票数量{i_secids_from_trading}支，'
+            f'借入股票实际数量{i_secids_from_ssquota_from_secloan}支，占比{pct_i:.0%}.; '
+            f'交易额共{round(trdamt_autot0/10000)}万，总暴露{round(gross_exposure/10000)}万，'
+            f'占比{pct_trdamt2gross_exposure:.0%}。;'
+            f'空头暴露为{round(short_exposure/10000)}万，借入股票{round(ssquota_mv/10000)}万，'
+            f'占比{pct_short_exposure2ssquota_mv:.0%}。; '
+            f'筛选后的目标券池数量为{i_secids_from_tgtsecloan}支。'
+        )
         self.gl.col_posttrd_secloan_utility_analysis.delete_many(
             {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': self.gl.acctidbymxz, 'CompositeSource': 'AutoT0'}
         )

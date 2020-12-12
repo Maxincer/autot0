@@ -22,65 +22,9 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="94617ebe-9a89-4ddb-bd66-872b475c77a4" name="Default Changelist" comment="rawdata auto update">
-      <change afterPath="$PROJECT_DIR$/111.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/20201208.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/20201209.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/222.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201207/私用券源合约20201208.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201207/鸣石满天星7号未结利息20201208.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201207/鸣石满天星7号每日交割单-20201208.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201208/两融_资产导出_20201208.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201208/私用券源合约20201209.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201208/融券公用合约_20201208.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201208/融券明细_未了结仓单_20201208.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201208/鸣石满天星7号未结利息20201209.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201208/鸣石满天星7号每日交割单-20201209.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201209/两融_资产导出_20201209.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201209/私用券源合约20201210.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201209/融券公用合约_20201209.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201209/融券明细_未了结仓单_20201209.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201209/鸣石满天星7号未结利息20201210.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201209/鸣石满天星7号每日交割单-20201210.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201210/两融_资产导出_20201210.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201210/两融_资金明细_20201210.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201210/私用券源合约20201211.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201210/融券公用合约_20201210.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201210/融券明细_未了结仓单_20201210.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201210/鸣石满天星7号未结利息20201211.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201210/鸣石满天星7号每日交割单-20201211.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201211/两融_资产导出_20201211.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201211/两融_资金明细_20201211.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201211/融券公用合约_20201211.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201211/融券明细_未了结仓单_20201211.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20201208.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20201209.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20201210.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20201211.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/tgt_secpools/20201209_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/tgt_secpools/20201210_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201208_autot0_holding.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201209_autot0_holding.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201210_autot0_holding.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/mode_files/20201208_demand_of_secpool_from_outside_src.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/mode_files/20201209_demand_of_secpool_from_outside_src.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/mode_files/20201210_demand_of_secpool_from_outside_src.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/mode_files/20201211_demand_of_secpool_from_outside_src.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/tgtsecloan_mngdraft/20201208_tgtsecloan_mngdraft.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/tgtsecloan_mngdraft/20201209_tgtsecloan_mngdraft.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/tgtsecloan_mngdraft/20201210_tgtsecloan_mngdraft.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/tgtsecloan_mngdraft/20201211_tgtsecloan_mngdraft.csv" afterDir="false" />
+    <list default="true" id="94617ebe-9a89-4ddb-bd66-872b475c77a4" name="Default Changelist" comment="update indirect method">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/doc/alphaT0_notes.md" beforeDir="false" afterPath="$PROJECT_DIR$/data/doc/alphaT0_notes.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/post_trddata/20201201/私用券源合约20201202.xls" beforeDir="false" afterPath="$PROJECT_DIR$/data/input/post_trddata/20201201/私用券源合约20201202.xls" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/post_trddata/20201203/私用券源合约20201204.xls" beforeDir="false" afterPath="$PROJECT_DIR$/data/input/post_trddata/20201203/私用券源合约20201204.xls" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/post_trddata/20201204/私用券源合约20201207.xls" beforeDir="false" afterPath="$PROJECT_DIR$/data/input/post_trddata/20201204/私用券源合约20201207.xls" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/post_trddata/20201204/鸣石满天星7号未结利息20201207.xls" beforeDir="false" afterPath="$PROJECT_DIR$/data/input/post_trddata/20201204/鸣石满天星7号未结利息20201207.xls" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/globals.py" beforeDir="false" afterPath="$PROJECT_DIR$/globals.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/posttrdmng.py" beforeDir="false" afterPath="$PROJECT_DIR$/posttrdmng.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scheduler.py" beforeDir="false" afterPath="$PROJECT_DIR$/scheduler.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/temp.py" beforeDir="false" afterPath="$PROJECT_DIR$/temp.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/trading_mng.py" beforeDir="false" afterPath="$PROJECT_DIR$/trading_mng.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -312,7 +256,7 @@
       <workItem from="1607515400176" duration="55000" />
       <workItem from="1607526357654" duration="14199000" />
       <workItem from="1607598529873" duration="16320000" />
-      <workItem from="1607676885743" duration="14032000" />
+      <workItem from="1607676885743" duration="15360000" />
     </task>
     <task id="LOCAL-00001" summary="initialize">
       <created>1604806214551</created>
@@ -384,7 +328,14 @@
       <option name="project" value="LOCAL" />
       <updated>1607357426076</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="update indirect method">
+      <created>1607756717751</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1607756717751</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -413,7 +364,8 @@
     <MESSAGE value="update format of utility report" />
     <MESSAGE value="email auto dld" />
     <MESSAGE value="rawdata auto update" />
-    <option name="LAST_COMMIT_MESSAGE" value="rawdata auto update" />
+    <MESSAGE value="update indirect method" />
+    <option name="LAST_COMMIT_MESSAGE" value="update indirect method" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/autot0$trading_mng.coverage" NAME="trading_mng Coverage Results" MODIFIED="1607562573860" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
@@ -423,6 +375,6 @@
     <SUITE FILE_PATH="coverage/autot0$secloan_mng.coverage" NAME="secloan_mng Coverage Results" MODIFIED="1604989924798" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/autot0$pretrdmng__1_.coverage" NAME="pretrdmng (1) Coverage Results" MODIFIED="1607560772704" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/autot0$scheduler.coverage" NAME="scheduler Coverage Results" MODIFIED="1607271714200" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/autot0$posttrdmng.coverage" NAME="posttrdmng Coverage Results" MODIFIED="1607756618446" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/autot0$posttrdmng.coverage" NAME="posttrdmng Coverage Results" MODIFIED="1607758384547" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
