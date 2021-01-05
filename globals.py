@@ -5,6 +5,9 @@
 
 """
 This script provides global variables, constants, functions in this project
+
+Note:
+    1. 方舟系统，第二天早上才有清算后数据
 """
 
 from datetime import datetime
@@ -30,7 +33,9 @@ class Globals:
     def __init__(self, str_today=STR_TODAY, download_winddata_mark=0):
         # 日期部分
         self.str_today = str_today  # 该日必为交易日
-        self.server_mongodb = MongoClient('mongodb://localhost:27017/')
+        self.server_mongodb = MongoClient(
+            'mongodb://192.168.2.162:27017/', username='Maxincer', password='winnerismazhe'
+        )
         self.db_global = self.server_mongodb['global']
         self.col_trdcalendar = self.db_global['trade_calendar']
 
@@ -42,10 +47,33 @@ class Globals:
         self.str_next_trddate = self.list_str_trdcalendar[idx_str_today + 1]
         self.str_last_last_trddate = self.list_str_trdcalendar[idx_str_today - 2]
         self.str_next_next_trddate = self.list_str_trdcalendar[idx_str_today + 2]
-        self.acctidbymxz = '307_m_hait_2000'
-        self.prdalias = '鸣石满天星7号'
+
+        # 配置文件部分: basicinfo
+        self.db_basicinfo = self.server_mongodb['basicinfo']
+        self.col_acctinfo = self.db_basicinfo['acctinfo']
+        self.col_prdinfo = self.db_basicinfo['prdinfo']
+        self.acctidbymxz = '307_m_hait_2000'  # todo 去除
+        self.prdcode = self.acctidbymxz.split('_')[0]
+        dict_prdinfo = self.col_prdinfo.find_one({'PrdCode': self.prdcode, 'DataDate': self.str_today})
+        self.prdalias = dict_prdinfo['PrdAliasInEmail']
+
+        # todo 多账户使用
+        # self.iter_dicts_acctinfo = self.col_acctinfo.find({'DataDate': self.str_today})
+        # self.list_dicts_acctinfo_autot0 = []
+        # for dict_acctinfo in self.iter_dicts_acctinfo:
+        #     list_strategy_allocation = dict_acctinfo['StrategiesAllocationByAcct'].split(';')
+        #     if 'AutoT0' in list_strategy_allocation:
+        #         self.list_dicts_acctinfo_autot0.append(dict_acctinfo)
 
         # 路径部分
+        # # basicinfo
+        dict_acctinfo = self.col_acctinfo.find_one(
+            {'DataDate': self.str_today, 'AcctIDByMXZ': self.acctidbymxz}
+        )
+        list_fpaths_data_file_path = [
+            _.strip() for _ in dict_acctinfo['DataFilePath'].replace('YYYYMMDD', self.str_today)[1:-1].split(',')
+        ]
+
         # # SecLoanContractsPoolMng
         self.fpath_input_csv_target_secids = f'data/input/tgt_secpools/{self.str_today}_target_secids.csv'
         if not os.path.exists(self.fpath_input_csv_target_secids):
@@ -102,6 +130,7 @@ class Globals:
 
         # pre-trade
         self.fpath_input_csv_grp_tgtsecids_by_cps = 'data/input/pretrddata/group_tgtsecids_by_composite.csv'
+
         # # database
         self.db_pretrddata = self.server_mongodb['pre_trade_data']
         self.col_pretrd_grp_tgtsecids_by_cps = self.db_pretrddata['group_target_secids_by_composite']
@@ -109,11 +138,10 @@ class Globals:
 
         # trading
         # # filepath
-        # todo rename the rawdata file
-        self.fpath_input_csv_margin_account_fund = 'Z:/hait/hait_xtpb/margin_account_fund.csv'
-        self.fpath_input_csv_margin_account_holding = 'Z:/hait/hait_xtpb/margin_account_holding.csv'
-        self.fpath_input_csv_margin_account_order = 'Z:/hait/hait_xtpb/margin_account_order.csv'
-        self.fpath_input_csv_margin_account_secloan = 'Z:/hait/hait_xtpb/margin_account_security_loan.csv'
+        self.fpath_input_csv_margin_account_fund = list_fpaths_data_file_path[0]
+        self.fpath_input_csv_margin_account_holding = list_fpaths_data_file_path[1]
+        self.fpath_input_csv_margin_account_order = list_fpaths_data_file_path[2]
+        self.fpath_input_csv_margin_account_secloan = list_fpaths_data_file_path[3]
 
         # # database
         self.db_trading_data = self.server_mongodb['trading_data']
@@ -175,15 +203,19 @@ class Globals:
         self.col_posttrd_cf_from_indirect_method = self.db_posttrddata['post_trade_cf_from_indirect_method']
 
         # # posttrd_holding: 程序在T日运行，清算T-1日数据，部分文件名为T-1，文件包日期为T-1日期
+        self.fpath_input_rawdata_fund = list_fpaths_data_file_path[0]
+        self.fpath_input_rawdata_holding = list_fpaths_data_file_path[1]
+        self.fpath_input_rawdata_secloan_shortqty = list_fpaths_data_file_path[3]
+
+        # todo: 成本考虑, 特殊指定hait_ehtc数据
         self.fpath_input_xlsx_fund = (
-            f'data/input/post_trddata/{self.str_last_trddate}/两融_资产导出_{self.str_last_trddate}.xlsx'
+            f"data/input/post_trddata/{self.str_last_trddate}/两融_资产导出_{self.str_last_trddate}.xlsx"
         )
+
         self.fpath_input_xlsx_holding = (
-            f'data/input/post_trddata/{self.str_last_trddate}/两融_资产导出_{self.str_last_trddate}.xlsx'
+            f"data/input/post_trddata/{self.str_last_trddate}/两融_资产导出_{self.str_last_trddate}.xlsx"
         )
-        self.fpath_output_csv_autot0_holding = (
-            f'data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/{self.str_today}_autot0_holding.csv'
-        )  # 尚未使用
+
         self.fpath_input_xlsx_shortqty = (
             f"data/input/post_trddata/{self.str_last_trddate}/融券明细_未了结仓单_{self.str_last_trddate}.xlsx"
         )

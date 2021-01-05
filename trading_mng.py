@@ -23,7 +23,6 @@ from datetime import datetime
 from threading import Thread
 from time import sleep
 
-from multiprocessing import Process
 from pymongo import MongoClient
 
 from globals import Globals, STR_TODAY
@@ -37,7 +36,10 @@ class UpdateTradeRawDataFund(Thread):
         self.fpath_input_csv_margin_account_fund = gl.fpath_input_csv_margin_account_fund
 
     def run(self):
-        server_mongodb = MongoClient('mongodb://localhost:27017/')
+        server_mongodb = MongoClient(
+            'mongodb://192.168.2.162:27017/', username='Maxincer', password='winnerismazhe'
+        )
+
         db_trade_data = server_mongodb['trade_data']
         col_trade_rawdata_fund = db_trade_data['trade_rawdata_fund']
         while True:
@@ -48,7 +50,7 @@ class UpdateTradeRawDataFund(Thread):
                 list_fields = list_datalines_of_file[0].strip().split(',')
                 list_datalines = [_.strip() for _ in list_datalines_of_file[1:]]
                 for dataline in list_datalines:
-                    list_data = [_.strip() for _ in dataline.split(',')]
+                    list_data = [str(_).strip() for _ in dataline.split(',')]
                     dict_fields2data = dict(zip(list_fields, list_data))
                     dict_fields2data.update({'DataDate': self.str_today})
                     dict_fields2data.update({'UpdateTime': str_update_time})
@@ -69,7 +71,9 @@ class UpdateTradeRawDataHolding(Thread):
         self.fpath_input_csv_margin_account_holding = gl.fpath_input_csv_margin_account_holding
 
     def run(self):
-        server_mongodb = MongoClient('mongodb://localhost:27017/')
+        server_mongodb = MongoClient(
+            'mongodb://192.168.2.162:27017/', username='Maxincer', password='winnerismazhe'
+        )
         db_trade_data = server_mongodb['trade_data']
         col_trade_rawdata_holding = db_trade_data['trade_rawdata_holding']
         while True:
@@ -80,7 +84,7 @@ class UpdateTradeRawDataHolding(Thread):
                 list_fields = list_datalines_of_file[0].strip().split(',')
                 list_datalines = [_.strip() for _ in list_datalines_of_file[1:]]
                 for dataline in list_datalines:
-                    list_data = [_.strip() for _ in dataline.split(',')]
+                    list_data = [str(_).strip() for _ in dataline.split(',')]
                     dict_fields2data = dict(zip(list_fields, list_data))
                     dict_fields2data.update({'DataDate': self.str_today})
                     dict_fields2data.update({'UpdateTime': str_update_time})
@@ -101,7 +105,9 @@ class UpdateTradeRawDataOrder(Thread):
         self.fpath_input_csv_margin_account_order = gl.fpath_input_csv_margin_account_order
 
     def run(self):
-        server_mongodb = MongoClient('mongodb://localhost:27017/')
+        server_mongodb = MongoClient(
+            'mongodb://192.168.2.162:27017/', username='Maxincer', password='winnerismazhe'
+        )
         db_trade_data = server_mongodb['trade_data']
         col_trade_rawdata_order = db_trade_data['trade_rawdata_order']
         while True:
@@ -112,7 +118,7 @@ class UpdateTradeRawDataOrder(Thread):
                 list_fields = list_datalines_of_file[0].strip().split(',')
                 list_datalines = [_.strip() for _ in list_datalines_of_file[1:]]
                 for dataline in list_datalines:
-                    list_data = [_.strip() for _ in dataline.split(',')]
+                    list_data = [str(_).strip() for _ in dataline.split(',')]
                     dict_fields2data = dict(zip(list_fields, list_data))
                     dict_fields2data.update({'DataDate': self.str_today})
                     dict_fields2data.update({'UpdateTime': str_update_time})
@@ -133,7 +139,9 @@ class UpdateTradeRawDataSecLoan(Thread):
         self.fpath_input_csv_margin_account_secloan = gl.fpath_input_csv_margin_account_secloan
 
     def run(self):
-        server_mongodb = MongoClient('mongodb://localhost:27017/')
+        server_mongodb = MongoClient(
+            'mongodb://192.168.2.162:27017/', username='Maxincer', password='winnerismazhe'
+        )
         db_trade_data = server_mongodb['trade_data']
         col_trade_rawdata_secloan = db_trade_data['trade_rawdata_secloan']
         while True:
@@ -144,7 +152,7 @@ class UpdateTradeRawDataSecLoan(Thread):
                 list_fields = list_datalines_of_file[0].strip().split(',')
                 list_datalines = [_.strip() for _ in list_datalines_of_file[1:]]
                 for dataline in list_datalines:
-                    list_data = [_.strip() for _ in dataline.split(',')]
+                    list_data = [str(_).strip() for _ in dataline.split(',')]
                     dict_fields2data = dict(zip(list_fields, list_data))
                     dict_fields2data.update({'DataDate': self.str_today})
                     dict_fields2data.update({'UpdateTime': str_update_time})
@@ -164,7 +172,9 @@ class UpdateTradeFmtDataFund(Thread):
         self.acctidbymxz = gl.acctidbymxz
 
     def run(self):
-        server_mongodb = MongoClient('mongodb://localhost:27017/')
+        server_mongodb = MongoClient(
+            'mongodb://192.168.2.162:27017/', username='Maxincer', password='winnerismazhe'
+        )
         db_trade_data = server_mongodb['trade_data']
         col_trade_rawdata_fund = db_trade_data['trade_rawdata_fund']
         col_trade_fmtdata_fund = db_trade_data['trade_fmtdata_fund']
@@ -175,19 +185,22 @@ class UpdateTradeFmtDataFund(Thread):
             )
             list_dicts_trade_fmtdata_fund = []
             for dict_trade_rawdata_fund in iter_trade_rawdata_fund:
-                net_asset = float(dict_trade_rawdata_fund['净资产'])
-                cash_from_ss = float(dict_trade_rawdata_fund['剩余融券卖出资金'])
-                cash_available_for_collateral_trade = float(dict_trade_rawdata_fund['可用金额'])
-                tt_asset = float(dict_trade_rawdata_fund['总资产'])
-                tt_mv = float(dict_trade_rawdata_fund['总市值'])
+                cash_available_for_collateral_trade = float(dict_trade_rawdata_fund['可用余额'])
+                tt_asset = float(dict_trade_rawdata_fund['资产总值'])
+                tt_mv = float(dict_trade_rawdata_fund['证券市值'])
+
+                # ehtc
+                # net_asset = float(dict_trade_rawdata_fund['净资产'])
+                # cash_from_ss = float(dict_trade_rawdata_fund['剩余融券卖出资金'])
+                # cash_available_for_collateral_trade = float(dict_trade_rawdata_fund['可用金额'])
+                # tt_asset = float(dict_trade_rawdata_fund['总资产'])
+                # tt_mv = float(dict_trade_rawdata_fund['总市值'])
                 cash = tt_asset - tt_mv
                 dict_trade_fmtdata_fund = {
                     'DataDate': self.str_today,
                     'UpdateTime': str_update_time,
                     'AcctIDByMXZ': self.acctidbymxz,
                     'Cash': cash,
-                    'NetAsset': net_asset,
-                    'CashFromSS': cash_from_ss,
                     'CashAvailableForCollateralTrade': cash_available_for_collateral_trade
                 }
                 list_dicts_trade_fmtdata_fund.append(dict_trade_fmtdata_fund)
@@ -206,7 +219,9 @@ class UpdateTradeFmtDataHolding(Thread):
         self.acctidbymxz = gl.acctidbymxz
 
     def run(self):
-        server_mongodb = MongoClient('mongodb://localhost:27017/')
+        server_mongodb = MongoClient(
+            'mongodb://192.168.2.162:27017/', username='Maxincer', password='winnerismazhe'
+        )
         db_trade_data = server_mongodb['trade_data']
         col_trade_rawdata_holding = db_trade_data['trade_rawdata_holding']
         col_trade_fmtdata_holding = db_trade_data['trade_fmtdata_holding']
@@ -218,21 +233,21 @@ class UpdateTradeFmtDataHolding(Thread):
             )
             list_dicts_trade_fmtdata_holding = []
             for dict_trade_rawdata_holding in iter_trade_rawdata_holding:
-                secid = dict_trade_rawdata_holding['证券代码']
-                shareholder_id = dict_trade_rawdata_holding['股东账号']
-                if shareholder_id[0].isalpha():
-                    secidsrc = 'SSE'
-                elif shareholder_id[0].isdigit():
-                    secidsrc = 'SZSE'
-                else:
-                    raise ValueError(f'Wrong shareholder ID: {shareholder_id}')
+                secid = str(dict_trade_rawdata_holding['代码']).zfill(6)
+                # shareholder_id = dict_trade_rawdata_holding['股东账号']
+                # if shareholder_id[0].isalpha():
+                #     secidsrc = 'SSE'
+                # elif shareholder_id[0].isdigit():
+                #     secidsrc = 'SZSE'
+                # else:
+                #     raise ValueError(f'Wrong shareholder ID: {shareholder_id}')
+                dict_exg = {'1': 'SZSE', '2': 'SSE'}
+                secidsrc = dict_exg[dict_trade_rawdata_holding['市场']]
                 str_code = f"{secid}.{secidsrc}"
                 sectype = Globals.get_mingshi_sectype_from_code(str_code)
-                longqty = float(dict_trade_rawdata_holding['当前拥股'])
-                longqtybalance = float(dict_trade_rawdata_holding['昨夜拥股'])
-                symbol = dict_trade_rawdata_holding['证券名称']
-                latest_px = float(dict_trade_rawdata_holding['最新价'])  # todo 需确认： 最新价对应的fix 字段
-                longamt = float(dict_trade_rawdata_holding['市值'])
+                longqty = float(dict_trade_rawdata_holding['当前拥股数量'])
+                longqtybalance = float(dict_trade_rawdata_holding['昨日持仓量'])
+                longamt = float(dict_trade_rawdata_holding['证券市值'])
 
                 dict_trade_fmtdata_holding = {
                     'DataDate': self.str_today,
@@ -240,10 +255,8 @@ class UpdateTradeFmtDataHolding(Thread):
                     'AcctIDByMXZ': self.acctidbymxz,
                     'SecurityID': secid,
                     'SecurityIDSource': secidsrc,
-                    'Symbol': symbol,
                     'LongQty': longqty,
                     'LongQtyBalance': longqtybalance,
-                    'Price': latest_px,
                     'LongAmt': longamt,
                     'SecurityType': sectype,
                     }
@@ -262,8 +275,10 @@ class UpdateTradeFmtDataOrder(Thread):
         self.str_today = gl.str_today
         self.acctidbymxz = gl.acctidbymxz
 
-    def run(self):
-        server_mongodb = MongoClient('mongodb://localhost:27017/')
+    def run_xtpb(self):
+        server_mongodb = MongoClient(
+            'mongodb://192.168.2.162:27017/', username='Maxincer', password='winnerismazhe'
+        )
         db_trade_data = server_mongodb['trade_data']
         col_trade_rawdata_order = db_trade_data['trade_rawdata_order']
         col_trade_fmtdata_order = db_trade_data['trade_fmtdata_order']
@@ -316,6 +331,57 @@ class UpdateTradeFmtDataOrder(Thread):
             print('update_trade_fmtdata_order finished, sleep 30s')
             sleep(30)
 
+    def run_ehfz(self):  # ehfz
+        server_mongodb = MongoClient(
+            'mongodb://192.168.2.162:27017/', username='Maxincer', password='winnerismazhe'
+        )
+        db_trade_data = server_mongodb['trade_data']
+        col_trade_rawdata_order = db_trade_data['trade_rawdata_order']
+        col_trade_fmtdata_order = db_trade_data['trade_fmtdata_order']
+        while True:
+            str_update_time = datetime.now().strftime('%H%M%S')
+            iter_trade_rawdata_order = col_trade_rawdata_order.find(
+                {'DataDate': self.str_today, 'AcctIDByMXZ': self.acctidbymxz}
+            )
+            # 确认side:
+            # todo fix 协议中只有3个方向： 1. 1 = buy, 2. 2 = sell, 5 = Sell Short, 字符串: str
+            # todo 但国内在交易环节可以提供这部分信息： BC: 买券还券 和 现券还券 B: 担保品买入
+            list_dicts_trade_fmtdata_order = []
+            for dict_trade_rawdata_order in iter_trade_rawdata_order:
+                secid = str(dict_trade_rawdata_order['证券代码']).zfill(6)
+                symbol = dict_trade_rawdata_order['证券名称']
+                trade_mark = dict_trade_rawdata_order['@交易类型']
+                exg = dict_trade_rawdata_order['市场类型']
+                secidsrc = {'1': 'SSE', '2': 'SZSE'}[exg]
+                cumqty = float(dict_trade_rawdata_order['成交数量'])
+                avgpx = float(dict_trade_rawdata_order['成交价格'])
+                ordstatus = dict_trade_rawdata_order['@委托状态']
+                if trade_mark in ['1', '2']:
+                    side = int(trade_mark)
+                elif trade_mark in ['15'] and ordstatus in ['2', '8']:  # todo 抽象现券还券划转和买券还券划转， 目前只看到了现券还券划转
+                    side = 5
+                else:
+                    raise ValueError('Unknown trade mark.')
+                order_time = dict_trade_rawdata_order['委托时间'].replace(':', '')
+                dict_trade_fmtdata_order = {
+                    'DataDate': self.str_today,
+                    'UpdateTime': str_update_time,
+                    'AcctIDByMXZ': self.acctidbymxz,
+                    'SecurityID': secid,
+                    'SecurityIDSource': secidsrc,
+                    'Symbol': symbol,
+                    'CumQty': cumqty,
+                    'AvgPx': avgpx,
+                    'Side': side,
+                    'OrderTime': order_time,
+                }
+                list_dicts_trade_fmtdata_order.append(dict_trade_fmtdata_order)
+            col_trade_fmtdata_order.delete_many({'DataDate': self.str_today})
+            if list_dicts_trade_fmtdata_order:
+                col_trade_fmtdata_order.insert_many(list_dicts_trade_fmtdata_order)
+            print('update_trade_fmtdata_order finished, sleep 30s')
+            sleep(30)
+
 
 class UpdateTradePosition(Thread):
     """
@@ -331,7 +397,9 @@ class UpdateTradePosition(Thread):
         self.gl = gl
 
     def run(self):
-        server_mongodb = MongoClient('mongodb://localhost:27017/')
+        server_mongodb = MongoClient(
+            'mongodb://192.168.2.162:27017/', username='Maxincer', password='winnerismazhe'
+        )
         db_trade_data = server_mongodb['trade_data']
         db_posttrd_data = server_mongodb['post_trade_data']
         col_posttrd_position = db_posttrd_data['post_trade_position']
@@ -438,7 +506,7 @@ class UpdateTradeDataBase:
         t7_update_trade_fmtdata_order = UpdateTradeFmtDataOrder(self.gl)
         t5_update_trade_fmtdata_fund.start()
         t6_update_trade_fmtdata_holding.start()
-        t7_update_trade_fmtdata_order.start()
+        t7_update_trade_fmtdata_order.run_ehfz()
 
         # business data
         t8_update_trade_position = UpdateTradePosition(self.gl)

@@ -281,6 +281,8 @@ class PreTrdMng:
             if qty2borrow_from_outside_source > 0:
                 secid = dict_tgtsecloan_mngdraft['SecurityID']
                 # 筛选最小数量限制：外界询券状态下，非双创最少10000股，双创最少1000股
+                if secid[:3] in ['688']:
+                    continue
                 if (secid[:3] not in ['688', '300']) and qty2borrow_from_outside_source < 10000:
                     continue
                 if (secid[:3] in ['688', '300']) and qty2borrow_from_outside_source < 1000:

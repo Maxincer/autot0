@@ -78,7 +78,7 @@ class PostTrdMng:
             f'鸣石满天星7号清算后数据{self.gl.str_today}', f'{self.gl.str_today}', self.gl.dirpath_posttrddata_from_email
         )
 
-    def upload_posttrd_rawdata(self):
+    def upload_posttrd_rawdata(self, posttrd_rawdata_data_source_type):
         """
         将需要的原始数据上传至数据库：
             1. holding
@@ -86,67 +86,110 @@ class PostTrdMng:
             3. shortqty from secloan
             4. fee_from_secloan
         """
+
         # posttrd_rawdata_fund
-        df_input_xlsx_fund = pd.read_excel(
-            self.gl.fpath_input_xlsx_fund,
-            skiprows=1,
-            nrows=1,
-            dtype={
-                # '资金余额': float,
-                '可用金额': float,
-                '融资市值': float,
-                '融券金额': float,
-                '总市值(公允价)': float,
-                '总资产(公允价)': float,
-                '净资产(公允价)': float,
-                '总负债': float,
-                '资金负债': float,
-                '融券负债': float,
-                '利息/费用': float,
-                '现金资产': float,
-                '担保证券市值': float,
-                '可用保证金': float,
-                '融资已用保证金': float,
-                '融券已用保证金': float,
-                '授信额度': float,
-                '融资保证金比例': float,
-                '融券保证金比例': float,
-                '维持担保比例(扣除非担保品)': str,
+        if posttrd_rawdata_data_source_type in ['hait_ehtc']:
+            df_input_rawdata_fund = pd.read_excel(
+                self.gl.fpath_input_xlsx_fund,
+                skiprows=1,
+                nrows=1,
+                dtype={
+                    '资金余额': float,
+                    '可用金额': float,
+                    '融资市值': float,
+                    '融券金额': float,
+                    '总市值(公允价)': float,
+                    '总资产(公允价)': float,
+                    '净资产(公允价)': float,
+                    '总负债': float,
+                    '资金负债': float,
+                    '融券负债': float,
+                    '利息/费用': float,
+                    '现金资产': float,
+                    '担保证券市值': float,
+                    '可用保证金': float,
+                    '融资已用保证金': float,
+                    '融券已用保证金': float,
+                    '授信额度': float,
+                    '融资保证金比例': float,
+                    '融券保证金比例': float,
+                    '维持担保比例(扣除非担保品)': str,
+                },
+            )
 
-            },
-        )
+        elif posttrd_rawdata_data_source_type in ['hait_ehfz']:
+            df_input_rawdata_fund = pd.read_csv(
+                self.gl.fpath_input_rawdata_fund,
+                dtype={
+                    '资金账户': str,
+                    '币种': str,
+                    '可用金额': float,
+                    '可取余额': float,
+                    '冻结金额': float,
+                    '证券市值': float,
+                    '资金余额': float,
+                    '资产总值': float,
+                    '总盈亏': float
+                },
+            )
 
-        df_input_xlsx_fund = df_input_xlsx_fund.where(df_input_xlsx_fund.notnull(), None)
-        df_input_xlsx_fund['DataDate'] = self.gl.str_last_trddate
-        df_input_xlsx_fund['AcctIDByMXZ'] = self.gl.acctidbymxz
-        list_dicts_fund = df_input_xlsx_fund.to_dict('records')
+        else:
+            raise ValueError('Wrong data source type.')
+
+        df_input_rawdata_fund = df_input_rawdata_fund.where(df_input_rawdata_fund.notnull(), None)
+        df_input_rawdata_fund['DataDate'] = self.gl.str_last_trddate
+        df_input_rawdata_fund['AcctIDByMXZ'] = self.gl.acctidbymxz
+        list_dicts_rawdata_fund = df_input_rawdata_fund.to_dict('records')
         self.gl.col_posttrd_rawdata_fund.delete_many(
             {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': self.gl.acctidbymxz}
         )
-        if list_dicts_fund:
-            self.gl.col_posttrd_rawdata_fund.insert_many(list_dicts_fund)
+        if list_dicts_rawdata_fund:
+            self.gl.col_posttrd_rawdata_fund.insert_many(list_dicts_rawdata_fund)
 
         # posttrd_rawdata_holding
-        df_input_xlsx_holding = pd.read_excel(
-            self.gl.fpath_input_xlsx_holding,
-            skiprows=4,
-            dtype={
-                '证券代码': str,
-                '证券余额': float,
-                '证券可用': float,
-                '冻结数量': float,
-                '股东账号': str,
-            }
-        )
-        df_input_xlsx_holding = df_input_xlsx_holding.where(df_input_xlsx_holding.notnull(), None)
-        df_input_xlsx_holding['DataDate'] = self.gl.str_last_trddate
-        df_input_xlsx_holding['AcctIDByMXZ'] = self.gl.acctidbymxz
-        list_dicts_holding = df_input_xlsx_holding.to_dict('records')
+        if posttrd_rawdata_data_source_type in ['hait_ehtc']:
+            df_input_rawdata_holding = pd.read_excel(
+                self.gl.fpath_input_xlsx_holding,
+                skiprows=4,
+                type={
+                    '证券余额': float,
+                    '证券可用': float,
+                    '交易市场': str,
+                    '股东账号': str
+                },
+                converters={'证券代码': lambda x: str(x).zfill(6)}
+            )
+        elif posttrd_rawdata_data_source_type in ['hait_ehfz']:
+            df_input_rawdata_holding = pd.read_csv(
+                self.gl.fpath_input_rawdata_holding,
+                dtype={
+                    '资金账号': str,
+                    '市场': float,
+                    '昨日持仓量': float,
+                    '股份余额': float,
+                    '可卖数量': float,
+                    '可申购数量': float,
+                    '当前拥股数量': float,
+                    '成本价格': float,
+                    '证券市值': float,
+                    '浮动盈亏': float,
+                },
+                converters={'代码': lambda x: str(x).zfill(6)}
+            )
+
+        else:
+            raise ValueError('Wrong data source type.')
+
+
+        df_input_rawdata_holding = df_input_rawdata_holding.where(df_input_rawdata_holding.notnull(), None)
+        df_input_rawdata_holding['DataDate'] = self.gl.str_last_trddate
+        df_input_rawdata_holding['AcctIDByMXZ'] = self.gl.acctidbymxz
+        list_dicts_rawdata_holding = df_input_rawdata_holding.to_dict('records')
         self.gl.col_posttrd_rawdata_holding.delete_many(
             {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': self.gl.acctidbymxz}
         )
-        if list_dicts_holding:
-            self.gl.col_posttrd_rawdata_holding.insert_many(list_dicts_holding)
+        if list_dicts_rawdata_holding:
+            self.gl.col_posttrd_rawdata_holding.insert_many(list_dicts_rawdata_holding)
 
         # posttrd_rawdata_secloan_from_private_secpool
         df_input_xlsx_secloan_from_private_secpool = pd.read_excel(
@@ -167,6 +210,7 @@ class PostTrdMng:
                 '出借人合约号': str,
             }
         )
+
         df_input_xlsx_secloan_from_private_secpool = (
             df_input_xlsx_secloan_from_private_secpool.where(df_input_xlsx_secloan_from_private_secpool.notnull(), None)
         )
@@ -1095,7 +1139,12 @@ class PostTrdMng:
             short_exposure += short_exposure_delta
         net_exposure = long_exposure - short_exposure
         gross_exposure = long_exposure + short_exposure
-        pct_trdamt2gross_exposure = round(trdamt_autot0 / gross_exposure, 2)
+
+        if gross_exposure:
+            pct_trdamt2gross_exposure = round(trdamt_autot0 / gross_exposure, 2)
+        else:
+            pct_trdamt2gross_exposure = 999999
+
         pct_i = round(i_secids_from_trading / i_secids_from_ssquota_from_secloan, 2)
         pct_i_secids_from_ssquota_from_secloan2i_secids_from_tgtsecloan = (
                 round(i_secids_from_ssquota_from_secloan / i_secids_from_tgtsecloan, 2)
@@ -1244,7 +1293,7 @@ class PostTrdMng:
 
         # 获取清算数据 资产变动和负债变动
         # # CF_T = PNL + Liability_delta - non-current_Asset_delta
-
+        # todo non-current_asset 还包括保证金利息
         # # last_last_trddate
         # # # liability_last_last_trddate = shortamt + liability_from_secloan
         list_posttrd_position_last_last_trddate = list(
@@ -1332,7 +1381,7 @@ class PostTrdMng:
         self.gl.col_posttrd_cf_from_indirect_method.insert_one(dict_posttrd_cf_from_indirect_method)
 
     def run(self):
-        self.upload_posttrd_rawdata()
+        self.upload_posttrd_rawdata('hait_ehtc')
         self.upload_posttrd_fmtdata()
         self.get_and_upload_col_post_trddata_pnl()
         self.get_col_secloan_utility_analysis()
@@ -1342,6 +1391,6 @@ class PostTrdMng:
 
 
 if __name__ == '__main__':
-    task = PostTrdMng('20201211', download_winddata_mark=0)
+    task = PostTrdMng(download_winddata_mark=0)
     task.run()
     print('Done')
