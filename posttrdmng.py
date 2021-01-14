@@ -785,6 +785,8 @@ class PostTrdMng:
                 dict_shortqty_from_secloan = self.gl.col_posttrd_fmtdata_secloan_from_public_secpool.find_one(
                     {'AcctIDByMXZ': self.gl.acctidbymxz, 'ContractID': serial_number,}
                 )
+                if serial_number in ['000000046148']:
+                    continue
                 secid = dict_shortqty_from_secloan['SecurityID']
                 loan_type = 'secloan_from_public'
             elif loan_type in ['私用融券', '私用券源']:
@@ -1146,9 +1148,12 @@ class PostTrdMng:
             pct_trdamt2gross_exposure = 999999
 
         pct_i = round(i_secids_from_trading / i_secids_from_ssquota_from_secloan, 2)
-        pct_i_secids_from_ssquota_from_secloan2i_secids_from_tgtsecloan = (
-                round(i_secids_from_ssquota_from_secloan / i_secids_from_tgtsecloan, 2)
-        )
+        if i_secids_from_tgtsecloan:
+            pct_i_secids_from_ssquota_from_secloan2i_secids_from_tgtsecloan = (
+                    round(i_secids_from_ssquota_from_secloan / i_secids_from_tgtsecloan, 2)
+            )
+        else:
+            pct_i_secids_from_ssquota_from_secloan2i_secids_from_tgtsecloan = 999999999
         pct_short_exposure2ssquota_mv = round(short_exposure / ssquota_mv, 2)
         dict_secloan_utility_analysis = {
             'DataDate': self.gl.str_last_trddate,
@@ -1226,7 +1231,7 @@ class PostTrdMng:
                 {'DataDate': _datadate}
             )
             if dict_posttrd_cf_from_indirect_method:
-                dif_cf_from_indirect_method = round(dict_posttrd_cf_from_indirect_method['DifCFFromIndirectMethod'],2)
+                dif_cf_from_indirect_method = dict_posttrd_cf_from_indirect_method['DifCFFromIndirectMethod']
             else:
                 dif_cf_from_indirect_method = None
 
@@ -1242,7 +1247,6 @@ class PostTrdMng:
             list_output_sheet_pnl_analysis_by_acctidbymxz.append(dict_output_posttrd_pnl_by_acctidbymxz)
         df_output_sheet_pnl_analysis_by_acctidbymxz = pd.DataFrame(list_output_sheet_pnl_analysis_by_acctidbymxz)
         df_output_sheet_pnl_analysis_by_acctidbymxz.sort_values(by=['DataDate'], inplace=True)
-
 
         # 输出fund
         iter_dicts_posttrd_fund_by_acctidbymxz = self.gl.col_posttrd_fmtdata_fund.find(
@@ -1362,8 +1366,13 @@ class PostTrdMng:
         dict_posttrd_fmtdata_fund_last_last_trddate = self.gl.col_posttrd_fmtdata_fund.find_one(
             {'DataDate': self.gl.str_last_last_trddate, 'AcctIDByMXZ': self.gl.acctidbymxz}
         )
-        cash_ending_last_last_trddate = dict_posttrd_fmtdata_fund_last_last_trddate['CashBalance']
-        cf_posttrd = cash_ending_last_trddate - cash_ending_last_last_trddate
+        if dict_posttrd_fmtdata_fund_last_last_trddate is None:
+            cf_posttrd = 'N/A'
+            dif_cf_from_indirect_method = 'N/A'
+        else:
+            cash_ending_last_last_trddate = dict_posttrd_fmtdata_fund_last_last_trddate['CashBalance']
+            cf_posttrd = cash_ending_last_trddate - cash_ending_last_last_trddate
+            dif_cf_from_indirect_method = cf_from_indirect_method - cf_posttrd
 
         dict_posttrd_cf_from_indirect_method = {
             'DataDate': self.gl.str_last_trddate,
@@ -1373,7 +1382,7 @@ class PostTrdMng:
             'NonCurrentAssetChange': non_current_asset_last_trddate - non_current_asset_last_last_trddate,
             'CFFromIndirectMethod': cf_from_indirect_method,
             'CFFromPostTradeData': cf_posttrd,
-            'DifCFFromIndirectMethod': cf_from_indirect_method - cf_posttrd,
+            'DifCFFromIndirectMethod': dif_cf_from_indirect_method,
         }
         self.gl.col_posttrd_cf_from_indirect_method.delete_one(
             {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': self.gl.acctidbymxz}

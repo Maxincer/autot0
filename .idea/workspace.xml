@@ -22,204 +22,272 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="94617ebe-9a89-4ddb-bd66-872b475c77a4" name="Default Changelist" comment="update indirect method">
-      <change afterPath="$PROJECT_DIR$/307_vs_918.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/307_交易信息_2020_12_25_1001.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/307_交易信息_2020_12_25_1100.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/307_交易信息_2020_12_25_1125.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/307_交易信息_2020_12_25_1400.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/307_交易信息_2020_12_25_1425.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/918_20201229_holding.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/918_交易信息_2020_12_25_1001.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/918_交易信息_2020_12_25_1120.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/918_交易信息_2020_12_25_1130.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/918_交易信息_2020_12_25_1425.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/compare_draft.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201211/私用券源合约20201214.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201211/鸣石满天星7号未结利息20201214.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201211/鸣石满天星7号每日交割单-20201214.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201214/两融_资产导出_20201214.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201214/私用券源合约20201215.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201214/融券公用合约_20201214.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201214/融券明细_未了结仓单_20201214.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201214/鸣石满天星7号未结利息20201215.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201214/鸣石满天星7号每日交割单-20201215.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201215/两融_资产导出_20201215.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201215/私用券源合约20201216.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201215/融券公用合约_20201215.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201215/融券明细_未了结仓单_20201215.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201215/鸣石满天星7号未结利息20201216.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201215/鸣石满天星7号每日交割单-20201216.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201216/两融_资产导出_20201216.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201216/私用券源合约20201217.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201216/融券公用合约_20201216.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201216/融券明细_未了结仓单_20201216.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201216/鸣石满天星7号未结利息20201217.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201216/鸣石满天星7号每日交割单-20201217.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201217/两融_资产导出_20201217.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201217/私用券源合约20201218.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201217/融券公用合约_20201217.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201217/融券明细_未了结仓单_20201217.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201217/鸣石满天星7号未结利息20201218.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201217/鸣石满天星7号每日交割单-20201218.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201218/两融_资产导出_20201218.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201218/私用券源合约20201221.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201218/融券公用合约_20201218.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201218/融券明细_未了结仓单_20201218.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201218/鸣石满天星7号未结利息20201221.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201218/鸣石满天星7号每日交割单-20201221.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201221/两融_资产导出_20201221.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201221/私用券源合约20201222.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201221/融券公用合约_20201221.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201221/融券明细_未了结仓单_20201221.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201221/鸣石满天星7号未结利息20201222.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201221/鸣石满天星7号每日交割单-20201222.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201222/两融_资产导出_20201222.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201222/私用券源合约20201223.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201222/融券公用合约_20201222.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201222/融券明细_未了结仓单_20201222.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201222/鸣石满天星7号未结利息20201223.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201222/鸣石满天星7号每日交割单-20201223.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201223/两融_资产导出_20201223.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201223/私用券源合约20201224.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201223/融券公用合约_20201223.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201223/融券明细_未了结仓单_20201223.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201223/鸣石满天星7号未结利息20201224.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201223/鸣石满天星7号每日交割单-20201224.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201224/私用券源合约20201225.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201224/融券公用合约_20201224.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201224/鸣石满天星7号未结利息20201225.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201224/鸣石满天星7号每日交割单-20201225.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201225/两融_资产导出_20201225.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201225/私用券源合约20201228.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201225/融券公用合约_20201225.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201225/融券明细_未了结仓单_20201225.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201225/鸣石满天星7号未结利息20201228.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201225/鸣石满天星7号每日交割单-20201228.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201228/两融_资产导出_20201228.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201228/私用券源合约20201229.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201228/融券公用合约_20201228.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201228/融券明细_未了结仓单_20201228.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201228/鸣石满天星7号未结利息20201229.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201228/鸣石满天星7号每日交割单-20201229.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201229/两融_资产导出_20201229.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201229/私用券源合约20201230.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201229/融券公用合约_20201229.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201229/融券明细_未了结仓单_20201229.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201229/鸣石满天星7号未结利息20201230.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201229/鸣石满天星7号每日交割单-20201230.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201230/两融_资产导出_20201230.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201230/私用券源合约20201231.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201230/融券公用合约_20201230.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201230/融券明细_未了结仓单_20201230.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201230/鸣石满天星7号未结利息20201231.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201230/鸣石满天星7号每日交割单-20201231.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201231/两融_资产导出_20201231.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201231/私用券源合约20210104.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201231/融券公用合约_20201231.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201231/融券明细_未了结仓单_20201231.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201231/鸣石满天星7号未结利息20210104.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20201231/鸣石满天星7号每日交割单-20210104.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210104/两融_资产导出_20210104.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210104/私用券源合约20210105.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210104/融券公用合约_20210104.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210104/融券明细_未了结仓单_20210104.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210104/鸣石满天星7号未结利息20210105.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210104/鸣石满天星7号每日交割单-20210105.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20201214.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20201215.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20201216.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20201217.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20201218.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20201221.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20201222.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20201223.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20201224.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20201225.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20201228.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20201229.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20201230.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20201231.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20210104.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20210105.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/tgt_secpools/20201214_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/tgt_secpools/20201215_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/tgt_secpools/20201216_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/tgt_secpools/20201217_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/tgt_secpools/20201218_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/tgt_secpools/20201221_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/tgt_secpools/20201222_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/tgt_secpools/20201223_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/tgt_secpools/20201224_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/tgt_secpools/20201228_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/tgt_secpools/20201229_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/tgt_secpools/20201230_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/tgt_secpools/20210104_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/tgt_secpools/20210105_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201211_autot0_holding.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201215_autot0_holding.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201216_autot0_holding.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201217_autot0_holding.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201218_autot0_holding.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201221_autot0_holding.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201222_autot0_holding.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201223_autot0_holding.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201225_autot0_holding.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201228_autot0_holding.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201229_autot0_holding.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201231_autot0_holding.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20210104_autot0_holding.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/mode_files/20201214_demand_of_secpool_from_outside_src.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/mode_files/20201215_demand_of_secpool_from_outside_src.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/mode_files/20201216_demand_of_secpool_from_outside_src.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/mode_files/20201217_demand_of_secpool_from_outside_src.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/mode_files/20201218_demand_of_secpool_from_outside_src.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/mode_files/20201221_demand_of_secpool_from_outside_src.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/mode_files/20201222_demand_of_secpool_from_outside_src.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/mode_files/20201223_demand_of_secpool_from_outside_src.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/mode_files/20201224_demand_of_secpool_from_outside_src.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/mode_files/20201225_demand_of_secpool_from_outside_src.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/mode_files/20201228_demand_of_secpool_from_outside_src.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/mode_files/20201229_demand_of_secpool_from_outside_src.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/mode_files/20201230_demand_of_secpool_from_outside_src.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/mode_files/20201231_demand_of_secpool_from_outside_src.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/mode_files/20210104_demand_of_secpool_from_outside_src.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/mode_files/20210105_demand_of_secpool_from_outside_src.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/tgtsecloan_mngdraft/20201214_tgtsecloan_mngdraft.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/tgtsecloan_mngdraft/20201215_tgtsecloan_mngdraft.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/tgtsecloan_mngdraft/20201216_tgtsecloan_mngdraft.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/tgtsecloan_mngdraft/20201217_tgtsecloan_mngdraft.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/tgtsecloan_mngdraft/20201218_tgtsecloan_mngdraft.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/tgtsecloan_mngdraft/20201221_tgtsecloan_mngdraft.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/tgtsecloan_mngdraft/20201222_tgtsecloan_mngdraft.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/tgtsecloan_mngdraft/20201223_tgtsecloan_mngdraft.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/tgtsecloan_mngdraft/20201224_tgtsecloan_mngdraft.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/tgtsecloan_mngdraft/20201225_tgtsecloan_mngdraft.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/tgtsecloan_mngdraft/20201228_tgtsecloan_mngdraft.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/tgtsecloan_mngdraft/20201229_tgtsecloan_mngdraft.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/tgtsecloan_mngdraft/20201230_tgtsecloan_mngdraft.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/tgtsecloan_mngdraft/20201231_tgtsecloan_mngdraft.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/tgtsecloan_mngdraft/20210104_tgtsecloan_mngdraft.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/tgtsecloan_mngdraft/20210105_tgtsecloan_mngdraft.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/交易信息_2020_12_24_307.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/交易信息_2020_12_24_918.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/交易信息_2020_12_28_094500.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/交易信息_2020_12_28_100000.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/交易信息_2020_12_28_307_133500.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/交易信息_2020_12_28_918_134000.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/交易信息_2020_12_30_307_133000.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/交易信息_2020_12_30_918_133000.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/鸣石满天星4号每日交割单-20201228.htm" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+    <list default="true" id="94617ebe-9a89-4ddb-bd66-872b475c77a4" name="Default Changelist" comment="update indirect method for hait_ehfz">
+      <change afterPath="$PROJECT_DIR$/data/doc/huat/公募券单.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/doc/huat/华泰融券通平台1月8日全新改版.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/doc/huat/科创板券单.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/doc/huat/融券通平台使用手册v2.0.docx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210105/两融_资产导出_20210105.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210105/私用券源合约20210106.xls" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210105/融券公用合约_20210105.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210105/融券明细_未了结仓单_20210105.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210105/鸣石满天星7号未结利息20210106.xls" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210105/鸣石满天星7号每日交割单-20210106.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210106/两融_资产导出_20210106.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210106/私用券源合约20210107.xls" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210106/融券公用合约_20210106.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210106/融券明细_未了结仓单_20210106.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210106/鸣石满天星7号未结利息20210107.xls" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210106/鸣石满天星7号每日交割单-20210107.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210107/两融_资产导出_20210107.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210107/私用券源合约20210108.xls" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210107/融券公用合约_20210107.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210107/融券明细_未了结仓单_20210107.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210107/鸣石满天星7号未结利息20210108.xls" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210107/鸣石满天星7号每日交割单-20210108.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210108/两融_资产导出_20210108.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210108/私用券源合约20210111.xls" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210108/融券公用合约_20210108.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210108/融券明细_未了结仓单_20210108.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210108/鸣石满天星7号未结利息20210111.xls" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210108/鸣石满天星7号每日交割单-20210111.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210111/两融_资产导出_20210111.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210111/私用券源合约20210112.xls" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210111/融券公用合约_20210111.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210111/融券明细_未了结仓单_20210111.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210111/鸣石满天星7号未结利息20210112.xls" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210111/鸣石满天星7号每日交割单-20210112.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210112/两融_资产导出_20210112.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210112/私用券源合约20210113.xls" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210112/融券公用合约_20210112.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210112/融券明细_未了结仓单_20210112.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210112/鸣石满天星7号未结利息20210113.xls" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210112/鸣石满天星7号每日交割单-20210113.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210113/两融_资产导出_20210113.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210113/私用券源合约20210114.xls" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210113/融券公用合约_20210113.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210113/融券明细_未了结仓单_20210113.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210113/鸣石满天星7号未结利息20210114.xls" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210113/鸣石满天星7号每日交割单-20210114.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/gtja/每日券池-20210111.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20210106.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20210107.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20210108.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20210111.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20210112.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20210113.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/huat/每日券池-20210106.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/huat/每日券池-20210108.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/huat/每日券池-20210111.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/huat/每日券池-20210113.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/huat/每日券池-20210114.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/swhy/每日券池-20210106.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/tgt_secpools/20210106_target_secids.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/tgt_secpools/20210107_target_secids.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/tgt_secpools/20210108_target_secids.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/tgt_secpools/20210111_target_secids.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/tgt_secpools/20210113_target_secids.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/tgt_secpools/20210114_target_secids.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/trade_data_patch/matic_master/huat_security_loan.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201022_alphaT0_short_selling_quota.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201023_alphaT0_holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201023_alphaT0_short_selling_quota.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201026_alphaT0_holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201026_alphaT0_short_selling_quota.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201027_alphaT0_holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201027_alphaT0_short_selling_quota.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201028_alphaT0_holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201028_alphaT0_short_selling_quota.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201029_alphaT0_holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201029_alphaT0_short_selling_quota.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201030_alphaT0_holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201030_alphaT0_short_selling_quota.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201102_alphaT0_holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201102_alphaT0_short_selling_quota.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201103_alphaT0_holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201103_alphaT0_short_selling_quota.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201104_autot0_short_selling_quota.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201105_autot0_holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201105_autot0_short_selling_quota.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201106_autot0_holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201106_autot0_short_selling_quota.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201109_autot0_holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201109_autot0_short_selling_quota.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201110_autot0_holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201110_autot0_short_selling_quota.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201111_autot0_holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201111_autot0_short_selling_quota.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201112_autot0_holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201112_autot0_short_selling_quota.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201113_autot0_holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201113_autot0_short_selling_quota.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201114_autot0_short_selling_quota.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201116_autot0_holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201117_autot0_holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201118_autot0_holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201119_autot0_holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201120_autot0_holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201121_autot0_holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201125_autot0_holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201126_autot0_holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201127_autot0_holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201201_autot0_holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201202_autot0_holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201203_autot0_holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201204_autot0_holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201207_autot0_holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201208_autot0_holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201209_autot0_holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201210_autot0_holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201211_autot0_holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201215_autot0_holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201216_autot0_holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201217_autot0_holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201218_autot0_holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201221_autot0_holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201222_autot0_holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201223_autot0_holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201224_autot0_holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201225_autot0_holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201228_autot0_holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201229_autot0_holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20201231_autot0_holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20210104_autot0_holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20210105_autot0_holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20210106_autot0_holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20210107_autot0_holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20210108_autot0_holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20210111_autot0_holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/307/20210112_autot0_holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts/8111/20210113_autot0_holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/mode_files/20210106_demand_of_secpool_from_outside_src.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/mode_files/20210107_demand_of_secpool_from_outside_src.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/mode_files/20210108_demand_of_secpool_from_outside_src.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/mode_files/20210111_demand_of_secpool_from_outside_src.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/mode_files/20210112_demand_of_secpool_from_outside_src.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/mode_files/20210113_demand_of_secpool_from_outside_src.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/security_loan/provided_security_loan_analysis.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/tgtsecloan_mngdraft/20210106_tgtsecloan_mngdraft.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/tgtsecloan_mngdraft/20210107_tgtsecloan_mngdraft.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/tgtsecloan_mngdraft/20210108_tgtsecloan_mngdraft.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/tgtsecloan_mngdraft/20210111_tgtsecloan_mngdraft.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/tgtsecloan_mngdraft/20210112_tgtsecloan_mngdraft.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/tgtsecloan_mngdraft/20210113_tgtsecloan_mngdraft.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/tgtsecloan_mngdraft/20210114_tgtsecloan_mngdraft.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/trdsys_performance_analysis/T0Series_Composite_trdsys_performance_analysis.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/trdsys_performance_analysis/trdsys_performance_analysis.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/subjects/比较分析307与918/307_交易信息_2020_12_25_1001.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/subjects/比较分析307与918/307_交易信息_2020_12_25_1100.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/subjects/比较分析307与918/307_交易信息_2020_12_25_1125.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/subjects/比较分析307与918/307_交易信息_2020_12_25_1400.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/subjects/比较分析307与918/307_交易信息_2020_12_25_1425.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/subjects/比较分析307与918/918_20201229_holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/subjects/比较分析307与918/918_交易信息_2020_12_25_1001.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/subjects/比较分析307与918/918_交易信息_2020_12_25_1120.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/subjects/比较分析307与918/918_交易信息_2020_12_25_1130.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/subjects/比较分析307与918/918_交易信息_2020_12_25_1425.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/subjects/比较分析307与918/compare_draft.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/subjects/比较分析307与918/交易信息_2020_12_24_307.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/subjects/比较分析307与918/交易信息_2020_12_24_918.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/subjects/比较分析307与918/交易信息_2020_12_28_094500.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/subjects/比较分析307与918/交易信息_2020_12_28_100000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/subjects/比较分析307与918/交易信息_2020_12_28_307_133500.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/subjects/比较分析307与918/交易信息_2020_12_28_918_134000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/subjects/比较分析307与918/交易信息_2020_12_30_307_133000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/subjects/比较分析307与918/交易信息_2020_12_30_918_133000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/subjects/比较分析307与918/交易标的分析_307vs918.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pretrdmng_huat.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/secloan_order.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/doc/alphaT0_notes.md" beforeDir="false" afterPath="$PROJECT_DIR$/data/doc/alphaT0_notes.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/post_trddata/20201211/两融_资产导出_20201211.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/data/input/post_trddata/20201211/两融_资产导出_20201211.xlsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/post_trddata/20201211/两融_资金明细_20201211.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/post_trddata/20201211/融券公用合约_20201211.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/data/input/post_trddata/20201211/融券公用合约_20201211.xlsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/post_trddata/20201211/融券明细_未了结仓单_20201211.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/data/input/post_trddata/20201211/融券明细_未了结仓单_20201211.xlsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/307_交易信息_2020_12_25_1001.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/307_交易信息_2020_12_25_1100.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/307_交易信息_2020_12_25_1125.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/307_交易信息_2020_12_25_1400.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/307_交易信息_2020_12_25_1425.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/918_20201229_holding.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/918_交易信息_2020_12_25_1001.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/918_交易信息_2020_12_25_1120.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/918_交易信息_2020_12_25_1130.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/918_交易信息_2020_12_25_1425.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/compare_draft.xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/20201126_marginable_secpools_from_hait.xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/input/trddata/20201030_security_loan_contracts.xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/input/trddata/两融_当日委托_20201105.xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/input/trddata/两融_资产导出_20201105.xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/input/trddata/两融_资产导出_20201106.xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/input/trddata/每日券池-20201102.xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/input/trddata/私用券源合约20201102.xls" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/input/trddata/融券明细_未了结仓单_20201030.xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/input/trddata/融券私用合约_20201027.xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/input/trddata/融券私用合约_20201030.xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/input/trddata/融券私用合约_20201105.xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/input/trddata/鸣石满天星7号交 割单20201019-20201104.xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/input/windcode2wssdata/20201023_dict_windcode2marginornot.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/input/windcode2wssdata/20201026_dict_windcode2marginornot.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/input/windcode2wssdata/20201027_dict_windcode2marginornot.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/input/windcode2wssdata/20201028_dict_windcode2marginornot.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/input/windcode2wssdata/20201028_dict_windcode2wssdata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/input/windcode2wssdata/20201029_dict_windcode2wssdata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/input/windcode2wssdata/20201030_dict_windcode2wssdata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/input/windcode2wssdata/20201102_dict_windcode2wssdata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/input/windcode2wssdata/20201103_dict_windcode2wssdata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/input/windcode2wssdata/20201104_dict_windcode2wssdata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/input/windcode2wssdata/20201105_dict_windcode2wssdata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/input/windcode2wssdata/20201106_dict_windcode2wssdata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201022_alphaT0_short_selling_quota.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201023_alphaT0_holding.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201023_alphaT0_short_selling_quota.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201026_alphaT0_holding.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201026_alphaT0_short_selling_quota.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201027_alphaT0_holding.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201027_alphaT0_short_selling_quota.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201028_alphaT0_holding.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201028_alphaT0_short_selling_quota.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201029_alphaT0_holding.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201029_alphaT0_short_selling_quota.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201030_alphaT0_holding.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201030_alphaT0_short_selling_quota.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201102_alphaT0_holding.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201102_alphaT0_short_selling_quota.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201103_alphaT0_holding.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201103_alphaT0_short_selling_quota.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201104_autot0_short_selling_quota.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201105_autot0_holding.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201105_autot0_short_selling_quota.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201106_autot0_holding.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201106_autot0_short_selling_quota.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201127_autot0_holding.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201202_autot0_holding.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201203_autot0_holding.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201204_autot0_holding.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201207_autot0_holding.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201208_autot0_holding.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201209_autot0_holding.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201210_autot0_holding.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201211_autot0_holding.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201215_autot0_holding.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201216_autot0_holding.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201217_autot0_holding.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201218_autot0_holding.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201221_autot0_holding.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201222_autot0_holding.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201223_autot0_holding.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201225_autot0_holding.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201228_autot0_holding.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201229_autot0_holding.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20201231_autot0_holding.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/20210104_autot0_holding.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/交易信息_2020_12_24_307.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/交易信息_2020_12_24_918.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/交易信息_2020_12_28_094500.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/交易信息_2020_12_28_100000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/交易信息_2020_12_28_307_133500.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/交易信息_2020_12_28_918_134000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/交易信息_2020_12_30_307_133000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/交易信息_2020_12_30_918_133000.csv" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/globals.py" beforeDir="false" afterPath="$PROJECT_DIR$/globals.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/posttrdmng.py" beforeDir="false" afterPath="$PROJECT_DIR$/posttrdmng.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pretrdmng.py" beforeDir="false" afterPath="$PROJECT_DIR$/pretrdmng.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pretrdmng.py" beforeDir="false" afterPath="$PROJECT_DIR$/pretrdmng_hait.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/temp.py" beforeDir="false" afterPath="$PROJECT_DIR$/temp.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/trading_mng.py" beforeDir="false" afterPath="$PROJECT_DIR$/trading_mng.py" afterDir="false" />
     </list>
@@ -274,7 +342,7 @@
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="database.data.extractors.current.export.id" value="Excel (xlsx)" />
-    <property name="last_opened_file_path" value="$USER_HOME$/Desktop" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/data/input" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -283,29 +351,12 @@
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
-  <component name="RunManager" selected="Python.trading_mng">
-    <configuration name="307_vs_918" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="autot0" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/307_vs_918.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="true" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\projects\autot0\data\input" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Python.pretrdmng_huat">
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
       <module name="autot0" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -366,7 +417,29 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="pretrdmng" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="pretrdmng_hait (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="autot0" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/pretrdmng_hait.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="true" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="pretrdmng_huat" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="autot0" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -376,7 +449,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/pretrdmng.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/pretrdmng_huat.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="true" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -409,11 +482,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.trading_mng" />
-        <item itemvalue="Python.posttrdmng" />
+        <item itemvalue="Python.pretrdmng_huat" />
         <item itemvalue="Python.globals" />
-        <item itemvalue="Python.pretrdmng" />
-        <item itemvalue="Python.307_vs_918" />
+        <item itemvalue="Python.posttrdmng" />
+        <item itemvalue="Python.trading_mng" />
+        <item itemvalue="Python.pretrdmng_hait (1)" />
       </list>
     </recent_temporary>
   </component>
@@ -474,7 +547,16 @@
       <workItem from="1609289493315" duration="13025000" />
       <workItem from="1609383980377" duration="8893000" />
       <workItem from="1609721360680" duration="11628000" />
-      <workItem from="1609751303832" duration="30913000" />
+      <workItem from="1609751303832" duration="34540000" />
+      <workItem from="1609893833071" duration="10008000" />
+      <workItem from="1609981016638" duration="20004000" />
+      <workItem from="1610066732358" duration="7123000" />
+      <workItem from="1610171962795" duration="3145000" />
+      <workItem from="1610257321824" duration="1437000" />
+      <workItem from="1610325548256" duration="15721000" />
+      <workItem from="1610413231369" duration="8274000" />
+      <workItem from="1610458188363" duration="17356000" />
+      <workItem from="1610523432017" duration="32558000" />
     </task>
     <task id="LOCAL-00001" summary="initialize">
       <created>1604806214551</created>
@@ -560,7 +642,14 @@
       <option name="project" value="LOCAL" />
       <updated>1607758422589</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="update indirect method for hait_ehfz">
+      <created>1609837370249</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1609837370249</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -590,28 +679,31 @@
     <MESSAGE value="email auto dld" />
     <MESSAGE value="rawdata auto update" />
     <MESSAGE value="update indirect method" />
-    <option name="LAST_COMMIT_MESSAGE" value="update indirect method" />
+    <MESSAGE value="update indirect method for hait_ehfz" />
+    <option name="LAST_COMMIT_MESSAGE" value="update indirect method for hait_ehfz" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/temp.py</url>
-          <line>38</line>
-          <option name="timeStamp" value="1" />
+          <url>file://$PROJECT_DIR$/posttrdmng.py</url>
+          <line>789</line>
+          <option name="timeStamp" value="2" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/autot0$pretrdmng.coverage" NAME="pretrdmng Coverage Results" MODIFIED="1609116691839" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/autot0$trading_mng.coverage" NAME="trading_mng Coverage Results" MODIFIED="1609837314258" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/autot0$trading_mng.coverage" NAME="trading_mng Coverage Results" MODIFIED="1610520580105" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/autot0$temp.coverage" NAME="temp Coverage Results" MODIFIED="1609142482758" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/autot0$globals.coverage" NAME="globals Coverage Results" MODIFIED="1609835662489" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/autot0$globals.coverage" NAME="globals Coverage Results" MODIFIED="1610624813563" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/autot0$secloan_mng.coverage" NAME="secloan_mng Coverage Results" MODIFIED="1604989924798" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/autot0$pretrdmng__1_.coverage" NAME="pretrdmng (1) Coverage Results" MODIFIED="1607560772704" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/autot0$307_vs_918__1_.coverage" NAME="307_vs_918 (1) Coverage Results" MODIFIED="1608881790987" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/autot0$scheduler.coverage" NAME="scheduler Coverage Results" MODIFIED="1607271714200" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/autot0$posttrdmng.coverage" NAME="posttrdmng Coverage Results" MODIFIED="1609835675104" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/autot0$pretrdmng_huat.coverage" NAME="pretrdmng_huat Coverage Results" MODIFIED="1610625675640" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/autot0$posttrdmng.coverage" NAME="posttrdmng Coverage Results" MODIFIED="1610586638118" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/autot0$pretrdmng_hait__1_.coverage" NAME="pretrdmng_hait (1) Coverage Results" MODIFIED="1610499566012" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

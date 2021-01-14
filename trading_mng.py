@@ -331,7 +331,7 @@ class UpdateTradeFmtDataOrder(Thread):
             print('update_trade_fmtdata_order finished, sleep 30s')
             sleep(30)
 
-    def run_ehfz(self):  # ehfz
+    def run(self):  # ehfz
         server_mongodb = MongoClient(
             'mongodb://192.168.2.162:27017/', username='Maxincer', password='winnerismazhe'
         )
@@ -357,9 +357,11 @@ class UpdateTradeFmtDataOrder(Thread):
                 avgpx = float(dict_trade_rawdata_order['成交价格'])
                 ordstatus = dict_trade_rawdata_order['@委托状态']
                 if trade_mark in ['1', '2']:
-                    side = int(trade_mark)
-                elif trade_mark in ['15'] and ordstatus in ['2', '8']:  # todo 抽象现券还券划转和买券还券划转， 目前只看到了现券还券划转
-                    side = 5
+                    side = trade_mark
+                elif trade_mark in ['12']:
+                    side = '5'
+                elif trade_mark in ['15', '0']:  # todo 抽象现券还券划转和买券还券划转， 目前只看到了现券还券划转
+                    side = 'XQHQ'
                 else:
                     raise ValueError('Unknown trade mark.')
                 order_time = dict_trade_rawdata_order['委托时间'].replace(':', '')
@@ -373,6 +375,7 @@ class UpdateTradeFmtDataOrder(Thread):
                     'CumQty': cumqty,
                     'AvgPx': avgpx,
                     'Side': side,
+                    'OrdStatus': ordstatus,
                     'OrderTime': order_time,
                 }
                 list_dicts_trade_fmtdata_order.append(dict_trade_fmtdata_order)
@@ -459,14 +462,22 @@ class UpdateTradePosition(Thread):
                     shortqty_last_trddate = dict_posttrd_position_last_trddate['ShortQty']
                 else:
                     shortqty_last_trddate = 0
+
                 shortqty_delta_today = 0
+                longqty_delta_from_xqhq = 0
                 for dict_trade_fmtdata_order in list_dicts_trade_fmtdata_order:
                     if dict_trade_fmtdata_order['SecurityID'] == secid and dict_trade_fmtdata_order['Side'] in ['5']:
-                        shortqty_delta_today += dict_trade_fmtdata_order['LastQty']
-                    if (dict_trade_fmtdata_order['SecurityID'] == secid
-                            and dict_trade_fmtdata_order['Side'] in ['现券还券划拨', '买券还券划拨']):
-                        shortqty_delta_today += -dict_trade_fmtdata_order['LastQty']
+                        shortqty_delta_today += dict_trade_fmtdata_order['CumQty']
+                    if (
+                            dict_trade_fmtdata_order['SecurityID'] == secid
+                            and dict_trade_fmtdata_order['Side'] in ['XQHQ']
+                            and dict_trade_fmtdata_order['OrdStatus'] in ['2', '8']
+                    ):
+                        shortqty_delta_today += -dict_trade_fmtdata_order['CumQty']
+                        longqty_delta_from_xqhq += dict_trade_fmtdata_order['CumQty']
+
                 shortqty = shortqty_last_trddate + shortqty_delta_today
+                longqty = longqty - longqty_delta_from_xqhq
                 str_update_time = datetime.now().strftime('%H%M%S')
                 dict_trade_position = {
                     'DataDate': self.gl.str_today,
@@ -481,8 +492,8 @@ class UpdateTradePosition(Thread):
             col_trade_position.delete_many({'DataDate': self.gl.str_today})
             if list_dicts_trade_position:
                 col_trade_position.insert_many(list_dicts_trade_position)
-            print('Update_trade_position finished, sleep 30s')
-            sleep(30)
+            print('Update_trade_position finished, sleep 10s')
+            sleep(10)
 
 
 class UpdateTradeDataBase:
@@ -500,13 +511,13 @@ class UpdateTradeDataBase:
         t3_update_trade_rawdata_order.start()
         t4_update_trade_rawdata_secloan.start()
 
-        # fmtdata
+        # # fmtdata
         t5_update_trade_fmtdata_fund = UpdateTradeFmtDataFund(self.gl)
         t6_update_trade_fmtdata_holding = UpdateTradeFmtDataHolding(self.gl)
         t7_update_trade_fmtdata_order = UpdateTradeFmtDataOrder(self.gl)
         t5_update_trade_fmtdata_fund.start()
         t6_update_trade_fmtdata_holding.start()
-        t7_update_trade_fmtdata_order.run_ehfz()
+        t7_update_trade_fmtdata_order.start()
 
         # business data
         t8_update_trade_position = UpdateTradePosition(self.gl)

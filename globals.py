@@ -5,9 +5,6 @@
 
 """
 This script provides global variables, constants, functions in this project
-
-Note:
-    1. 方舟系统，第二天早上才有清算后数据
 """
 
 from datetime import datetime
@@ -32,7 +29,7 @@ STR_TODAY = datetime.today().strftime('%Y%m%d')
 class Globals:
     def __init__(self, str_today=STR_TODAY, download_winddata_mark=0):
         # 日期部分
-        self.str_today = str_today  # 该日必为交易日
+        self.str_today = str_today
         self.server_mongodb = MongoClient(
             'mongodb://192.168.2.162:27017/', username='Maxincer', password='winnerismazhe'
         )
@@ -52,26 +49,17 @@ class Globals:
         self.db_basicinfo = self.server_mongodb['basicinfo']
         self.col_acctinfo = self.db_basicinfo['acctinfo']
         self.col_prdinfo = self.db_basicinfo['prdinfo']
-        self.acctidbymxz = '307_m_hait_2000'  # todo 去除
-        self.prdcode = self.acctidbymxz.split('_')[0]
-        dict_prdinfo = self.col_prdinfo.find_one({'PrdCode': self.prdcode, 'DataDate': self.str_today})
-        self.prdalias = dict_prdinfo['PrdAliasInEmail']
-
-        # todo 多账户使用
-        # self.iter_dicts_acctinfo = self.col_acctinfo.find({'DataDate': self.str_today})
-        # self.list_dicts_acctinfo_autot0 = []
-        # for dict_acctinfo in self.iter_dicts_acctinfo:
-        #     list_strategy_allocation = dict_acctinfo['StrategiesAllocationByAcct'].split(';')
-        #     if 'AutoT0' in list_strategy_allocation:
-        #         self.list_dicts_acctinfo_autot0.append(dict_acctinfo)
-
+        self.list_acctinfo = list(self.col_acctinfo.find({'DataDate': self.str_today}))
+        # self.list_acctidsbymxz_autot0 = ['307_m_hait_2000', '8111_m_huat_9239']
+        self.acctidbymxz = '8111_m_huat_9239'
         # 路径部分
         # # basicinfo
         dict_acctinfo = self.col_acctinfo.find_one(
             {'DataDate': self.str_today, 'AcctIDByMXZ': self.acctidbymxz}
         )
+        str_path = '(Y:\investment_manager_products\hait_ehfz_api\YYYYMMDD_1882842000_fund.csv,Y:\investment_manager_products\hait_ehfz_api\YYYYMMDD_1882842000_holding.csv,Y:\investment_manager_products\hait_ehfz_api\YYYYMMDD_1882842000_order.csv,Y:\investment_manager_products\hait_ehfz_api\YYYYMMDD_1882842000_security_loan.csv)'
         list_fpaths_data_file_path = [
-            _.strip() for _ in dict_acctinfo['DataFilePath'].replace('YYYYMMDD', self.str_today)[1:-1].split(',')
+            _.strip() for _ in str_path.replace('YYYYMMDD', self.str_today)[1:-1].split(',')
         ]
 
         # # SecLoanContractsPoolMng
@@ -108,6 +96,7 @@ class Globals:
                 f"data/input/trddata/融券私用合约_{self.str_last_trddate}.xlsx"
             )
 
+
         # 外部券源(预约券池)： 目前为自定义格式： 为提供给我们的可锁券数量（日更，全量）。主要来自于外部询券
         self.fpath_input_xlsx_secpool_from_outside_src = (
             f"data/input/pretrddata/marginable_secpools/ts_secpool_from_outside_source.xlsx"
@@ -130,11 +119,14 @@ class Globals:
 
         # pre-trade
         self.fpath_input_csv_grp_tgtsecids_by_cps = 'data/input/pretrddata/group_tgtsecids_by_composite.csv'
-
+        self.fpath_output_xlsx_provided_secloan_analysis = (
+            'data/output/security_loan/provided_security_loan_analysis.xlsx'
+        )
         # # database
         self.db_pretrddata = self.server_mongodb['pre_trade_data']
         self.col_pretrd_grp_tgtsecids_by_cps = self.db_pretrddata['group_target_secids_by_composite']
         self.col_pretrd_tgtsecloan_mngdraft = self.db_pretrddata['tgtsecloan_mngdraft']
+        self.col_provided_secloan_analysis = self.db_pretrddata['provided_secloan_analysis']
 
         # trading
         # # filepath
@@ -225,12 +217,12 @@ class Globals:
         self.fpath_input_xlsx_secloan_from_public_secpool = (
             f"data/input/post_trddata/{self.str_last_trddate}/融券公用合约_{self.str_last_trddate}.xlsx"
         )
-        self.fpath_input_xls_fee_from_secloan = (
-            f"data/input/post_trddata/{self.str_last_trddate}/{self.prdalias}未结利息{self.str_today}.xls"
-        )
-        self.fpath_input_xlsx_jgd = (
-            f"data/input/post_trddata/{self.str_last_trddate}/{self.prdalias}每日交割单-{self.str_today}.xlsx"
-        )
+        # self.fpath_input_xls_fee_from_secloan = (
+        #     f"data/input/post_trddata/{self.str_last_trddate}/{self.prdalias}未结利息{self.str_today}.xls"
+        # )
+        # self.fpath_input_xlsx_jgd = (
+        #     f"data/input/post_trddata/{self.str_last_trddate}/{self.prdalias}每日交割单-{self.str_today}.xlsx"
+        # )
         self.fpath_output_xlsx_posttrd_analysis = "data/output/report/posttrd_analysis.xlsx"
 
         # # wind的公共数据下载， 下载的时间为自然时间， 交易日为查询日当天
@@ -359,7 +351,7 @@ class Globals:
                 break
         if not mark_tgtmail_exist:
             print(f'Warning: {str_email_subject} not found.')
-        server_pop3.quit()
+        # server_pop3.quit()
         print('The attachment from email download finished.')
 
     def send_file_via_email(self, email_to_addr, subject, fpath_file, fn_attachment):
@@ -448,9 +440,73 @@ class Globals:
         else:
             raise ValueError(f'{str_code} has unknown exchange or digit number is not 6.')
 
+    @staticmethod
+    def secloan_match(fpath_input_csv_target_secids, fpath_xlsx_secloan_secids_2b_matched):
+        """
+        两个券池进行匹配，求交集
+        """
+        df_secloan_secids_tgt = pd.read_csv(
+            fpath_input_csv_target_secids,
+            converters={'SecurityID': lambda x: str(x).zfill(6)}
+        )
+        list_secloan_secids_tgt = df_secloan_secids_tgt['SecurityID'].to_list()
+        set_secloan_secids_tgt = set(list_secloan_secids_tgt)
+        if os.path.exists(fpath_xlsx_secloan_secids_2b_matched):
+            dict_dfs_secloan_secids_2b_matched = pd.read_excel(
+                fpath_xlsx_secloan_secids_2b_matched,
+                sheet_name=None,
+                converters={
+                    'code': lambda x: str(x).zfill(6),
+                    '证券代码': lambda x: str(x).zfill(6),
+                }
+            )
+
+            list_secid_fields_name = ['SecurityID', 'code', '证券代码']  # 标题栏
+            set_secloan_secids_2b_matched = set()
+            for sheet_name, df_ in dict_dfs_secloan_secids_2b_matched.items():
+                for secid_field_name in list_secid_fields_name:
+                    if secid_field_name in df_.columns:
+                        for secid in df_[secid_field_name].to_list():
+                            set_secloan_secids_2b_matched.add(secid)
+
+            set_matched_secloan_secids = set_secloan_secids_2b_matched & set_secloan_secids_tgt
+            list_matched_secloan_secids = list(set_matched_secloan_secids)
+            list_matched_secloan_secids.sort()
+            print(fpath_xlsx_secloan_secids_2b_matched, list_matched_secloan_secids)
+            i_secloan_secids = len(list_matched_secloan_secids)
+        else:
+            i_secloan_secids = 'DataFileNotExists'
+        return i_secloan_secids
+
+    def output_provided_secloan_analysis_xlsx(self):
+        list_broker_alias_for_secloan_analysis = ['hait', 'huat', 'swhy', 'gtja']
+        list_dicts_secloan_analysis_among_brokers = []
+        for broker_alias in list_broker_alias_for_secloan_analysis:
+            i_secloan_secids = task.secloan_match(
+                f'D:/projects/autot0/data/input/tgt_secpools/{self.str_today}_target_secids.csv',
+                f'D:/projects/autot0/data/input/pretrddata/marginable_secpools/{broker_alias}/'
+                f'每日券池-{self.str_today}.xlsx'
+            )
+            dict_secloan_analysis_among_brokers = {
+                'DataDate': self.str_today,
+                'BrokerAlias': broker_alias,
+                'IntersectionSecurityCount': i_secloan_secids
+            }
+            list_dicts_secloan_analysis_among_brokers.append(dict_secloan_analysis_among_brokers)
+        self.col_provided_secloan_analysis.delete_many({'DataDate': self.str_today})
+        if list_dicts_secloan_analysis_among_brokers:
+            self.col_provided_secloan_analysis.insert_many(list_dicts_secloan_analysis_among_brokers)
+
+        iter_secloan_analysis = self.col_provided_secloan_analysis.find({}, {'_id': 0})
+        df_secloan_analysis = pd.DataFrame(iter_secloan_analysis)
+        df_secloan_analysis.to_excel(self.fpath_output_xlsx_provided_secloan_analysis, index=False)
+
+        print('Output provided_security_loan_analysis.xlsx Finished.')
+
 
 if __name__ == '__main__':
     # 盘后运行, 更新数据库
-    task = Globals(download_winddata_mark=1)
+    task = Globals(download_winddata_mark=0)
+    task.output_provided_secloan_analysis_xlsx()
 
     print('Done')
