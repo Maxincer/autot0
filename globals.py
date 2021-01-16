@@ -5,6 +5,9 @@
 
 """
 This script provides global variables, constants, functions in this project
+
+Assumption:
+    1. 信号券池地址与策略一对一，在strategy_info中体现
 """
 
 from datetime import datetime
@@ -49,26 +52,34 @@ class Globals:
         self.db_basicinfo = self.server_mongodb['basicinfo']
         self.col_acctinfo = self.db_basicinfo['acctinfo']
         self.col_prdinfo = self.db_basicinfo['prdinfo']
+        self.col_strategy_info = self.db_basicinfo['strategy_info']
         self.list_acctinfo = list(self.col_acctinfo.find({'DataDate': self.str_today}))
         # self.list_acctidsbymxz_autot0 = ['307_m_hait_2000', '8111_m_huat_9239']
-        self.acctidbymxz = '8111_m_huat_9239'
+        self.acctidbymxz = '307_m_hait_2000'
+        self.prdalias = '鸣石满天星7号'
         # 路径部分
         # # basicinfo
         dict_acctinfo = self.col_acctinfo.find_one(
             {'DataDate': self.str_today, 'AcctIDByMXZ': self.acctidbymxz}
         )
+
         str_path = '(Y:\investment_manager_products\hait_ehfz_api\YYYYMMDD_1882842000_fund.csv,Y:\investment_manager_products\hait_ehfz_api\YYYYMMDD_1882842000_holding.csv,Y:\investment_manager_products\hait_ehfz_api\YYYYMMDD_1882842000_order.csv,Y:\investment_manager_products\hait_ehfz_api\YYYYMMDD_1882842000_security_loan.csv)'
         list_fpaths_data_file_path = [
             _.strip() for _ in str_path.replace('YYYYMMDD', self.str_today)[1:-1].split(',')
         ]
 
         # # SecLoanContractsPoolMng
-        self.fpath_input_csv_target_secids = f'data/input/tgt_secpools/{self.str_today}_target_secids.csv'
+        dict_strategy_info = self.col_strategy_info.find_one({'DataDate': self.str_today, 'StrategyName': 'AutoT0'})
+        self.fpath_input_csv_target_secids = (
+            dict_strategy_info['TargetSecurityIDDataFilePath'].replace('<YYYYMMDD>', self.str_today)
+        )
         if not os.path.exists(self.fpath_input_csv_target_secids):
-            self.fpath_input_csv_target_secids = f'data/input/tgt_secpools/{self.str_last_trddate}_target_secids.csv'
+            self.fpath_input_csv_target_secids = (
+                dict_strategy_info['TargetSecurityIDDataFilePath'].replace('<YYYYMMDD>', self.str_last_trddate)
+            )
             if not os.path.exists(self.fpath_input_csv_target_secids):
                 self.fpath_input_csv_target_secids = (
-                    f'data/input/tgt_secpools/{self.str_last_last_trddate}_target_secids.csv'
+                    dict_strategy_info['TargetSecurityIDDataFilePath'].replace('<YYYYMMDD>', self.str_last_last_trddate)
                 )
 
         self.fpath_input_xlsx_private_secpool_ready = (
@@ -118,15 +129,24 @@ class Globals:
         self.email_subject_haitsecpool_from_outside_src = f'【券源需求】鸣石满天星七号-{self.str_today}'
 
         # pre-trade
-        self.fpath_input_csv_grp_tgtsecids_by_cps = 'data/input/pretrddata/group_tgtsecids_by_composite.csv'
+        self.fpath_input_csv_excluded_secids = 'data/input/pretrddata/excluded_secids.csv'
         self.fpath_output_xlsx_provided_secloan_analysis = (
             'data/output/security_loan/provided_security_loan_analysis.xlsx'
         )
+
         # # database
         self.db_pretrddata = self.server_mongodb['pre_trade_data']
         self.col_pretrd_grp_tgtsecids_by_cps = self.db_pretrddata['group_target_secids_by_composite']
         self.col_pretrd_tgtsecloan_mngdraft = self.db_pretrddata['tgtsecloan_mngdraft']
         self.col_provided_secloan_analysis = self.db_pretrddata['provided_secloan_analysis']
+        self.col_pretrd_rawdata_tgtsecids = self.db_pretrddata['pretrd_rawdata_tgtsecids']
+        self.col_pretrd_fmtdata_tgtsecids = self.db_pretrddata['pretrd_fmtdata_tgtsecids']
+        self.col_pretrd_rawdata_excluded_secids = self.db_pretrddata['pretrd_rawdata_excluded_secids']
+        self.col_pretrd_rawdata_md_private_secloan = self.db_pretrddata['pretrd_rawdata_md_private_security_loan']
+        self.col_pretrd_fmtdata_md_private_secloan = self.db_pretrddata['pretrd_fmtdata_md_private_security_loan']
+        self.col_pretrd_rawdata_md_public_secloan = self.db_pretrddata['pretrd_rawdata_md_public_security_loan']
+        self.col_pretrd_rawdata_md_public_secloan = self.db_pretrddata['pretrd_rawdata_md_public_security_loan']
+        self.col_pretrd_fmtdata_md_security_loan = self.db_pretrddata['pretrd_fmtdata_md_security_loan']
 
         # trading
         # # filepath
@@ -217,12 +237,12 @@ class Globals:
         self.fpath_input_xlsx_secloan_from_public_secpool = (
             f"data/input/post_trddata/{self.str_last_trddate}/融券公用合约_{self.str_last_trddate}.xlsx"
         )
-        # self.fpath_input_xls_fee_from_secloan = (
-        #     f"data/input/post_trddata/{self.str_last_trddate}/{self.prdalias}未结利息{self.str_today}.xls"
-        # )
-        # self.fpath_input_xlsx_jgd = (
-        #     f"data/input/post_trddata/{self.str_last_trddate}/{self.prdalias}每日交割单-{self.str_today}.xlsx"
-        # )
+        self.fpath_input_xls_fee_from_secloan = (
+            f"data/input/post_trddata/{self.str_last_trddate}/{self.prdalias}未结利息{self.str_today}.xls"
+        )
+        self.fpath_input_xlsx_jgd = (
+            f"data/input/post_trddata/{self.str_last_trddate}/{self.prdalias}每日交割单-{self.str_today}.xlsx"
+        )
         self.fpath_output_xlsx_posttrd_analysis = "data/output/report/posttrd_analysis.xlsx"
 
         # # wind的公共数据下载， 下载的时间为自然时间， 交易日为查询日当天

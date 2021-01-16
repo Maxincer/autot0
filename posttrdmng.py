@@ -1154,7 +1154,10 @@ class PostTrdMng:
             )
         else:
             pct_i_secids_from_ssquota_from_secloan2i_secids_from_tgtsecloan = 999999999
-        pct_short_exposure2ssquota_mv = round(short_exposure / ssquota_mv, 2)
+        if ssquota_mv:
+            pct_short_exposure2ssquota_mv = round(short_exposure / ssquota_mv, 2)
+        else:
+            pct_short_exposure2ssquota_mv = 999999999
         dict_secloan_utility_analysis = {
             'DataDate': self.gl.str_last_trddate,
             'AcctIDByMXZ': self.gl.acctidbymxz,
