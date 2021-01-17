@@ -23,213 +23,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="94617ebe-9a89-4ddb-bd66-872b475c77a4" name="Default Changelist" comment="update indirect method for hait_ehfz">
-      <change afterPath="$PROJECT_DIR$/data/20210115可融券查询.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/doc/huat/华泰证券融券通平台用户使用说明书.pdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/doc/huat/融券通matic操作常见问题2.0.docx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210114/两融_资产导出_20210114.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210114/私用券源合约20210115.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210114/融券公用合约_20210114.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210114/融券明细_未了结仓单_20210114.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210114/鸣石满天星7号未结利息20210115.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210114/鸣石满天星7号每日交割单-20210115.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/patch_data/1882842000_日期更改.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/patch_data/secloan_interest_period_data.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/patch_data/两融_资产导出_20201202.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/patch_data/私用券源合约明细-1882842000_20201019_20201106.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/patch_data/融券余额明细-1882842000.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/excluded_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/market_data/gtja/每日券池-20210111.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/market_data/hait/每日券池-20201125.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/market_data/hait/每日券池-20201126.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/market_data/hait/每日券池-20201127.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/market_data/hait/每日券池-20201130.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/market_data/hait/每日券池-20201201.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/market_data/hait/每日券池-20201202.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/market_data/hait/每日券池-20201203.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/market_data/hait/每日券池-20201204.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/market_data/hait/每日券池-20201207.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/market_data/hait/每日券池-20201208.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/market_data/hait/每日券池-20201209.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/market_data/hait/每日券池-20201210.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/market_data/hait/每日券池-20201211.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/market_data/hait/每日券池-20201214.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/market_data/hait/每日券池-20201215.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/market_data/hait/每日券池-20201216.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/market_data/hait/每日券池-20201217.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/market_data/hait/每日券池-20201218.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/market_data/hait/每日券池-20201221.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/market_data/hait/每日券池-20201222.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/market_data/hait/每日券池-20201223.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/market_data/hait/每日券池-20201224.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/market_data/hait/每日券池-20201225.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/market_data/hait/每日券池-20201228.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/market_data/hait/每日券池-20201229.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/market_data/hait/每日券池-20201230.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/market_data/hait/每日券池-20201231.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/market_data/hait/每日券池-20210104.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/market_data/hait/每日券池-20210105.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/market_data/hait/每日券池-20210106.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/market_data/hait/每日券池-20210107.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/market_data/hait/每日券池-20210108.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/market_data/hait/每日券池-20210111.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/market_data/hait/每日券池-20210112.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/market_data/hait/每日券池-20210113.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/market_data/huat/private_security_loan.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/market_data/huat/public_security_loan.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/market_data/huat/每日券池-20210106.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/market_data/huat/每日券池-20210108.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/market_data/huat/每日券池-20210111.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/market_data/huat/每日券池-20210113.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/market_data/huat/每日券池-20210114.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/market_data/huat/每日券池-20210115.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/market_data/swhy/每日券池-20210106.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/market_data/ts_secpool_from_outside_source.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20201020_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20201021_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20201022_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20201023_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20201026_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20201027_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20201028_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20201029_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20201030_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20201102_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20201103_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20201104_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20201105_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20201106_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20201109_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20201110_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20201111_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20201112_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20201113_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20201116_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20201117_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20201118_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20201119_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20201120_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20201123_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20201124_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20201125_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20201126_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20201127_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20201130_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20201201_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20201202_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20201203_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20201204_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20201207_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20201209_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20201210_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20201214_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20201215_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20201216_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20201217_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20201218_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20201221_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20201222_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20201223_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20201224_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20201225_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20201228_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20201229_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20201230_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20210104_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20210105_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20210106_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20210107_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20210108_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20210111_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20210113_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20210114_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20210115_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20210118_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/trade_data_patch/huat/private_security_loan.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/tgtsecloan_mngdraft/20210115_tgtsecloan_mngdraft.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/post_trddata/两融_资产导出_20201202.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/gtja/每日券池-20210111.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20201130.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20201201.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20201202.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20201203.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20201204.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20201207.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20201208.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20201209.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20201210.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20201211.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20201214.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20201215.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20201216.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20201217.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20201218.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20201221.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20201222.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20201223.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20201224.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20201225.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20201228.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20201229.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20201230.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20201231.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20210104.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20210105.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20210106.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20210107.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20210108.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20210111.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20210112.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/hait/每日券池-20210113.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/huat/每日券池-20210106.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/huat/每日券池-20210108.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/huat/每日券池-20210111.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/huat/每日券池-20210113.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/huat/每日券池-20210114.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/pretrddata/marginable_secpools/swhy/每日券池-20210106.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/tgt_secpools/20201023_target_secids.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/tgt_secpools/20201026_target_secids.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/tgt_secpools/20201027_target_secids.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/tgt_secpools/20201028_target_secids.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/tgt_secpools/20201029_target_secids.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/tgt_secpools/20201030_target_secids.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/tgt_secpools/20201102_target_secids.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/tgt_secpools/20201103_target_secids.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/tgt_secpools/20201104_target_secids.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/tgt_secpools/20201105_target_secids.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/tgt_secpools/20201106_target_secids.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/tgt_secpools/20201109_target_secids.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/tgt_secpools/20201201_target_secids.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/tgt_secpools/20201203_target_secids.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/tgt_secpools/20201204_target_secids.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/tgt_secpools/20201207_target_secids.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/tgt_secpools/20201209_target_secids.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/tgt_secpools/20201210_target_secids.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/tgt_secpools/20201214_target_secids.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/tgt_secpools/20201215_target_secids.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/tgt_secpools/20201216_target_secids.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/tgt_secpools/20201217_target_secids.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/tgt_secpools/20201218_target_secids.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/tgt_secpools/20201221_target_secids.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/tgt_secpools/20201222_target_secids.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/tgt_secpools/20201223_target_secids.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/tgt_secpools/20201224_target_secids.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/tgt_secpools/20201228_target_secids.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/tgt_secpools/20201229_target_secids.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/tgt_secpools/20201230_target_secids.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/tgt_secpools/20210104_target_secids.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/tgt_secpools/20210105_target_secids.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/tgt_secpools/20210106_target_secids.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/tgt_secpools/20210107_target_secids.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/tgt_secpools/20210108_target_secids.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/tgt_secpools/20210111_target_secids.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/tgt_secpools/20210113_target_secids.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/tgt_secpools/20210114_target_secids.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/trade_data_patch/matic_master/huat_security_loan.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/output/security_loan/provided_security_loan_analysis.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/data/output/security_loan/provided_security_loan_analysis.xlsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/input/trade_data_patch/huat/private_security_loan.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/input/trade_data_patch/huat/private_security_loan.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/globals.py" beforeDir="false" afterPath="$PROJECT_DIR$/globals.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/posttrdmng.py" beforeDir="false" afterPath="$PROJECT_DIR$/posttrdmng.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pretrdmng_huat.py" beforeDir="false" afterPath="$PROJECT_DIR$/pretrdmng_huat.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/trading_mng.py" beforeDir="false" afterPath="$PROJECT_DIR$/trading_mng.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -506,7 +304,7 @@
       <workItem from="1610413231369" duration="8274000" />
       <workItem from="1610458188363" duration="17356000" />
       <workItem from="1610523432017" duration="53772000" />
-      <workItem from="1610784960728" duration="7000000" />
+      <workItem from="1610784960728" duration="32541000" />
     </task>
     <task id="LOCAL-00001" summary="initialize">
       <created>1604806214551</created>
@@ -613,7 +411,14 @@
       <option name="project" value="LOCAL" />
       <updated>1610625835819</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="update indirect method for hait_ehfz">
+      <created>1610793211586</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1610793211586</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

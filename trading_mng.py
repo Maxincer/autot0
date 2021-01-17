@@ -29,34 +29,56 @@ from globals import Globals, STR_TODAY
 
 
 class UpdateTradeRawDataFund(Thread):
-    def __init__(self, gl):
+    def __init__(self, gl, acctidbymxz):
         super().__init__()
         self.str_today = gl.str_today
-        self.acctidbymxz = gl.acctidbymxz
-        self.fpath_input_csv_margin_account_fund = gl.fpath_input_csv_margin_account_fund
+        self.acctidbymxz = acctidbymxz
 
     def run(self):
         server_mongodb = MongoClient(
             'mongodb://192.168.2.162:27017/', username='Maxincer', password='winnerismazhe'
         )
-
+        db_basic_info = server_mongodb['basicinfo']
+        col_acctinfo = db_basic_info['acctinfo']
+        dict_acctinfo = col_acctinfo.find_one({'DataDate': self.str_today, 'AcctIDByMXZ': self.acctidbymxz})
+        acctidbybroker = dict_acctinfo['AcctIDByBroker']
+        data_srctype = dict_acctinfo['DataSourceType']
+        list_fpaths_trade_data = [_.strip() for _ in dict_acctinfo['DataFilePath'][1:-1].split(',')]
+        fpath_input_csv_margin_account_fund = list_fpaths_trade_data[0]
         db_trade_data = server_mongodb['trade_data']
         col_trade_rawdata_fund = db_trade_data['trade_rawdata_fund']
+
         while True:
             str_update_time = datetime.now().strftime('%H%M%S')
             list_dicts_trade_rawdata_fund = []
-            with open(self.fpath_input_csv_margin_account_fund) as f:
-                list_datalines_of_file = f.readlines()
-                list_fields = list_datalines_of_file[0].strip().split(',')
-                list_datalines = [_.strip() for _ in list_datalines_of_file[1:]]
-                for dataline in list_datalines:
-                    list_data = [str(_).strip() for _ in dataline.split(',')]
-                    dict_fields2data = dict(zip(list_fields, list_data))
-                    dict_fields2data.update({'DataDate': self.str_today})
-                    dict_fields2data.update({'UpdateTime': str_update_time})
-                    dict_fields2data.update({'AcctIDByMXZ': self.acctidbymxz})
-                    list_dicts_trade_rawdata_fund.append(dict_fields2data)
-            col_trade_rawdata_fund.delete_many({'DataDate': self.str_today})
+            if data_srctype in ['hait_ehfz']:
+                with open(fpath_input_csv_margin_account_fund) as f:
+                    list_datalines_of_file = f.readlines()
+                    list_fields = list_datalines_of_file[0].strip().split(',')
+                    list_datalines = [_.strip() for _ in list_datalines_of_file[1:]]
+                    for dataline in list_datalines:
+                        list_data = [str(_).strip() for _ in dataline.split(',')]
+                        dict_fields2data = dict(zip(list_fields, list_data))
+                        dict_fields2data.update({'DataDate': self.str_today})
+                        dict_fields2data.update({'UpdateTime': str_update_time})
+                        dict_fields2data.update({'AcctIDByMXZ': self.acctidbymxz})
+                        list_dicts_trade_rawdata_fund.append(dict_fields2data)
+            elif data_srctype in ['huat_matic_tsi']:
+                with open(fpath_input_csv_margin_account_fund) as f:
+                    list_datalines_of_file = f.readlines()
+                    list_fields = list_datalines_of_file[0].strip().split(',')
+                    list_datalines = [_.strip() for _ in list_datalines_of_file[1:]]
+                    for dataline in list_datalines:
+                        list_data = [str(_).strip() for _ in dataline.split(',')]
+                        dict_fields2data = dict(zip(list_fields, list_data))
+                        dict_fields2data.update({'DataDate': self.str_today})
+                        dict_fields2data.update({'UpdateTime': str_update_time})
+                        dict_fields2data.update({'AcctIDByMXZ': self.acctidbymxz})
+                        if dict_fields2data['fund_account'] == acctidbybroker:
+                            list_dicts_trade_rawdata_fund.append(dict_fields2data)
+            else:
+                raise ValueError('Unknown data source type.')
+            col_trade_rawdata_fund.delete_many({'DataDate': self.str_today, 'AcctIDByMXZ': self.acctidbymxz})
             if list_dicts_trade_rawdata_fund:
                 col_trade_rawdata_fund.insert_many(list_dicts_trade_rawdata_fund)
             print('update_trade_rawdata_fund finished, sleep 30s')
@@ -64,33 +86,57 @@ class UpdateTradeRawDataFund(Thread):
 
 
 class UpdateTradeRawDataHolding(Thread):
-    def __init__(self, gl):
+    def __init__(self, gl, acctidbymxz):
         super().__init__()
         self.str_today = gl.str_today
-        self.acctidbymxz = gl.acctidbymxz
-        self.fpath_input_csv_margin_account_holding = gl.fpath_input_csv_margin_account_holding
+        self.acctidbymxz = acctidbymxz
 
     def run(self):
         server_mongodb = MongoClient(
             'mongodb://192.168.2.162:27017/', username='Maxincer', password='winnerismazhe'
         )
+        db_basic_info = server_mongodb['basicinfo']
+        col_acctinfo = db_basic_info['acctinfo']
+        dict_acctinfo = col_acctinfo.find_one({'DataDate': self.str_today, 'AcctIDByMXZ': self.acctidbymxz})
+        acctidbybroker = dict_acctinfo['AcctIDByBroker']
+        data_srctype = dict_acctinfo['DataSourceType']
+        list_fpaths_trade_data = [_.strip() for _ in dict_acctinfo['DataFilePath'][1:-1].split(',')]
+
+        fpath_input_csv_margin_account_holding = list_fpaths_trade_data[1]
         db_trade_data = server_mongodb['trade_data']
         col_trade_rawdata_holding = db_trade_data['trade_rawdata_holding']
         while True:
             str_update_time = datetime.now().strftime('%H%M%S')
             list_dicts_trade_rawdata_holding = []
-            with open(self.fpath_input_csv_margin_account_holding) as f:
-                list_datalines_of_file = f.readlines()
-                list_fields = list_datalines_of_file[0].strip().split(',')
-                list_datalines = [_.strip() for _ in list_datalines_of_file[1:]]
-                for dataline in list_datalines:
-                    list_data = [str(_).strip() for _ in dataline.split(',')]
-                    dict_fields2data = dict(zip(list_fields, list_data))
-                    dict_fields2data.update({'DataDate': self.str_today})
-                    dict_fields2data.update({'UpdateTime': str_update_time})
-                    dict_fields2data.update({'AcctIDByMXZ': self.acctidbymxz})
-                    list_dicts_trade_rawdata_holding.append(dict_fields2data)
-            col_trade_rawdata_holding.delete_many({'DataDate': self.str_today})
+            if data_srctype in ['hait_ehfz']:
+                with open(fpath_input_csv_margin_account_holding) as f:
+                    list_datalines_of_file = f.readlines()
+                    list_fields = list_datalines_of_file[0].strip().split(',')
+                    list_datalines = [_.strip() for _ in list_datalines_of_file[1:]]
+                    for dataline in list_datalines:
+                        list_data = [str(_).strip() for _ in dataline.split(',')]
+                        dict_fields2data = dict(zip(list_fields, list_data))
+                        dict_fields2data.update({'DataDate': self.str_today})
+                        dict_fields2data.update({'UpdateTime': str_update_time})
+                        dict_fields2data.update({'AcctIDByMXZ': self.acctidbymxz})
+                        list_dicts_trade_rawdata_holding.append(dict_fields2data)
+            elif data_srctype in ['huat_matic_tsi']:
+                with open(fpath_input_csv_margin_account_holding) as f:
+                    list_datalines_of_file = f.readlines()
+                    list_fields = list_datalines_of_file[0].strip().split(',')
+                    list_datalines = [_.strip() for _ in list_datalines_of_file[1:]]
+                    for dataline in list_datalines:
+                        list_data = [str(_).strip() for _ in dataline.split(',')]
+                        dict_fields2data = dict(zip(list_fields, list_data))
+                        dict_fields2data.update({'DataDate': self.str_today})
+                        dict_fields2data.update({'UpdateTime': str_update_time})
+                        dict_fields2data.update({'AcctIDByMXZ': self.acctidbymxz})
+                        if dict_fields2data['fund_account'] == acctidbybroker:
+                            list_dicts_trade_rawdata_holding.append(dict_fields2data)
+            else:
+                raise ValueError('Unknown data source type.')
+
+            col_trade_rawdata_holding.delete_many({'DataDate': self.str_today, 'AcctIDByMXZ': self.acctidbymxz})
             if list_dicts_trade_rawdata_holding:
                 col_trade_rawdata_holding.insert_many(list_dicts_trade_rawdata_holding)
             print('update_trade_rawdata_holding finished, sleep 30s')
@@ -98,83 +144,163 @@ class UpdateTradeRawDataHolding(Thread):
 
 
 class UpdateTradeRawDataOrder(Thread):
-    def __init__(self, gl):
+    def __init__(self, gl, acctidbymxz):
         super().__init__()
         self.str_today = gl.str_today
-        self.acctidbymxz = gl.acctidbymxz
-        self.fpath_input_csv_margin_account_order = gl.fpath_input_csv_margin_account_order
+        self.acctidbymxz = acctidbymxz
 
     def run(self):
         server_mongodb = MongoClient(
             'mongodb://192.168.2.162:27017/', username='Maxincer', password='winnerismazhe'
         )
+        db_basic_info = server_mongodb['basicinfo']
+        col_acctinfo = db_basic_info['acctinfo']
+        dict_acctinfo = col_acctinfo.find_one({'DataDate': self.str_today, 'AcctIDByMXZ': self.acctidbymxz})
+        list_fpaths_trade_data = [_.strip() for _ in dict_acctinfo['DataFilePath'][1:-1].split(',')]
+        acctidbybroker = dict_acctinfo['AcctIDByBroker']
+        data_srctype = dict_acctinfo['DataSourceType']
+        fpath_input_csv_margin_account_order = list_fpaths_trade_data[2]
         db_trade_data = server_mongodb['trade_data']
         col_trade_rawdata_order = db_trade_data['trade_rawdata_order']
         while True:
             str_update_time = datetime.now().strftime('%H%M%S')
             list_dicts_trade_rawdata_order = []
-            with open(self.fpath_input_csv_margin_account_order) as f:
-                list_datalines_of_file = f.readlines()
-                list_fields = list_datalines_of_file[0].strip().split(',')
-                list_datalines = [_.strip() for _ in list_datalines_of_file[1:]]
-                for dataline in list_datalines:
-                    list_data = [str(_).strip() for _ in dataline.split(',')]
-                    dict_fields2data = dict(zip(list_fields, list_data))
-                    dict_fields2data.update({'DataDate': self.str_today})
-                    dict_fields2data.update({'UpdateTime': str_update_time})
-                    dict_fields2data.update({'AcctIDByMXZ': self.acctidbymxz})
-                    list_dicts_trade_rawdata_order.append(dict_fields2data)
-            col_trade_rawdata_order.delete_many({'DataDate': self.str_today})
+            if data_srctype in ['hait_ehfz']:
+                with open(fpath_input_csv_margin_account_order) as f:
+                    list_datalines_of_file = f.readlines()
+                    list_fields = list_datalines_of_file[0].strip().split(',')
+                    list_datalines = [_.strip() for _ in list_datalines_of_file[1:]]
+                    for dataline in list_datalines:
+                        list_data = [str(_).strip() for _ in dataline.split(',')]
+                        dict_fields2data = dict(zip(list_fields, list_data))
+                        dict_fields2data.update({'DataDate': self.str_today})
+                        dict_fields2data.update({'UpdateTime': str_update_time})
+                        dict_fields2data.update({'AcctIDByMXZ': self.acctidbymxz})
+                        list_dicts_trade_rawdata_order.append(dict_fields2data)
+
+            elif data_srctype in ['huat_matic_tsi']:
+                with open(fpath_input_csv_margin_account_order) as f:
+                    list_datalines_of_file = f.readlines()
+                    list_fields = list_datalines_of_file[0].strip().split(',')
+                    list_datalines = [_.strip() for _ in list_datalines_of_file[1:]]
+                    for dataline in list_datalines:
+                        list_data = [str(_).strip() for _ in dataline.split(',')]
+                        dict_fields2data = dict(zip(list_fields, list_data))
+                        dict_fields2data.update({'DataDate': self.str_today})
+                        dict_fields2data.update({'UpdateTime': str_update_time})
+                        dict_fields2data.update({'AcctIDByMXZ': self.acctidbymxz})
+                        if dict_fields2data['fund_account'] == acctidbybroker:
+                            list_dicts_trade_rawdata_order.append(dict_fields2data)
+            else:
+                raise ValueError('Unknown data source type.')
+
+            col_trade_rawdata_order.delete_many({'DataDate': self.str_today, 'AcctIDByMXZ': self.acctidbymxz})
             if list_dicts_trade_rawdata_order:
                 col_trade_rawdata_order.insert_many(list_dicts_trade_rawdata_order)
             print('update_trade_rawdata_order finished, sleep 30s')
             sleep(30)
 
 
-class UpdateTradeRawDataSecLoan(Thread):
-    def __init__(self, gl):
+class UpdateTradeRawDataRQMX(Thread):
+    def __init__(self, gl, acctidbymxz):
         super().__init__()
         self.str_today = gl.str_today
-        self.acctidbymxz = gl.acctidbymxz
-        self.fpath_input_csv_margin_account_secloan = gl.fpath_input_csv_margin_account_secloan
+        self.acctidbymxz = acctidbymxz
 
     def run(self):
         server_mongodb = MongoClient(
             'mongodb://192.168.2.162:27017/', username='Maxincer', password='winnerismazhe'
         )
+        db_basic_info = server_mongodb['basicinfo']
+        col_acctinfo = db_basic_info['acctinfo']
+        dict_acctinfo = col_acctinfo.find_one({'DataDate': self.str_today, 'AcctIDByMXZ': self.acctidbymxz})
+        acctidbybroker = dict_acctinfo['AcctIDByBroker']
+        data_srctype = dict_acctinfo['DataSourceType']
+        list_fpaths_trade_data = [_.strip() for _ in dict_acctinfo['DataFilePath'][1:-1].split(',')]
+        fpath_input_csv_margin_account_rqmx = list_fpaths_trade_data[3]
         db_trade_data = server_mongodb['trade_data']
-        col_trade_rawdata_secloan = db_trade_data['trade_rawdata_secloan']
+        col_trade_rawdata_rqmx = db_trade_data['trade_rawdata_rqmx']
+        while True:
+            str_update_time = datetime.now().strftime('%H%M%S')
+            list_dicts_trade_rawdata_rqmx = []
+            if data_srctype in ['huat_matic_tsi']:
+                with open(fpath_input_csv_margin_account_rqmx) as f:
+                    list_datalines_of_file = f.readlines()
+                    list_fields = list_datalines_of_file[0].strip().split(',')
+                    list_datalines = [_.strip() for _ in list_datalines_of_file[1:]]
+                    for dataline in list_datalines:
+                        list_data = [str(_).strip() for _ in dataline.split(',')]
+                        dict_fields2data = dict(zip(list_fields, list_data))
+                        dict_fields2data.update({'DataDate': self.str_today})
+                        dict_fields2data.update({'UpdateTime': str_update_time})
+                        dict_fields2data.update({'AcctIDByMXZ': self.acctidbymxz})
+                        if dict_fields2data['fund_account'] == acctidbybroker:
+                            list_dicts_trade_rawdata_rqmx.append(dict_fields2data)
+            col_trade_rawdata_rqmx.delete_many({'DataDate': self.str_today, 'AcctIDByMXZ': self.acctidbymxz})
+            if list_dicts_trade_rawdata_rqmx:
+                col_trade_rawdata_rqmx.insert_many(list_dicts_trade_rawdata_rqmx)
+            print('update_trade_rawdata_rqmx finished, sleep 30s')
+            sleep(30)
+
+
+class UpdateTradeRawDataPrivateSecLoan(Thread):
+    def __init__(self, gl, acctidbymxz):
+        super().__init__()
+        self.str_today = gl.str_today
+        self.acctidbymxz = acctidbymxz
+
+    def run(self):
+        server_mongodb = MongoClient(
+            'mongodb://192.168.2.162:27017/', username='Maxincer', password='winnerismazhe'
+        )
+        db_basic_info = server_mongodb['basicinfo']
+        col_acctinfo = db_basic_info['acctinfo']
+        dict_acctinfo = col_acctinfo.find_one({'DataDate': self.str_today, 'AcctIDByMXZ': self.acctidbymxz})
+        acctidbybroker = dict_acctinfo['AcctIDByBroker']
+        data_srctype = dict_acctinfo['DataSourceType']
+        fpath_input_csv_margin_account_rqmx = (
+            r'D:\projects\autot0\data\input\trade_data_patch\huat\private_security_loan.csv'
+        )
+        db_trade_data = server_mongodb['trade_data']
+        col_trade_rawdata_private_secloan = db_trade_data['trade_rawdata_private_security_loan']
         while True:
             str_update_time = datetime.now().strftime('%H%M%S')
             list_dicts_trade_rawdata_secloan = []
-            with open(self.fpath_input_csv_margin_account_secloan) as f:
-                list_datalines_of_file = f.readlines()
-                list_fields = list_datalines_of_file[0].strip().split(',')
-                list_datalines = [_.strip() for _ in list_datalines_of_file[1:]]
-                for dataline in list_datalines:
-                    list_data = [str(_).strip() for _ in dataline.split(',')]
-                    dict_fields2data = dict(zip(list_fields, list_data))
-                    dict_fields2data.update({'DataDate': self.str_today})
-                    dict_fields2data.update({'UpdateTime': str_update_time})
-                    dict_fields2data.update({'AcctIDByMXZ': self.acctidbymxz})
-                    list_dicts_trade_rawdata_secloan.append(dict_fields2data)
-            col_trade_rawdata_secloan.delete_many({'DataDate': self.str_today})
+            if data_srctype in ['huat_matic_tsi']:
+                with open(fpath_input_csv_margin_account_rqmx) as f:
+                    list_datalines_of_file = f.readlines()
+                    list_fields = list_datalines_of_file[0].strip().split(',')
+                    list_datalines = [_.strip() for _ in list_datalines_of_file[1:]]
+                    for dataline in list_datalines:
+                        list_data = [str(_).strip() for _ in dataline.split(',')]
+                        dict_fields2data = dict(zip(list_fields, list_data))
+                        dict_fields2data.update({'DataDate': self.str_today})
+                        dict_fields2data.update({'UpdateTime': str_update_time})
+                        dict_fields2data.update({'AcctIDByMXZ': self.acctidbymxz})
+                        if dict_fields2data['资产账号'] == acctidbybroker:
+                            list_dicts_trade_rawdata_secloan.append(dict_fields2data)
+            col_trade_rawdata_private_secloan.delete_many({'DataDate': self.str_today, 'AcctIDByMXZ': self.acctidbymxz})
             if list_dicts_trade_rawdata_secloan:
-                col_trade_rawdata_secloan.insert_many(list_dicts_trade_rawdata_secloan)
-            print('update_trade_rawdata_secloan finished, sleep 30s')
+                col_trade_rawdata_private_secloan.insert_many(list_dicts_trade_rawdata_secloan)
+            print('update trade_rawdata_private_security_loan finished, sleep 30s')
             sleep(30)
 
 
 class UpdateTradeFmtDataFund(Thread):
-    def __init__(self, gl):
+    def __init__(self, gl, acctidbymxz):
         super().__init__()
         self.str_today = gl.str_today
-        self.acctidbymxz = gl.acctidbymxz
+        self.acctidbymxz = acctidbymxz
 
     def run(self):
         server_mongodb = MongoClient(
             'mongodb://192.168.2.162:27017/', username='Maxincer', password='winnerismazhe'
         )
+
+        db_basic_info = server_mongodb['basicinfo']
+        col_acctinfo = db_basic_info['acctinfo']
+        dict_acctinfo = col_acctinfo.find_one({'DataDate': self.str_today, 'AcctIDByMXZ': self.acctidbymxz})
+        data_srctype = dict_acctinfo['DataSourceType']
         db_trade_data = server_mongodb['trade_data']
         col_trade_rawdata_fund = db_trade_data['trade_rawdata_fund']
         col_trade_fmtdata_fund = db_trade_data['trade_fmtdata_fund']
@@ -183,27 +309,40 @@ class UpdateTradeFmtDataFund(Thread):
             iter_trade_rawdata_fund = col_trade_rawdata_fund.find(
                 {'DataDate': self.str_today, 'AcctIDByMXZ': self.acctidbymxz}
             )
-            list_dicts_trade_fmtdata_fund = []
-            for dict_trade_rawdata_fund in iter_trade_rawdata_fund:
-                cash_available_for_collateral_trade = float(dict_trade_rawdata_fund['可用余额'])
-                tt_asset = float(dict_trade_rawdata_fund['资产总值'])
-                tt_mv = float(dict_trade_rawdata_fund['证券市值'])
 
-                # ehtc
-                # net_asset = float(dict_trade_rawdata_fund['净资产'])
-                # cash_from_ss = float(dict_trade_rawdata_fund['剩余融券卖出资金'])
-                # cash_available_for_collateral_trade = float(dict_trade_rawdata_fund['可用金额'])
-                # tt_asset = float(dict_trade_rawdata_fund['总资产'])
-                # tt_mv = float(dict_trade_rawdata_fund['总市值'])
-                cash = tt_asset - tt_mv
-                dict_trade_fmtdata_fund = {
-                    'DataDate': self.str_today,
-                    'UpdateTime': str_update_time,
-                    'AcctIDByMXZ': self.acctidbymxz,
-                    'Cash': cash,
-                    'CashAvailableForCollateralTrade': cash_available_for_collateral_trade
-                }
-                list_dicts_trade_fmtdata_fund.append(dict_trade_fmtdata_fund)
+            list_dicts_trade_fmtdata_fund = []
+            if data_srctype in ['hait_ehfz']:
+                for dict_trade_rawdata_fund in iter_trade_rawdata_fund:
+                    cash_available_for_collateral_trade = float(dict_trade_rawdata_fund['可用余额'])
+                    tt_asset = float(dict_trade_rawdata_fund['资产总值'])
+                    tt_mv = float(dict_trade_rawdata_fund['证券市值'])
+                    cash = tt_asset - tt_mv
+                    dict_trade_fmtdata_fund = {
+                        'DataDate': self.str_today,
+                        'UpdateTime': str_update_time,
+                        'AcctIDByMXZ': self.acctidbymxz,
+                        'Cash': cash,
+                        'CashAvailableForCollateralTrade': cash_available_for_collateral_trade
+                    }
+                    list_dicts_trade_fmtdata_fund.append(dict_trade_fmtdata_fund)
+
+            elif data_srctype in ['huat_matic_tsi']:
+                for dict_trade_rawdata_fund in iter_trade_rawdata_fund:
+                    cash_available_for_collateral_trade = float(dict_trade_rawdata_fund['enable_balance'])
+                    tt_asset = float(dict_trade_rawdata_fund['asset_balance'])
+                    tt_mv = float(dict_trade_rawdata_fund['market_value'])
+                    cash = tt_asset - tt_mv
+                    dict_trade_fmtdata_fund = {
+                        'DataDate': self.str_today,
+                        'UpdateTime': str_update_time,
+                        'AcctIDByMXZ': self.acctidbymxz,
+                        'Cash': cash,
+                        'CashAvailableForCollateralTrade': cash_available_for_collateral_trade
+                    }
+                    list_dicts_trade_fmtdata_fund.append(dict_trade_fmtdata_fund)
+
+            else:
+                raise ValueError('Unknown data_srctype.')
 
             col_trade_fmtdata_fund.delete_many({'DataDate': self.str_today})
             if list_dicts_trade_fmtdata_fund:
@@ -213,15 +352,20 @@ class UpdateTradeFmtDataFund(Thread):
 
 
 class UpdateTradeFmtDataHolding(Thread):
-    def __init__(self, gl):
+    def __init__(self, gl, acctidbymxz):
         super().__init__()
         self.str_today = gl.str_today
-        self.acctidbymxz = gl.acctidbymxz
+        self.acctidbymxz = acctidbymxz
 
     def run(self):
         server_mongodb = MongoClient(
             'mongodb://192.168.2.162:27017/', username='Maxincer', password='winnerismazhe'
         )
+        db_basic_info = server_mongodb['basicinfo']
+        col_acctinfo = db_basic_info['acctinfo']
+        dict_acctinfo = col_acctinfo.find_one({'DataDate': self.str_today, 'AcctIDByMXZ': self.acctidbymxz})
+        data_srctype = dict_acctinfo['DataSourceType']
+
         db_trade_data = server_mongodb['trade_data']
         col_trade_rawdata_holding = db_trade_data['trade_rawdata_holding']
         col_trade_fmtdata_holding = db_trade_data['trade_fmtdata_holding']
@@ -232,37 +376,57 @@ class UpdateTradeFmtDataHolding(Thread):
                 {'DataDate': self.str_today, 'AcctIDByMXZ': self.acctidbymxz}
             )
             list_dicts_trade_fmtdata_holding = []
-            for dict_trade_rawdata_holding in iter_trade_rawdata_holding:
-                secid = str(dict_trade_rawdata_holding['代码']).zfill(6)
-                # shareholder_id = dict_trade_rawdata_holding['股东账号']
-                # if shareholder_id[0].isalpha():
-                #     secidsrc = 'SSE'
-                # elif shareholder_id[0].isdigit():
-                #     secidsrc = 'SZSE'
-                # else:
-                #     raise ValueError(f'Wrong shareholder ID: {shareholder_id}')
-                dict_exg = {'1': 'SZSE', '2': 'SSE'}
-                secidsrc = dict_exg[dict_trade_rawdata_holding['市场']]
-                str_code = f"{secid}.{secidsrc}"
-                sectype = Globals.get_mingshi_sectype_from_code(str_code)
-                longqty = float(dict_trade_rawdata_holding['当前拥股数量'])
-                longqtybalance = float(dict_trade_rawdata_holding['昨日持仓量'])
-                longamt = float(dict_trade_rawdata_holding['证券市值'])
+            if data_srctype in ['hait_ehfz']:
+                for dict_trade_rawdata_holding in iter_trade_rawdata_holding:
+                    secid = str(dict_trade_rawdata_holding['代码']).zfill(6)
+                    dict_exg = {'1': 'SZSE', '2': 'SSE'}
+                    secidsrc = dict_exg[dict_trade_rawdata_holding['市场']]
+                    str_code = f"{secid}.{secidsrc}"
+                    sectype = Globals.get_mingshi_sectype_from_code(str_code)
+                    longqty = float(dict_trade_rawdata_holding['当前拥股数量'])
+                    longqtybalance = float(dict_trade_rawdata_holding['昨日持仓量'])
+                    longamt = float(dict_trade_rawdata_holding['证券市值'])
 
-                dict_trade_fmtdata_holding = {
-                    'DataDate': self.str_today,
-                    'UpdateTime': str_update_time,
-                    'AcctIDByMXZ': self.acctidbymxz,
-                    'SecurityID': secid,
-                    'SecurityIDSource': secidsrc,
-                    'LongQty': longqty,
-                    'LongQtyBalance': longqtybalance,
-                    'LongAmt': longamt,
-                    'SecurityType': sectype,
-                    }
-                list_dicts_trade_fmtdata_holding.append(dict_trade_fmtdata_holding)
+                    dict_trade_fmtdata_holding = {
+                        'DataDate': self.str_today,
+                        'UpdateTime': str_update_time,
+                        'AcctIDByMXZ': self.acctidbymxz,
+                        'SecurityID': secid,
+                        'SecurityIDSource': secidsrc,
+                        'LongQty': longqty,
+                        'LongQtyBalance': longqtybalance,
+                        'LongAmt': longamt,
+                        'SecurityType': sectype,
+                        }
+                    list_dicts_trade_fmtdata_holding.append(dict_trade_fmtdata_holding)
 
-            col_trade_fmtdata_holding.delete_many({'DataDate': self.str_today})
+            elif data_srctype in ['huat_matic_tsi']:
+                for dict_trade_rawdata_holding in iter_trade_rawdata_holding:
+                    secid = str(dict_trade_rawdata_holding['stock_code']).zfill(6)
+                    dict_exg = {'1': 'SSE', '2': 'SZSE'}
+                    secidsrc = dict_exg[str(dict_trade_rawdata_holding['exchange_type'])]
+                    str_code = f"{secid}.{secidsrc}"
+                    sectype = Globals.get_mingshi_sectype_from_code(str_code)
+                    longqty = float(dict_trade_rawdata_holding['current_amount'])
+                    longqtybalance = float(dict_trade_rawdata_holding['hold_amount'])
+                    longamt = float(dict_trade_rawdata_holding['market_value'])
+
+                    dict_trade_fmtdata_holding = {
+                        'DataDate': self.str_today,
+                        'UpdateTime': str_update_time,
+                        'AcctIDByMXZ': self.acctidbymxz,
+                        'SecurityID': secid,
+                        'SecurityIDSource': secidsrc,
+                        'LongQty': longqty,
+                        'LongQtyBalance': longqtybalance,
+                        'LongAmt': longamt,
+                        'SecurityType': sectype,
+                        }
+                    list_dicts_trade_fmtdata_holding.append(dict_trade_fmtdata_holding)
+            else:
+                raise ValueError('Unknown data_srctype.')
+
+            col_trade_fmtdata_holding.delete_many({'DataDate': self.str_today, 'AcctIDByMXZ': self.acctidbymxz})
             if list_dicts_trade_fmtdata_holding:
                 col_trade_fmtdata_holding.insert_many(list_dicts_trade_fmtdata_holding)
             print('Update_trade_fmtdata_holding finished, sleep 30s')
@@ -270,15 +434,20 @@ class UpdateTradeFmtDataHolding(Thread):
 
 
 class UpdateTradeFmtDataOrder(Thread):
-    def __init__(self, gl):
+    def __init__(self, gl, acctidbymxz):
         super().__init__()
         self.str_today = gl.str_today
-        self.acctidbymxz = gl.acctidbymxz
+        self.acctidbymxz = acctidbymxz
 
-    def run_xtpb(self):
+    def run(self):
         server_mongodb = MongoClient(
             'mongodb://192.168.2.162:27017/', username='Maxincer', password='winnerismazhe'
         )
+        db_basic_info = server_mongodb['basicinfo']
+        col_acctinfo = db_basic_info['acctinfo']
+        dict_acctinfo = col_acctinfo.find_one({'DataDate': self.str_today, 'AcctIDByMXZ': self.acctidbymxz})
+        data_srctype = dict_acctinfo['DataSourceType']
+
         db_trade_data = server_mongodb['trade_data']
         col_trade_rawdata_order = db_trade_data['trade_rawdata_order']
         col_trade_fmtdata_order = db_trade_data['trade_fmtdata_order']
@@ -287,102 +456,207 @@ class UpdateTradeFmtDataOrder(Thread):
             iter_trade_rawdata_order = col_trade_rawdata_order.find(
                 {'DataDate': self.str_today, 'AcctIDByMXZ': self.acctidbymxz}
             )
-            # todo 格式化不同来源的不同格式, 以下为hait_xtpb
-
             # 确认side:
             # todo fix 协议中只有3个方向： 1. 1 = buy, 2. 2 = sell, 5 = Sell Short, 字符串: str
             # todo 但国内在交易环节可以提供这部分信息： BC: 买券还券 和 现券还券 B: 担保品买入
             list_dicts_trade_fmtdata_order = []
-            for dict_trade_rawdata_order in iter_trade_rawdata_order:
-                secid = dict_trade_rawdata_order['证券代码']
-                symbol = dict_trade_rawdata_order['证券名称']
-                # todo 已知买卖标记字段值包括： 现券还券划拨，限价担保品买入，限价担保品卖出，限价融券卖出
-                trade_mark = dict_trade_rawdata_order['买卖标记']
-                exchange = dict_trade_rawdata_order['交易市场']
-                secidsrc = {'上证所': 'SSE', '深交所': 'SZSE'}[exchange]
-                contract_id = dict_trade_rawdata_order['合同编号']
-                lastqty = float(dict_trade_rawdata_order['成交数量'])
-                lastpx = float(dict_trade_rawdata_order['成交均价'])
-                if '买' in trade_mark or '卖' in trade_mark:  # 交易事项
-                    dict_trade_mark2str_side = {'限价担保品买入': '1', '限价担保品卖出': '2', '限价融券卖出': '5'}
-                    side = dict_trade_mark2str_side[trade_mark]
-                elif '划拨' in trade_mark:  # todo 抽象现券还券划转和买券还券划转， 目前只看到了现券还券划转
-                    side = trade_mark
-                else:
-                    raise ValueError('Unknown trade mark.')
-                order_time = dict_trade_rawdata_order['委托时间'].replace(':', '')
-                dict_trade_fmtdata_order = {
-                    'DataDate': self.str_today,
-                    'UpdateTime': str_update_time,
-                    'AcctIDByMXZ': self.acctidbymxz,
-                    'SecurityID': secid,
-                    'SecurityIDSource': secidsrc,
-                    'Symbol': symbol,
-                    'ContractID': contract_id,
-                    'LastQty': lastqty,
-                    'LastPx': lastpx,
-                    'Side': side,
-                    'OrderTime': order_time,
-                }
-                list_dicts_trade_fmtdata_order.append(dict_trade_fmtdata_order)
-            col_trade_fmtdata_order.delete_many({'DataDate': self.str_today})
+            if data_srctype in ['hait_xtpb']:
+                for dict_trade_rawdata_order in iter_trade_rawdata_order:
+                    secid = dict_trade_rawdata_order['证券代码']
+                    symbol = dict_trade_rawdata_order['证券名称']
+                    # todo 已知买卖标记字段值包括： 现券还券划拨，限价担保品买入，限价担保品卖出，限价融券卖出
+                    trade_mark = dict_trade_rawdata_order['买卖标记']
+                    exchange = dict_trade_rawdata_order['交易市场']
+                    secidsrc = {'上证所': 'SSE', '深交所': 'SZSE'}[exchange]
+                    contract_id = dict_trade_rawdata_order['合同编号']
+                    lastqty = float(dict_trade_rawdata_order['成交数量'])
+                    lastpx = float(dict_trade_rawdata_order['成交均价'])
+                    if '买' in trade_mark or '卖' in trade_mark:  # 交易事项
+                        dict_trade_mark2str_side = {'限价担保品买入': '1', '限价担保品卖出': '2', '限价融券卖出': '5'}
+                        side = dict_trade_mark2str_side[trade_mark]
+                    elif '划拨' in trade_mark:  # todo 抽象现券还券划转和买券还券划转， 目前只看到了现券还券划转
+                        side = trade_mark
+                    else:
+                        raise ValueError('Unknown trade mark.')
+                    order_time = dict_trade_rawdata_order['委托时间'].replace(':', '')
+                    dict_trade_fmtdata_order = {
+                        'DataDate': self.str_today,
+                        'UpdateTime': str_update_time,
+                        'AcctIDByMXZ': self.acctidbymxz,
+                        'SecurityID': secid,
+                        'SecurityIDSource': secidsrc,
+                        'Symbol': symbol,
+                        'ContractID': contract_id,
+                        'LastQty': lastqty,
+                        'LastPx': lastpx,
+                        'Side': side,
+                        'OrderTime': order_time,
+                    }
+                    list_dicts_trade_fmtdata_order.append(dict_trade_fmtdata_order)
+            elif data_srctype in ['hait_ehfz']:
+                for dict_trade_rawdata_order in iter_trade_rawdata_order:
+                    secid = str(dict_trade_rawdata_order['证券代码']).zfill(6)
+                    symbol = dict_trade_rawdata_order['证券名称']
+                    trade_mark = dict_trade_rawdata_order['@交易类型']
+                    exg = dict_trade_rawdata_order['市场类型']
+                    secidsrc = {'1': 'SSE', '2': 'SZSE'}[exg]
+                    cumqty = float(dict_trade_rawdata_order['成交数量'])
+                    avgpx = float(dict_trade_rawdata_order['成交价格'])
+                    ordstatus = dict_trade_rawdata_order['@委托状态']
+                    if trade_mark in ['1', '2']:
+                        side = trade_mark
+                    elif trade_mark in ['12']:
+                        side = '5'
+                    elif trade_mark in ['15', '0']:  # todo 抽象现券还券划转和买券还券划转， 目前只看到了现券还券划转
+                        side = 'XQHQ'
+                    else:
+                        raise ValueError('Unknown trade mark.')
+                    order_time = dict_trade_rawdata_order['委托时间'].replace(':', '')
+                    dict_trade_fmtdata_order = {
+                        'DataDate': self.str_today,
+                        'UpdateTime': str_update_time,
+                        'AcctIDByMXZ': self.acctidbymxz,
+                        'SecurityID': secid,
+                        'SecurityIDSource': secidsrc,
+                        'Symbol': symbol,
+                        'CumQty': cumqty,
+                        'AvgPx': avgpx,
+                        'Side': side,
+                        'OrdStatus': ordstatus,
+                        'OrderTime': order_time,
+                    }
+                    list_dicts_trade_fmtdata_order.append(dict_trade_fmtdata_order)
+            else:
+                raise ValueError('Unknown data_srctype.')
+            col_trade_fmtdata_order.delete_many({'DataDate': self.str_today, 'AcctIDByMXZ': self.acctidbymxz})
             if list_dicts_trade_fmtdata_order:
                 col_trade_fmtdata_order.insert_many(list_dicts_trade_fmtdata_order)
             print('update_trade_fmtdata_order finished, sleep 30s')
             sleep(30)
 
-    def run(self):  # ehfz
+
+class UpdateTradeFmtDataPublicSecLoan(Thread):
+    def __init__(self, gl, acctidbymxz):
+        super().__init__()
+        self.str_today = gl.str_today
+        self.acctidbymxz = acctidbymxz
+
+    def run(self):
         server_mongodb = MongoClient(
             'mongodb://192.168.2.162:27017/', username='Maxincer', password='winnerismazhe'
         )
+        db_basic_info = server_mongodb['basicinfo']
+        col_acctinfo = db_basic_info['acctinfo']
+        dict_acctinfo = col_acctinfo.find_one({'DataDate': self.str_today, 'AcctIDByMXZ': self.acctidbymxz})
+        data_srctype = dict_acctinfo['DataSourceType']
+
         db_trade_data = server_mongodb['trade_data']
-        col_trade_rawdata_order = db_trade_data['trade_rawdata_order']
-        col_trade_fmtdata_order = db_trade_data['trade_fmtdata_order']
+        col_trade_rawdata_rqmx = db_trade_data['trade_rawdata_rqmx']
+        col_trade_fmtdata_public_secloan = db_trade_data['trade_fmtdata_public_secloan']
+
         while True:
             str_update_time = datetime.now().strftime('%H%M%S')
-            iter_trade_rawdata_order = col_trade_rawdata_order.find(
+            iter_trade_rawdata_rqmx = col_trade_rawdata_rqmx.find(
                 {'DataDate': self.str_today, 'AcctIDByMXZ': self.acctidbymxz}
             )
-            # 确认side:
-            # todo fix 协议中只有3个方向： 1. 1 = buy, 2. 2 = sell, 5 = Sell Short, 字符串: str
-            # todo 但国内在交易环节可以提供这部分信息： BC: 买券还券 和 现券还券 B: 担保品买入
-            list_dicts_trade_fmtdata_order = []
-            for dict_trade_rawdata_order in iter_trade_rawdata_order:
-                secid = str(dict_trade_rawdata_order['证券代码']).zfill(6)
-                symbol = dict_trade_rawdata_order['证券名称']
-                trade_mark = dict_trade_rawdata_order['@交易类型']
-                exg = dict_trade_rawdata_order['市场类型']
-                secidsrc = {'1': 'SSE', '2': 'SZSE'}[exg]
-                cumqty = float(dict_trade_rawdata_order['成交数量'])
-                avgpx = float(dict_trade_rawdata_order['成交价格'])
-                ordstatus = dict_trade_rawdata_order['@委托状态']
-                if trade_mark in ['1', '2']:
-                    side = trade_mark
-                elif trade_mark in ['12']:
-                    side = '5'
-                elif trade_mark in ['15', '0']:  # todo 抽象现券还券划转和买券还券划转， 目前只看到了现券还券划转
-                    side = 'XQHQ'
-                else:
-                    raise ValueError('Unknown trade mark.')
-                order_time = dict_trade_rawdata_order['委托时间'].replace(':', '')
-                dict_trade_fmtdata_order = {
-                    'DataDate': self.str_today,
-                    'UpdateTime': str_update_time,
-                    'AcctIDByMXZ': self.acctidbymxz,
-                    'SecurityID': secid,
-                    'SecurityIDSource': secidsrc,
-                    'Symbol': symbol,
-                    'CumQty': cumqty,
-                    'AvgPx': avgpx,
-                    'Side': side,
-                    'OrdStatus': ordstatus,
-                    'OrderTime': order_time,
-                }
-                list_dicts_trade_fmtdata_order.append(dict_trade_fmtdata_order)
-            col_trade_fmtdata_order.delete_many({'DataDate': self.str_today})
-            if list_dicts_trade_fmtdata_order:
-                col_trade_fmtdata_order.insert_many(list_dicts_trade_fmtdata_order)
-            print('update_trade_fmtdata_order finished, sleep 30s')
+            list_dicts_trade_fmtdata_public_secloan = []
+            if data_srctype in ['hait_ehfz']:
+                pass
+
+            elif data_srctype in ['huat_matic_tsi']:
+                for dict_trade_rawdata_rqmx in iter_trade_rawdata_rqmx:
+                    secloan_source = dict_trade_rawdata_rqmx['compact_source']
+                    if secloan_source:
+                        continue
+                    contract_id = str(dict_trade_rawdata_rqmx['compact_id'])
+                    secid = str(dict_trade_rawdata_rqmx['stock_code']).zfill(6)
+                    expiration_days = 180
+                    maturity_date = str(dict_trade_rawdata_rqmx['ret_end_date'])
+                    open_date = str(dict_trade_rawdata_rqmx['open_date'])
+                    qty = float(dict_trade_rawdata_rqmx['business_balance'])
+                    ir = float(dict_trade_rawdata_rqmx['crdt_ratio'])  # todo
+
+                    dict_trade_fmtdata_public_secloan = {
+                        'DataDate': self.str_today,
+                        'UpdateTime': str_update_time,
+                        'AcctIDByMXZ': self.acctidbymxz,
+                        'ContractID': contract_id,
+                        'SecurityID': secid,
+                        'ExpirationDays': expiration_days,
+                        'MaturityDate': maturity_date,
+                        'QtyToBeChargedInterest': qty,
+                        'Rate': ir,
+                        'StartDate': open_date,
+                        }
+                    list_dicts_trade_fmtdata_public_secloan.append(dict_trade_fmtdata_public_secloan)
+            else:
+                raise ValueError('Unknown data_srctype.')
+
+            col_trade_fmtdata_public_secloan.delete_many({'DataDate': self.str_today, 'AcctIDByMXZ': self.acctidbymxz})
+            if list_dicts_trade_fmtdata_public_secloan:
+                col_trade_fmtdata_public_secloan.insert_many(list_dicts_trade_fmtdata_public_secloan)
+            print('Update_trade_fmtdata_holding finished, sleep 30s')
+            sleep(30)
+
+
+class UpdateTradeFmtDataPrivateSecLoan(Thread):
+    def __init__(self, gl, acctidbymxz):
+        super().__init__()
+        self.str_today = gl.str_today
+        self.acctidbymxz = acctidbymxz
+
+    def run(self):
+        server_mongodb = MongoClient(
+            'mongodb://192.168.2.162:27017/', username='Maxincer', password='winnerismazhe'
+        )
+        db_basic_info = server_mongodb['basicinfo']
+        col_acctinfo = db_basic_info['acctinfo']
+        dict_acctinfo = col_acctinfo.find_one({'DataDate': self.str_today, 'AcctIDByMXZ': self.acctidbymxz})
+        data_srctype = dict_acctinfo['DataSourceType']
+
+        db_trade_data = server_mongodb['trade_data']
+        col_trade_rawdata_private_secloan = db_trade_data['trade_rawdata_private_secloan']
+        col_trade_fmtdata_private_secloan = db_trade_data['trade_fmtdata_private_secloan']
+
+        while True:
+            str_update_time = datetime.now().strftime('%H%M%S')
+            iter_trade_rawdata_private_secloan = col_trade_rawdata_private_secloan.find(
+                {'DataDate': self.str_today, 'AcctIDByMXZ': self.acctidbymxz}
+            )
+            list_dicts_trade_fmtdata_private_secloan = []
+            if data_srctype in ['hait_ehfz']:
+                pass
+
+            elif data_srctype in ['huat_matic_tsi']:
+                for dict_trade_rawdata_private_secloan in iter_trade_rawdata_private_secloan:
+                    contract_id = str(dict_trade_rawdata_private_secloan['合约编号'])
+                    secid = str(dict_trade_rawdata_private_secloan['证券代码']).zfill(6)
+                    expiration_days = int(dict_trade_rawdata_private_secloan['剩余期限'])
+                    maturity_date = str(dict_trade_rawdata_private_secloan['到期日'])
+                    open_date = str(dict_trade_rawdata_private_secloan['起始日'])
+                    qty = float(dict_trade_rawdata_private_secloan['合约数量'])
+                    ir = float(dict_trade_rawdata_private_secloan['占用利率'])
+
+                    dict_trade_fmtdata_private_secloan = {
+                        'DataDate': self.str_today,
+                        'UpdateTime': str_update_time,
+                        'AcctIDByMXZ': self.acctidbymxz,
+                        'ContractID': contract_id,
+                        'SecurityID': secid,
+                        'ExpirationDays': expiration_days,
+                        'MaturityDate': maturity_date,
+                        'QtyToBeChargedInterest': qty,
+                        'Rate': ir,
+                        'StartDate': open_date,
+                        }
+                    list_dicts_trade_fmtdata_private_secloan.append(dict_trade_fmtdata_private_secloan)
+            else:
+                raise ValueError('Unknown data_srctype.')
+
+            col_trade_fmtdata_private_secloan.delete_many({'DataDate': self.str_today, 'AcctIDByMXZ': self.acctidbymxz})
+            if list_dicts_trade_fmtdata_private_secloan:
+                col_trade_fmtdata_private_secloan.insert_many(list_dicts_trade_fmtdata_private_secloan)
+            print('Update_trade_fmtdata_private_secloan finished, sleep 30s')
             sleep(30)
 
 
@@ -395,9 +669,10 @@ class UpdateTradePosition(Thread):
         2. 其他直接读取
         3. 划转事项客观准确的执行时间为盘后清算时，在盘中无法得到这部分数据， 但将划转事项视为立即生效合理。
     """
-    def __init__(self, gl):
+    def __init__(self, gl, acctidbymxz):
         super().__init__()
         self.gl = gl
+        self.acctidbymxz = acctidbymxz
 
     def run(self):
         server_mongodb = MongoClient(
@@ -499,32 +774,41 @@ class UpdateTradePosition(Thread):
 class UpdateTradeDataBase:
     def __init__(self, str_trddate=STR_TODAY):
         self.gl = Globals(str_today=str_trddate)
+        self.list_acctidsbymxz = ['8111_m_huat_9239']
 
-    def update_raw_data_and_fmtdata(self):
+    def update_raw_data_and_fmtdata(self, acctidbymxz):
         # rawdata
-        t1_update_trade_rawdata_fund = UpdateTradeRawDataFund(self.gl)
-        t2_update_trade_rawdata_holding = UpdateTradeRawDataHolding(self.gl)
-        t3_update_trade_rawdata_order = UpdateTradeRawDataOrder(self.gl)
-        t4_update_trade_rawdata_secloan = UpdateTradeRawDataSecLoan(self.gl)
+        t1_update_trade_rawdata_fund = UpdateTradeRawDataFund(self.gl, acctidbymxz)
+        t2_update_trade_rawdata_holding = UpdateTradeRawDataHolding(self.gl, acctidbymxz)
+        t3_update_trade_rawdata_order = UpdateTradeRawDataOrder(self.gl, acctidbymxz)
+        t4_update_trade_rawdata_rqmx = UpdateTradeRawDataRQMX(self.gl, acctidbymxz)
+        t5_update_trade_rawdata_private_secloan = UpdateTradeRawDataPrivateSecLoan(self.gl, acctidbymxz)
         t1_update_trade_rawdata_fund.start()
         t2_update_trade_rawdata_holding.start()
         t3_update_trade_rawdata_order.start()
-        t4_update_trade_rawdata_secloan.start()
+        t4_update_trade_rawdata_rqmx.start()
+        t5_update_trade_rawdata_private_secloan.start()
 
         # # fmtdata
-        t5_update_trade_fmtdata_fund = UpdateTradeFmtDataFund(self.gl)
-        t6_update_trade_fmtdata_holding = UpdateTradeFmtDataHolding(self.gl)
-        t7_update_trade_fmtdata_order = UpdateTradeFmtDataOrder(self.gl)
+        t5_update_trade_fmtdata_fund = UpdateTradeFmtDataFund(self.gl, acctidbymxz)
+        t6_update_trade_fmtdata_holding = UpdateTradeFmtDataHolding(self.gl, acctidbymxz)
+        t7_update_trade_fmtdata_order = UpdateTradeFmtDataOrder(self.gl, acctidbymxz)
+        t8_update_trade_fmtdata_public_secloan = UpdateTradeFmtDataPublicSecLoan(self.gl, acctidbymxz)
+        t9_update_trade_fmtdata_private_secloan = UpdateTradeFmtDataPrivateSecLoan(self.gl, acctidbymxz)
+
         t5_update_trade_fmtdata_fund.start()
         t6_update_trade_fmtdata_holding.start()
         t7_update_trade_fmtdata_order.start()
+        t8_update_trade_fmtdata_public_secloan.start()
+        t9_update_trade_fmtdata_private_secloan.start()
 
-        # business data
-        t8_update_trade_position = UpdateTradePosition(self.gl)
-        t8_update_trade_position.start()
+        # # business data
+        # t8_update_trade_position = UpdateTradePosition(self.gl, acctidbymxz)
+        # t8_update_trade_position.start()
 
     def run(self):
-        self.update_raw_data_and_fmtdata()
+        for acctidbymxz in self.list_acctidsbymxz:
+            self.update_raw_data_and_fmtdata(acctidbymxz)
 
 
 if __name__ == '__main__':

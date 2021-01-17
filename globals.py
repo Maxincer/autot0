@@ -93,6 +93,10 @@ class Globals:
         self.fpath_output_csv_tgtsecloan_mngdraft = (
             f"data/output/tgtsecloan_mngdraft/{self.str_today}_tgtsecloan_mngdraft.csv"
         )
+        self.fpath_output_csv_secloan_demand_analysis = (
+            f"data/output/security_loan_demand_analysis/{self.str_today}_security_loan_demand_analysis.csv"
+        )
+        self.dirpath_output_csv_secloan_order = "data/output/security_loan_order"
         self.fpath_json_dict_windcode2wssdata = (
             f"data/input/windcode2wssdata/{self.str_today}_dict_windcode2wssdata.json"
         )
@@ -138,6 +142,7 @@ class Globals:
         self.db_pretrddata = self.server_mongodb['pre_trade_data']
         self.col_pretrd_grp_tgtsecids_by_cps = self.db_pretrddata['group_target_secids_by_composite']
         self.col_pretrd_tgtsecloan_mngdraft = self.db_pretrddata['tgtsecloan_mngdraft']
+        self.col_pretrd_secloan_demand_analysis = self.db_pretrddata['secloan_demand_analysis']
         self.col_provided_secloan_analysis = self.db_pretrddata['provided_secloan_analysis']
         self.col_pretrd_rawdata_tgtsecids = self.db_pretrddata['pretrd_rawdata_tgtsecids']
         self.col_pretrd_fmtdata_tgtsecids = self.db_pretrddata['pretrd_fmtdata_tgtsecids']
@@ -161,7 +166,7 @@ class Globals:
         self.col_trading_rawdata_holding = self.db_trading_data['trading_rawdata_holding']
         self.col_trading_rawdata_order = self.db_trading_data['trading_rawdata_order']
         self.col_trading_rawdata_secloan = self.db_trading_data['trading_rawdata_secloan']
-
+        self.col_trade_secloan_order = self.db_trading_data['trade_secloan_order']
         # post-trade
         # # dict_map
         # # # todo 重要假设： 根据股票代码区分策略归属，不计数量

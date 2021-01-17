@@ -21,7 +21,6 @@ Assumption:
     4. 融券利率超过9%的股票不借
 
 Todo:
-
 Note:
     1. 融券完全对冲交易策略下，required minimum net asset、保证金、融券卖出市值的初始关系（没有市值波动，融券卖出证券市值=融券卖出金额=融券卖出所得资金）。
         0. 假设所有的担保品折算率为0
@@ -37,7 +36,7 @@ Note:
 
     2. huat的约券周期从16:00开始
     3. 信号券池: 由张博士产生并发出，最原始的信号标的组成的券池
-
+    4. 从期限和首轮开仓成本考虑，先约public secloan, 再约private secloan： public券池期限长，可最大程度上减少换手次数
 Abbreviation:
     1. MarketData: md
 
@@ -46,7 +45,7 @@ from math import ceil
 
 import pandas as pd
 
-from globals import Globals, STR_TODAY
+from globals import Globals, STR_TODAY, datetime, os
 
 
 class PreTrdMng:
@@ -148,41 +147,47 @@ class PreTrdMng:
         broker_abbr = acctidbymxz.split('_')[2]
         if broker_abbr in ['huat']:
             # todo 默认普通券池的MD原格式默认为专业版3导出格式，专项券池的MD原格式为matic导出的格式
-            # todo 将普通券池与专项券池合并，并以secloan_src加以区分: public/private
+            # 将普通券池与专项券池合并，并以secloan_src加以区分: public/private
             list_pretrd_fmtdata_md_security_loan = []
             for dict_rawdata_public_secloan in self.gl.col_pretrd_rawdata_md_public_secloan.find(
                     {'DataDate': self.gl.str_today, 'AcctIDByMXZ': acctidbymxz}
             ):
                 secid = dict_rawdata_public_secloan['证券代码'].zfill(6)
                 avlqty = float(dict_rawdata_public_secloan['融券限额'])
-                dict_pretrd_fmtdata_md_security_loan = {
-                    'DataDate': self.gl.str_today,
-                    'AcctIDByMXZ': acctidbymxz,
-                    'SecurityID': secid,
-                    'AvlQty': avlqty,
-                    'SecurityLoanSource': 'Public'
-                }
-                list_pretrd_fmtdata_md_security_loan.append(dict_pretrd_fmtdata_md_security_loan)
+                if avlqty:
+                    dict_pretrd_fmtdata_md_security_loan = {
+                        'DataDate': self.gl.str_today,
+                        'AcctIDByMXZ': acctidbymxz,
+                        'SecurityID': secid,
+                        'AvlQty': avlqty,
+                        'SecurityLoanSource': 'Public'
+                    }
+                    list_pretrd_fmtdata_md_security_loan.append(dict_pretrd_fmtdata_md_security_loan)
 
             for dict_rawdata_private_secloan in self.gl.col_pretrd_rawdata_md_private_secloan.find(
                     {'DataDate': self.gl.str_today, 'AcctIDByMXZ': acctidbymxz}
             ):
                 secid = dict_rawdata_private_secloan['证券名称']
                 avlqty = float(dict_rawdata_private_secloan['委托数量'])
-                if dict_rawdata_private_secloan['券源类型'] in ['竞拍券']:
-                    secloan_src = 'Private_JPQ'
-                elif dict_rawdata_private_secloan['券源类型'] in ['实时券']:
-                    secloan_src = 'Private_SSQ'
-                else:
-                    raise ValueError('Unknown security loan type in private security loan')
-                dict_pretrd_fmtdata_md_security_loan = {
-                    'DataDate': self.gl.str_today,
-                    'AcctIDByMXZ': acctidbymxz,
-                    'SecurityID': secid,
-                    'AvlQty': avlqty,
-                    'SecurityLoanSource': secloan_src
-                }
-                list_pretrd_fmtdata_md_security_loan.append(dict_pretrd_fmtdata_md_security_loan)
+                secloan_term = int(dict_rawdata_private_secloan['委托期限'])
+                secloan_ir = float(dict_rawdata_private_secloan['委托利率'])
+                if avlqty:
+                    if dict_rawdata_private_secloan['券源类型'] in ['竞拍券']:
+                        secloan_src = 'Private_JPQ'
+                    elif dict_rawdata_private_secloan['券源类型'] in ['实时券']:
+                        secloan_src = 'Private_SSQ'
+                    else:
+                        raise ValueError('Unknown security loan type in private security loan')
+                    dict_pretrd_fmtdata_md_security_loan = {
+                        'DataDate': self.gl.str_today,
+                        'AcctIDByMXZ': acctidbymxz,
+                        'SecurityID': secid,
+                        'AvlQty': avlqty,
+                        'SecurityLoanTerm': secloan_term,
+                        'SecurityLoanInterestRate': secloan_ir,
+                        'SecurityLoanSource': secloan_src
+                    }
+                    list_pretrd_fmtdata_md_security_loan.append(dict_pretrd_fmtdata_md_security_loan)
 
             self.gl.col_pretrd_fmtdata_md_security_loan.delete_many(
                 {'DataDate': self.gl.str_today, 'AcctIDByMXZ': acctidbymxz}
@@ -191,9 +196,11 @@ class PreTrdMng:
                 self.gl.col_pretrd_fmtdata_md_security_loan.insert_many(list_pretrd_fmtdata_md_security_loan)
 
     def upload_secloan_demand_analysis(self, acctidbymxz):
-        # 先遍历tgtsecpool, 添加新增加的券
-        # 再遍历已锁定合约列表, 得到应减少的券
-
+        # 名称统一:
+        # # 1. 海通: 公用券池，私用券池； 2. 华泰: 普通券池，专项券池（实时券池，竞拍券池）
+        # 1. 遍历tgtsecpool, 添加新增加的券
+        # 2. 遍历已锁定合约列表, 得到应减少的券
+        broker_abbr = acctidbymxz.split('_')[2]
         iter_pretrd_fmtdata_tgtsecids = self.gl.col_pretrd_fmtdata_tgtsecids.find(
             {'DataDate': self.gl.str_today, 'AcctIDByMXZ': acctidbymxz, 'ExcludedMark': 0}
         )
@@ -206,168 +213,298 @@ class PreTrdMng:
             symbol = self.gl.dict_fmtted_wssdata['Symbol'][tgtwindcode]
             preclose = self.gl.dict_fmtted_wssdata['PreClose'][tgtwindcode]
 
-            # 专项券池可用分析
-            # 华泰的专项券池分为: 实时券池(日内交易)，竞拍券池(盘后竞价)。
-            private_secloan_avlqty = 0
-            for dict_private_secpool_ready in self.list_dicts_private_secpool_ready:
-                secid_in_private_secpool_ready = dict_private_secpool_ready['证券代码']
-                if tgtsecid == secid_in_private_secpool_ready:
-                    private_secpool_ready_avlqty = dict_private_secpool_ready['未分配数量']
+            if broker_abbr in ['huat']:
+                # market_data
+                # # public_md
+                public_secloan_avlqty = 0
+                iter_col_pretrd_fmtdata_md_secloan = self.gl.col_pretrd_fmtdata_md_security_loan.find(
+                        {
+                            'DataDate': self.gl.str_today,
+                            'AcctIDByMXZ': acctidbymxz,
+                            'SecurityLoanSource': 'Public',
+                            'SecurityID': tgtsecid,
+                        }
+                )
+                for dict_pretrd_fmtdata_md_secloan in iter_col_pretrd_fmtdata_md_secloan:
+                    public_secloan_avlqty += dict_pretrd_fmtdata_md_secloan['AvlQty']
 
+                # private_md
+                # # 华泰融券策略: 先约实时券（时间优先，），再约竞拍券
+                private_ssq_secloan_avlqty = 0
+                private_jpq_secloan_avlqty = 0
+                iter_col_pretrd_fmtdata_md_secloan = self.gl.col_pretrd_fmtdata_md_security_loan.find(
+                        {
+                            'DataDate': self.gl.str_today,
+                            'AcctIDByMXZ': acctidbymxz,
+                            'SecurityID': tgtsecid,
+                        }
+                )
 
-            # 普通券池可用分析
-            public_secpool_avlqty = 0
-            for dict_public_secpool in self.list_dicts_public_secpool:
-                secid_in_public_secpool = dict_public_secpool['证券代码']
-                if tgtsecid == secid_in_public_secpool:
-                    public_secpool_avlqty = dict_public_secpool['数量']
+                for dict_pretrd_fmtdata_md_secloan in iter_col_pretrd_fmtdata_md_secloan:
+                    secloan_src = dict_pretrd_fmtdata_md_secloan['SecurityLoanSource']
+                    if secloan_src in ['Private_SSQ']:
+                        private_ssq_secloan_avlqty += dict_pretrd_fmtdata_md_secloan['AvlQty']
+                    elif secloan_src in ['Private_JPQ']:
+                        private_jpq_secloan_avlqty += dict_pretrd_fmtdata_md_secloan['AvlQty']
+                    else:
+                        raise ValueError('Unknown security loan avlqty.')
 
-            quota_last_trddate = 0  # 清算后Quota
-            for dict_posttrd_fmtdata_ssquota_from_secloan_last_trddate in (
-                    self.list_dicts_posttrd_fmtdata_ssquota_from_secloan_last_trddate
-            ):
-                if tgtsecid == dict_posttrd_fmtdata_ssquota_from_secloan_last_trddate['SecurityID']:
-                    quota_last_trddate = dict_posttrd_fmtdata_ssquota_from_secloan_last_trddate['SSQuota']
+                private_secloan_avlqty = private_ssq_secloan_avlqty + private_jpq_secloan_avlqty
 
-            # 根据tgtamt计算tgtqty
-            # 每只股票标杆20万元
-            # 处于公司集中交易系统无法交易200股以下考虑，不借入科创板股票
-            # 近似后取ceiling
-            tgtamt = 200000
-            tgtqty = ceil((tgtamt / close) / 100) * 100
-            # 由于现有交易系统无法进行挂单成交，故对盘口价差大的股票交易成本很大，导致实际收益与策略收益偏离。暂时不建仓。
-            if close <= 5:
-                tgtqty = 0
-            # todo 由于现有交易系统无法交易200股以下的科创板股票，故在规模小的情况下，剔除科创板
-            if tgtsecid[:3] in ['688']:
-                tgtqty = 0
-            if not margin_or_not_mark:
-                tgtqty = 0
-            #
-            # 首发假设
-            quota_last_trddate = 0
-            private_secpool_ready_avlqty = 0
-            public_secpool_avlqty = 0
-            qty2terminate = 0
-            qty2lock = 0
-            qty2borrow_from_public_secpool = 0
-            qty2borrow_from_outside_source = 0
-            # qty2lock = min(tgtqty - quota_last_trddate, private_secpool_ready_avlqty)
-            # qty2borrow_from_public_secpool = min(tgtqty - quota_last_trddate - qty2lock, public_secpool_avlqty)
-            #
-            # # 计算外部询券数量
-            # if margin_or_not_mark:
-            #     qty2borrow_from_outside_source = max(
-            #             tgtqty - quota_last_trddate - private_secpool_ready_avlqty - public_secpool_avlqty, 0
-            #     )
-            # else:
-            #     qty2borrow_from_outside_source = 0
-            #
-            # # 计算需要终止的融券额度(由于目标券池发生变化导致): 目标数量 - 最新已持有数量 todo 目前为quota_last_trddate
-            # qty2terminate = max(quota_last_trddate - tgtqty, 0)
+                # Quota:
+                # # RealTimeQuota:
+                public_secloan_quota = 0
+                iter_col_trade_fmtdata_public_secloan = self.gl.col_trade_fmtdata_public_secloan.find(
+                    {'DataDate': self.gl.str_today, 'AcctIDByMXZ': acctidbymxz, 'SecurityID': tgtsecid}
+                )
+                for dict_trade_fmtdata_public_secloan in iter_col_trade_fmtdata_public_secloan:
+                    public_secloan_quota += dict_trade_fmtdata_public_secloan['QtyToBeChargedInterest']
 
-            dict_secpool_analysis = {
-                'DataDate': self.gl.str_today,
-                'AcctIDByMXZ': self.gl.acctidbymxz,
-                'SecurityID': tgtsecid,
-                'WindCode': tgtwindcode,
-                'SecName': symbol,
-                'TgtQty': tgtqty,
-                'MarginOrNotMark': margin_or_not_mark,
-                'AvlQtyInPrivatePool': private_secpool_ready_avlqty,
-                'AvlQtyInPublicPool': public_secpool_avlqty,
-                'QuotaOnLastTrdDate': quota_last_trddate,
-                'QtyToTerminate': qty2terminate,
-                'QtyToLock': qty2lock,
-                'QtyToBorrowFromPublicSecPool': qty2borrow_from_public_secpool,
-                'QtyToBorrowFromOutsideSource': qty2borrow_from_outside_source,
-            }
-            list_dicts_secpool_analysis.append(dict_secpool_analysis)
-        #
-        df_secpool_analysis = pd.DataFrame(list_dicts_secpool_analysis)
-        df_secpool_analysis.to_csv(self.gl.fpath_output_csv_tgtsecloan_mngdraft, index=False, encoding='ansi')
-        self.gl.col_pretrd_tgtsecloan_mngdraft.delete_many(
-            {'DataDate': self.gl.str_today, 'AcctIDByMXZ': self.gl.acctidbymxz}
+                private_secloan_quota = 0
+                iter_col_trade_fmtdata_private_secloan = self.gl.col_trade_fmtdata_private_secloan.find(
+                    {'DataDate': self.gl.str_today, 'AcctIDByMXZ': acctidbymxz, 'SecurityID': tgtsecid}
+                )
+                for dict_trade_fmtdata_private_secloan in iter_col_trade_fmtdata_private_secloan:
+                    private_secloan_quota += dict_trade_fmtdata_private_secloan['QtyToBeChargedInterest']
+
+                secloan_quota = public_secloan_quota + private_secloan_quota
+
+                # # QuotaOnLastTrdDate
+                quota_last_trddate = 0
+                iter_col_posttrd_fmtdata_ssquota_from_secloan_last_trddate = (
+                    self.gl.col_posttrd_fmtdata_ssquota_from_secloan.find(
+                        {
+                            'DataDate': self.gl.str_last_trddate,
+                            'AcctIDByMXZ': self.gl.acctidbymxz,
+                            'SecurityID': tgtsecid,
+                        }
+                    )
+                )
+                for dict_posttrd_fmtdata_ssquota_from_secloan_last_trddate in (
+                        iter_col_posttrd_fmtdata_ssquota_from_secloan_last_trddate
+                ):
+                    quota_last_trddate += dict_posttrd_fmtdata_ssquota_from_secloan_last_trddate['SSQuota']
+
+                # 根据tgtamt计算tgtqty
+                tgtamt = 200000  # 每只股票标杆20万元，近似后取ceiling
+                tgtqty = ceil((tgtamt / preclose) / 100) * 100
+                # 由于现有交易系统无法进行挂单成交，故对盘口价差大的股票交易成本很大，导致实际收益与策略收益偏离。暂时不建仓。
+                if preclose <= 5:
+                    tgtqty = 0
+                if tgtsecid[:3] in ['688']:
+                    tgtqty = 0  # 公司集中交易系统无法交易200股以下，不借入科创板股票
+                if not margin_or_not_mark:
+                    tgtqty = 0
+
+                # 借券顺序: 1. public secloan 2. private secloan(SSQ -> JPQ) 3. outside secloan
+                ordqty_from_public_secloan = max(min(tgtqty - secloan_quota, public_secloan_avlqty), 0)
+                ordqty_from_private_ssq_secloan = max(
+                    min(tgtqty - secloan_quota - ordqty_from_public_secloan, private_ssq_secloan_avlqty), 0
+                )
+                ordqty_from_private_jpq_secloan = max(
+                    min(
+                        tgtqty - secloan_quota - ordqty_from_public_secloan - ordqty_from_private_ssq_secloan,
+                        private_jpq_secloan_avlqty
+                    ),
+                    0
+                )
+                ordqty_from_private_secloan = ordqty_from_private_ssq_secloan + ordqty_from_private_jpq_secloan
+                ordqty_from_outside_secloan = max(
+                    tgtqty - secloan_quota - ordqty_from_public_secloan - ordqty_from_private_secloan, 0
+                )
+
+                # 计算需要终止的融券额度(由于目标券池发生变化导致): 目标数量 - 最新已持有数量 todo 目前为quota_last_trddate
+                quota2terminate = max(secloan_quota - tgtqty, 0)
+
+                dict_secloan_demand_analysis = {
+                    'DataDate': self.gl.str_today,
+                    'UpdateTime': datetime.now().strftime('%H%M%S'),
+                    'AcctIDByMXZ': acctidbymxz,
+                    'SecurityID': tgtsecid,
+                    'WindCode': tgtwindcode,
+                    'Symbol': symbol,
+                    'TgtQty': tgtqty,
+                    'MarginOrNotMark': margin_or_not_mark,
+                    'AvlQtyInPrivatePool': private_secloan_avlqty,
+                    'AvlQtyInPublicPool': public_secloan_avlqty,
+                    'QuotaRealTime': secloan_quota,
+                    'QuotaToTerminate': quota2terminate,
+                    'QuotaOnLastTrdDate': quota_last_trddate,
+                    'OrdQtyFromPublicSecLoan': ordqty_from_public_secloan,
+                    'OrdQtyFromPrivateSecLoan': ordqty_from_private_secloan,
+                    'OrdQtyFromPrivateSSQSecLoan': ordqty_from_private_ssq_secloan,
+                    'OrdQtyFromPrivateJPQSecLoan': ordqty_from_private_jpq_secloan,
+                    'OrdQtyFromOutsideSource': ordqty_from_outside_secloan,
+                }
+                list_dicts_secloan_demand_analysis.append(dict_secloan_demand_analysis)
+
+            elif broker_abbr in ['hait']:
+                print('hait, no action.')
+            else:
+                raise ValueError('Unknown broker abbr.')
+
+        df_secloan_demand_analysis = pd.DataFrame(list_dicts_secloan_demand_analysis)
+        df_secloan_demand_analysis.to_csv(
+            self.gl.fpath_output_csv_secloan_demand_analysis, index=False, encoding='ansi'
         )
-        self.gl.col_pretrd_tgtsecloan_mngdraft.insert_many(list_dicts_secpool_analysis)
-        print(f"{self.gl.str_today}_tgtsecloan_mngdraft Finished.")
 
-    def get_csv_secloan_order(self):
-        df_csv_tgtsecloan_mngdraft = pd.read_csv(
-            self.gl.fpath_output_csv_tgtsecloan_mngdraft,
-            dtype={'QtyToBorrowFromOutSideSource': float},
-            converters={'SecurityID': lambda x: str(x).zfill(6)},
-            encoding='ansi'
+        self.gl.col_pretrd_secloan_demand_analysis.delete_many(
+            {'DataDate': self.gl.str_today, 'AcctIDByMXZ': acctidbymxz}
         )
-        list_dicts_tgtsecloan_mngdraft = df_csv_tgtsecloan_mngdraft.to_dict('records')
+        self.gl.col_pretrd_secloan_demand_analysis.insert_many(list_dicts_secloan_demand_analysis)
+        print(f"{self.gl.str_today}_secloan_demand_analysis Finished.")
 
-        fpath_marginable_secloan = r'D:\projects\autot0\data\input\pretrddata\marginable_secpools\huat\每日券池-20210114.xlsx'
-        df_marginable_secloan = pd.read_excel(
-            fpath_marginable_secloan,
-            dtype={'委托数量': float, '委托期限': int, '委托利率': float},
-            converters={'证券代码': lambda x: str(x.strip()).zfill(6)}
-        )
-        list_dicts_marginable_secloans = df_marginable_secloan.to_dict('records')
+    def output_secloan_order(self, acctidbymxz):
+        dict_acctinfo = self.gl.col_acctinfo.find_one({'DataDate': self.gl.str_today, 'AcctIDByMXZ': acctidbymxz})
+        acctidbybroker = dict_acctinfo['AcctIDByBroker']
+        broker_abbr = acctidbymxz.split('_')[2]
+        if broker_abbr in ['huat']:
+            # 华泰的order是报在融券通中的order。别忘了还有普通券池的order
+            iter_col_pretrd_secloan_demand_analysis = self.gl.col_pretrd_secloan_demand_analysis.find(
+                {'DataDate': self.gl.str_today, 'AcctIDByMXZ': acctidbymxz}
+            )
 
-        list_dicts_secloan_order = []
-        for dict_tgtsecloan_mngdraft in list_dicts_tgtsecloan_mngdraft:
-            tgtqty = dict_tgtsecloan_mngdraft['TgtQty']
-            acctid = '960000039239'
-            qty2lock = tgtqty  # todo qty2lock 改为tgtqty
-            # 若当日需求大于0，则到行情数据中询券
-            if qty2lock > 0:
-                tgtsecid = dict_tgtsecloan_mngdraft['SecurityID']
-                if tgtsecid[0] in ['6']:
-                    exchange = 'SH'
-                elif tgtsecid[0] in ['3', '0']:
-                    exchange = 'SZ'
-                else:
-                    raise ValueError('Unknown exchange.')
-                list_dicts_avlsecloan_by_secid = []
-                list_int_ordterm = []
-                for dict_marginable_secloan in list_dicts_marginable_secloans:
-                    secid_in_marginable_secloan = dict_marginable_secloan['证券代码']
-                    avlqty_in_marginable_secloan = dict_marginable_secloan['委托数量']
-                    int_avlterm = dict_marginable_secloan['委托期限']
-                    if tgtsecid == secid_in_marginable_secloan and avlqty_in_marginable_secloan and int_avlterm <= 31:
-                        list_dicts_avlsecloan_by_secid.append(dict_marginable_secloan)
-                        list_int_ordterm.append(int_avlterm)
-                list_int_ordterm.sort(reverse=False)
+            list_dicts_secloan_order = []
+            for dict_pretrd_secloan_demand_analysis in iter_col_pretrd_secloan_demand_analysis:
+                tgtqty = dict_pretrd_secloan_demand_analysis['TgtQty']
+                if tgtqty:
+                    secid = dict_pretrd_secloan_demand_analysis['SecurityID']
+                    if secid[0] in ['6']:
+                        exchange = 'SH'
+                    elif secid[0] in ['3', '0']:
+                        exchange = 'SZ'
+                    else:
+                        raise ValueError('Unknown exchange.')
 
-                for int_ordterm in list_int_ordterm:
-                    for dict_avlsecloan in list_dicts_avlsecloan_by_secid:
-                        avlqty = dict_avlsecloan['委托数量']
-                        if qty2lock > avlqty:
-                            ordqty = avlqty
-                        else:
-                            ordqty = qty2lock
-                        if not ordqty:
-                            continue
-                        ir = dict_avlsecloan['委托利率']
-                        if dict_avlsecloan['委托期限'] == int_ordterm:
+                    # SSQ
+                    tgtordqty_from_private_ssq_secloan = (
+                        dict_pretrd_secloan_demand_analysis['OrdQtyFromPrivateSSQSecLoan']
+                    )
+                    if tgtordqty_from_private_ssq_secloan:
+                        # 期限匹配
+                        iter_col_pretrd_md_private_ssq_secloan = (
+                            self.gl.col_pretrd_fmtdata_md_security_loan.find(
+                                {
+                                    'DataDate': self.gl.str_today,
+                                    'AcctIDByMXZ': acctidbymxz,
+                                    'SecurityID': secid,
+                                    'SecurityLoanSource': 'Private_SSQ'
+                                }
+                            ).sort('SecurityLoanTerm', -1)
+                        )
+                        # 从期限最长的开始借
+                        for dict_md_private_ssq_secloan in iter_col_pretrd_md_private_ssq_secloan:
+                            secloan_term = dict_md_private_ssq_secloan['SecurityLoanTerm']
+                            if secloan_term >= 31:
+                                continue
+                            avlqty = dict_md_private_ssq_secloan['AvlQty']
+                            ordqty = min(tgtordqty_from_private_ssq_secloan, avlqty)
+                            if not ordqty:
+                                continue
+                            ir = dict_md_private_ssq_secloan['SecurityInterestRate']
                             dict_secloan_order = {
-                                '资产账号': acctid,
-                                '证券代码': tgtsecid,
+                                '资产账号': acctidbybroker,
+                                '证券代码': secid,
                                 '市场': exchange,
                                 '申报类型': '非约定申报',
                                 '约定号': '',
-                                '期限': int_ordterm,
+                                '期限': secloan_term,
                                 '利率': ir,
                                 '数量': ordqty,
                             }
                             list_dicts_secloan_order.append(dict_secloan_order)
-                            qty2lock = qty2lock - ordqty
+                            tgtordqty_from_private_ssq_secloan = tgtordqty_from_private_ssq_secloan - ordqty
 
-        df_secloan_order = pd.DataFrame(list_dicts_secloan_order)
-        df_secloan_order.to_csv('secloan_order.csv', index=False, encoding='ansi')
-        print('批量融券单已生成.')
+                    # JPQ
+                    tgtordqty_from_private_jpq_secloan = (
+                        dict_pretrd_secloan_demand_analysis['OrdQtyFromPrivateJPQSecLoan']
+                    )
+                    if tgtordqty_from_private_jpq_secloan:
+                        # 期限匹配
+                        iter_col_pretrd_md_private_jpq_secloan = (
+                            self.gl.col_pretrd_fmtdata_md_security_loan.find(
+                                {
+                                    'DataDate': self.gl.str_today,
+                                    'AcctIDByMXZ': acctidbymxz,
+                                    'SecurityID': secid,
+                                    'SecurityLoanSource': 'Private_JPQ'
+                                }
+                            ).sort('SecurityLoanTerm', -1)
+                        )
+                        # 从期限最长的开始借
+                        for dict_md_private_jpq_secloan in iter_col_pretrd_md_private_jpq_secloan:
+                            secloan_term = dict_md_private_jpq_secloan['SecurityLoanTerm']
+                            if secloan_term >= 31:
+                                continue
+                            avlqty = dict_md_private_jpq_secloan['AvlQty']
+                            ordqty = min(tgtordqty_from_private_jpq_secloan, avlqty)
+                            if not ordqty:
+                                continue
+                            ir = 0.09  # todo 最多接受0.09 但需要改进，需要获得融入券息报价，然后参考之报价
+                            dict_secloan_order = {
+                                '资产账号': acctidbybroker,
+                                '证券代码': secid,
+                                '市场': exchange,
+                                '申报类型': '非约定申报',
+                                '约定号': '',
+                                '期限': secloan_term,
+                                '利率': ir,
+                                '数量': ordqty,
+                            }
+                            list_dicts_secloan_order.append(dict_secloan_order)
+                            tgtordqty_from_private_jpq_secloan = tgtordqty_from_private_jpq_secloan - ordqty
+
+                    # OrdQtyFromOutsideSource
+                    tgtordqty_from_outside_secloan = (
+                        dict_pretrd_secloan_demand_analysis['OrdQtyFromOutsideSource']
+                    )
+                    if tgtordqty_from_outside_secloan:
+                        # 报14天与28天的期限，0.085的利率，对半数量申请
+                        list_secloan_terms = [14, 28]
+                        for secloan_term in list_secloan_terms:
+                            ordqty = (
+                                    (round(dict_pretrd_secloan_demand_analysis['OrdQtyFromOutsideSource']/200, 0))
+                                    * 100
+                            )
+                            if not ordqty:
+                                continue
+                            dict_secloan_order = {
+                                '资产账号': acctidbybroker,
+                                '证券代码': secid,
+                                '市场': exchange,
+                                '申报类型': '非约定申报',
+                                '约定号': '',
+                                '期限': secloan_term,
+                                '利率': 0.085,
+                                '数量': ordqty,
+                            }
+                            list_dicts_secloan_order.append(dict_secloan_order)
+
+            df_secloan_order = pd.DataFrame(list_dicts_secloan_order)
+            fn_secloan_order = f'{acctidbymxz}_secloan_order.csv'
+            fpath_output_secloan_order = os.path.join(self.gl.dirpath_output_csv_secloan_order, fn_secloan_order)
+            df_secloan_order.to_csv(fpath_output_secloan_order, index=False, encoding='ansi')
+            df_secloan_order['DataDate'] = self.gl.str_today
+            df_secloan_order['AcctIDByMXZ'] = acctidbymxz
+            list_dicts_secloan_order_2b_updated = df_secloan_order.to_dict('records')
+            print('批量融券单已生成.')
+            self.gl.col_trade_secloan_order.delete_many({'DataDate': self.gl.str_today, 'AcctIDByMXZ': acctidbymxz})
+            if list_dicts_secloan_order_2b_updated:
+                self.gl.col_trade_secloan_order.insert_many(list_dicts_secloan_order_2b_updated)
+
+        elif broker_abbr in ['hait']:
+            print('hait, no action.')
+
+        else:
+            raise ValueError('Unknown broker abbr.')
 
     def run(self):
         # 先运行T日的post_trddata_mng, 将T-1的清算数据上传
         for acctidbymxz in self.list_acctidsbymxz:
             self.upload_pretrd_rawdata(acctidbymxz)
-            self.get_secloanmng_draft(acctidbymxz)
-            self.get_csv_secloan_order(acctidbymxz)
+            self.upload_pretrd_fmtdata(acctidbymxz)
+            self.upload_secloan_demand_analysis(acctidbymxz)
+            self.output_secloan_order(acctidbymxz)
         print('PreTrdMng Finished.')
 
 
