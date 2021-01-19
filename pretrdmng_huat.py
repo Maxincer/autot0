@@ -20,7 +20,6 @@ Assumption:
     3. 最新收盘价小于5元的股票不借入 -> TgtQty 重置为0
     4. 融券利率超过9%的股票不借
 
-Todo:
 Note:
     1. 融券完全对冲交易策略下，required minimum net asset、保证金、融券卖出市值的初始关系（没有市值波动，融券卖出证券市值=融券卖出金额=融券卖出所得资金）。
         0. 假设所有的担保品折算率为0
@@ -37,6 +36,7 @@ Note:
     2. huat的约券周期从16:00开始
     3. 信号券池: 由张博士产生并发出，最原始的信号标的组成的券池
     4. 从期限和首轮开仓成本考虑，先约public secloan, 再约private secloan： public券池期限长，可最大程度上减少换手次数
+    5. 市场行情 market data 算是 pre_trade data
 Abbreviation:
     1. MarketData: md
 
@@ -88,8 +88,12 @@ class PreTrdMng:
             {'DataDate': self.gl.str_today, 'AcctIDByMXZ': acctidbymxz}
         )
         fpath_pretrd_md_private_secloan = dict_acctinfo['PreTradeDataFilePath']['PrivateSecurityLoanMarketData']
-        df_xlsx_md_private_secloan = pd.read_excel(fpath_pretrd_md_private_secloan, dtype='str')
-        list_dicts_md_private_secloan = df_xlsx_md_private_secloan.to_dict('records')
+        df_csv_md_private_secloan = pd.read_excel(
+            fpath_pretrd_md_private_secloan,
+            dtype={'委托数量': float, '委托期限': int, '委托利率': float},
+            converters={'证券代码': lambda x: str(x).zfill(6)}
+        )
+        list_dicts_md_private_secloan = df_csv_md_private_secloan.to_dict('records')
         for dict_md_private_secloan in list_dicts_md_private_secloan:
             dict_md_private_secloan['DataDate'] = self.gl.str_today
             dict_md_private_secloan['AcctIDByMXZ'] = acctidbymxz
@@ -102,11 +106,16 @@ class PreTrdMng:
 
         # 上传专项券池-普通融券市场行情
         fpath_pretrd_md_public_secloan = dict_acctinfo['PreTradeDataFilePath']['PublicSecurityLoanMarketData']
-        df_xlsx_md_public_secloan = pd.read_excel(fpath_pretrd_md_public_secloan, dtype='str')
-        list_dicts_md_public_secloan = df_xlsx_md_public_secloan.to_dict('records')
-        for dict_md_public_secloan in list_dicts_md_public_secloan:
-            dict_md_public_secloan['DataDate'] = self.gl.str_today
-            dict_md_public_secloan['AcctIDByMXZ'] = acctidbymxz
+        with open(fpath_pretrd_md_public_secloan, 'rb') as f:
+            list_datalines = f.readlines()
+            list_fields = [_.decode('ansi') for _ in list_datalines[0].split(b'\t')][:-1]
+            list_dicts_md_public_secloan = []
+            for datalines in list_datalines[1:]:
+                list_data = [_.decode('ansi') for _ in datalines.split(b'\t')][:-1]
+                dict_md_public_secloan = dict(zip(list_fields, list_data))
+                dict_md_public_secloan['DataDate'] = self.gl.str_today
+                dict_md_public_secloan['AcctIDByMXZ'] = acctidbymxz
+                list_dicts_md_public_secloan.append(dict_md_public_secloan)
 
         self.gl.col_pretrd_rawdata_md_public_secloan.delete_many(
             {'DataDate': self.gl.str_today, 'AcctIDByMXZ': acctidbymxz}
@@ -115,6 +124,7 @@ class PreTrdMng:
             self.gl.col_pretrd_rawdata_md_public_secloan.insert_many(list_dicts_md_public_secloan)
 
     def upload_pretrd_fmtdata(self, acctidbymxz):
+        # tgtsecids
         list_excluded_secids = []
         for dict_excluded_secid in self.gl.col_pretrd_rawdata_excluded_secids.find(
                 {'DataDate': self.gl.str_today, 'AcctIDByMXZ': acctidbymxz}
@@ -144,6 +154,7 @@ class PreTrdMng:
         if list_pretrd_fmtdata_tgtsecids:
             self.gl.col_pretrd_fmtdata_tgtsecids.insert_many(list_pretrd_fmtdata_tgtsecids)
 
+        # col_pretrd_fmtdata_md_secloan
         broker_abbr = acctidbymxz.split('_')[2]
         if broker_abbr in ['huat']:
             # todo 默认普通券池的MD原格式默认为专业版3导出格式，专项券池的MD原格式为matic导出的格式
@@ -167,10 +178,12 @@ class PreTrdMng:
             for dict_rawdata_private_secloan in self.gl.col_pretrd_rawdata_md_private_secloan.find(
                     {'DataDate': self.gl.str_today, 'AcctIDByMXZ': acctidbymxz}
             ):
-                secid = dict_rawdata_private_secloan['证券名称']
+                secid = dict_rawdata_private_secloan['证券代码']
                 avlqty = float(dict_rawdata_private_secloan['委托数量'])
                 secloan_term = int(dict_rawdata_private_secloan['委托期限'])
                 secloan_ir = float(dict_rawdata_private_secloan['委托利率'])
+                if secloan_ir > 1:
+                    secloan_ir = secloan_ir / 100
                 if avlqty:
                     if dict_rawdata_private_secloan['券源类型'] in ['竞拍券']:
                         secloan_src = 'Private_JPQ'
@@ -207,6 +220,7 @@ class PreTrdMng:
         list_tgtwindcodes = [_['WindCode'] for _ in iter_pretrd_fmtdata_tgtsecids]
 
         list_dicts_secloan_demand_analysis = []
+        # 遍历tgtwindcodes:
         for tgtwindcode in list_tgtwindcodes:
             tgtsecid = tgtwindcode.split('.')[0]
             margin_or_not_mark = self.gl.dict_fmtted_wssdata['MarginOrNotMark'][tgtwindcode]
@@ -215,21 +229,8 @@ class PreTrdMng:
 
             if broker_abbr in ['huat']:
                 # market_data
-                # # public_md
-                public_secloan_avlqty = 0
-                iter_col_pretrd_fmtdata_md_secloan = self.gl.col_pretrd_fmtdata_md_security_loan.find(
-                        {
-                            'DataDate': self.gl.str_today,
-                            'AcctIDByMXZ': acctidbymxz,
-                            'SecurityLoanSource': 'Public',
-                            'SecurityID': tgtsecid,
-                        }
-                )
-                for dict_pretrd_fmtdata_md_secloan in iter_col_pretrd_fmtdata_md_secloan:
-                    public_secloan_avlqty += dict_pretrd_fmtdata_md_secloan['AvlQty']
-
-                # private_md
                 # # 华泰融券策略: 先约实时券（时间优先，），再约竞拍券
+                public_secloan_avlqty = 0
                 private_ssq_secloan_avlqty = 0
                 private_jpq_secloan_avlqty = 0
                 iter_col_pretrd_fmtdata_md_secloan = self.gl.col_pretrd_fmtdata_md_security_loan.find(
@@ -246,6 +247,8 @@ class PreTrdMng:
                         private_ssq_secloan_avlqty += dict_pretrd_fmtdata_md_secloan['AvlQty']
                     elif secloan_src in ['Private_JPQ']:
                         private_jpq_secloan_avlqty += dict_pretrd_fmtdata_md_secloan['AvlQty']
+                    elif secloan_src in ['Public']:
+                        public_secloan_avlqty += dict_pretrd_fmtdata_md_secloan['AvlQty']
                     else:
                         raise ValueError('Unknown security loan avlqty.')
 
@@ -343,6 +346,48 @@ class PreTrdMng:
             else:
                 raise ValueError('Unknown broker abbr.')
 
+        # 遍历已持有合约
+        iter_col_trade_secloan = self.gl.col_trade_ssquota_from_secloan.find(
+            {'DataDate': self.gl.str_today, 'AcctIDByMXZ': acctidbymxz}
+        )
+
+        for dict_trade_secloan in iter_col_trade_secloan:
+            secid = dict_trade_secloan['SecurityID']
+            if secid[0] in ['6', '5']:
+                windcode = f"{secid}.SH"
+            elif secid[0] in ['3', '0']:
+                windcode = f"{secid}.SZ"
+            else:
+                raise ValueError('Unknown security id')
+            symbol = self.gl.dict_fmtted_wssdata['Symbol'][windcode]
+            margin_or_not_mark = self.gl.dict_fmtted_wssdata['MarginOrNotMark'][windcode]
+
+            if windcode not in list_tgtwindcodes:
+                ssquota = dict_trade_secloan['SSQuota']
+                quota2terminate = ssquota
+
+                dict_secloan_demand_analysis = {
+                    'DataDate': self.gl.str_today,
+                    'UpdateTime': datetime.now().strftime('%H%M%S'),
+                    'AcctIDByMXZ': acctidbymxz,
+                    'SecurityID': secid,
+                    'WindCode': windcode,
+                    'Symbol': symbol,
+                    'TgtQty': 0,
+                    'MarginOrNotMark': margin_or_not_mark,
+                    'AvlQtyInPrivatePool': 'N/A',
+                    'AvlQtyInPublicPool': 'N/A',
+                    'QuotaRealTime': ssquota,
+                    'QuotaToTerminate': quota2terminate,
+                    'QuotaOnLastTrdDate': 'N/A',
+                    'OrdQtyFromPublicSecLoan': - dict_trade_secloan['SSQuotaFromPublicSecPool'],
+                    'OrdQtyFromPrivateSecLoan': - dict_trade_secloan['SSQuotaFromPrivateSecPool'],
+                    'OrdQtyFromPrivateSSQSecLoan': 'N/A',
+                    'OrdQtyFromPrivateJPQSecLoan': 'N/A',
+                    'OrdQtyFromOutsideSource': 'N/A',
+                }
+                list_dicts_secloan_demand_analysis.append(dict_secloan_demand_analysis)
+
         df_secloan_demand_analysis = pd.DataFrame(list_dicts_secloan_demand_analysis)
         df_secloan_demand_analysis.to_csv(
             self.gl.fpath_output_csv_secloan_demand_analysis, index=False, encoding='ansi'
@@ -398,10 +443,10 @@ class PreTrdMng:
                             if secloan_term >= 31:
                                 continue
                             avlqty = dict_md_private_ssq_secloan['AvlQty']
-                            ordqty = min(tgtordqty_from_private_ssq_secloan, avlqty)
+                            ordqty = ceil(min(tgtordqty_from_private_ssq_secloan, avlqty)/100)*100
                             if not ordqty:
                                 continue
-                            ir = dict_md_private_ssq_secloan['SecurityInterestRate']
+                            ir = dict_md_private_ssq_secloan['SecurityLoanInterestRate']
                             dict_secloan_order = {
                                 '资产账号': acctidbybroker,
                                 '证券代码': secid,
@@ -437,7 +482,7 @@ class PreTrdMng:
                             if secloan_term >= 31:
                                 continue
                             avlqty = dict_md_private_jpq_secloan['AvlQty']
-                            ordqty = min(tgtordqty_from_private_jpq_secloan, avlqty)
+                            ordqty = ceil(min(tgtordqty_from_private_jpq_secloan, avlqty)/100)*100
                             if not ordqty:
                                 continue
                             ir = 0.09  # todo 最多接受0.09 但需要改进，需要获得融入券息报价，然后参考之报价
@@ -460,6 +505,10 @@ class PreTrdMng:
                     )
                     if tgtordqty_from_outside_secloan:
                         # 报14天与28天的期限，0.085的利率，对半数量申请
+
+
+
+
                         list_secloan_terms = [14, 28]
                         for secloan_term in list_secloan_terms:
                             ordqty = (
@@ -509,5 +558,5 @@ class PreTrdMng:
 
 
 if __name__ == '__main__':
-    task = PreTrdMng(download_winddata_mark=1)
+    task = PreTrdMng(download_winddata_mark=0)
     task.run()

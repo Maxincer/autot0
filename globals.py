@@ -54,7 +54,7 @@ class Globals:
         self.col_prdinfo = self.db_basicinfo['prdinfo']
         self.col_strategy_info = self.db_basicinfo['strategy_info']
         self.list_acctinfo = list(self.col_acctinfo.find({'DataDate': self.str_today}))
-        # self.list_acctidsbymxz_autot0 = ['307_m_hait_2000', '8111_m_huat_9239']
+        self.list_acctidsbymxz = ['307_m_hait_2000', '8111_m_huat_9239']
         self.acctidbymxz = '307_m_hait_2000'
         self.prdalias = '鸣石满天星7号'
         # 路径部分
@@ -147,13 +147,12 @@ class Globals:
         self.col_pretrd_rawdata_tgtsecids = self.db_pretrddata['pretrd_rawdata_tgtsecids']
         self.col_pretrd_fmtdata_tgtsecids = self.db_pretrddata['pretrd_fmtdata_tgtsecids']
         self.col_pretrd_rawdata_excluded_secids = self.db_pretrddata['pretrd_rawdata_excluded_secids']
-        self.col_pretrd_rawdata_md_private_secloan = self.db_pretrddata['pretrd_rawdata_md_private_security_loan']
-        self.col_pretrd_fmtdata_md_private_secloan = self.db_pretrddata['pretrd_fmtdata_md_private_security_loan']
-        self.col_pretrd_rawdata_md_public_secloan = self.db_pretrddata['pretrd_rawdata_md_public_security_loan']
-        self.col_pretrd_rawdata_md_public_secloan = self.db_pretrddata['pretrd_rawdata_md_public_security_loan']
-        self.col_pretrd_fmtdata_md_security_loan = self.db_pretrddata['pretrd_fmtdata_md_security_loan']
+        self.col_pretrd_rawdata_md_private_secloan = self.db_pretrddata['pre_trade_rawdata_md_private_security_loan']
+        self.col_pretrd_fmtdata_md_private_secloan = self.db_pretrddata['pre_trade_fmtdata_md_private_security_loan']
+        self.col_pretrd_rawdata_md_public_secloan = self.db_pretrddata['pre_trade_rawdata_md_public_security_loan']
+        self.col_pretrd_fmtdata_md_security_loan = self.db_pretrddata['pre_trade_fmtdata_md_security_loan']
 
-        # trading
+        # trade
         # # filepath
         self.fpath_input_csv_margin_account_fund = list_fpaths_data_file_path[0]
         self.fpath_input_csv_margin_account_holding = list_fpaths_data_file_path[1]
@@ -161,12 +160,16 @@ class Globals:
         self.fpath_input_csv_margin_account_secloan = list_fpaths_data_file_path[3]
 
         # # database
-        self.db_trading_data = self.server_mongodb['trading_data']
-        self.col_trading_rawdata_fund = self.db_trading_data['trading_rawdata_fund']
-        self.col_trading_rawdata_holding = self.db_trading_data['trading_rawdata_holding']
-        self.col_trading_rawdata_order = self.db_trading_data['trading_rawdata_order']
-        self.col_trading_rawdata_secloan = self.db_trading_data['trading_rawdata_secloan']
-        self.col_trade_secloan_order = self.db_trading_data['trade_secloan_order']
+        self.db_trade_data = self.server_mongodb['trade_data']
+        self.col_trade_rawdata_fund = self.db_trade_data['trade_rawdata_fund']
+        self.col_trade_rawdata_holding = self.db_trade_data['trade_rawdata_holding']
+        self.col_trade_rawdata_order = self.db_trade_data['trade_rawdata_order']
+        self.col_trade_rawdata_secloan = self.db_trade_data['trade_rawdata_secloan']
+        self.col_trade_secloan_order = self.db_trade_data['trade_secloan_order']
+        self.col_trade_fmtdata_public_secloan = self.db_trade_data['trade_fmtdata_public_security_loan']
+        self.col_trade_fmtdata_private_secloan = self.db_trade_data['trade_fmtdata_private_security_loan']
+        self.col_trade_ssquota_from_secloan = self.db_trade_data['trade_ssquota_from_security_loan']
+
         # post-trade
         # # dict_map
         # # # todo 重要假设： 根据股票代码区分策略归属，不计数量
@@ -182,6 +185,7 @@ class Globals:
 
         # # database
         self.db_posttrddata = self.server_mongodb['post_trade_data']
+        self.col_posttrd_rawdata_rqmx = self.db_posttrddata['post_trade_rawdata_rqmx']
         self.col_shortqty_from_secloan = self.db_posttrddata['shortqty_from_secloan']
         self.col_posttrd_fmtdata_secloan_from_private_secpool = (
             self.db_posttrddata['post_trade_fmtdata_secloan_from_private_secpool']
@@ -483,10 +487,11 @@ class Globals:
                 converters={
                     'code': lambda x: str(x).zfill(6),
                     '证券代码': lambda x: str(x).zfill(6),
+                    'stkId': lambda x: str(x[:-3]).zfill(6),
                 }
             )
 
-            list_secid_fields_name = ['SecurityID', 'code', '证券代码']  # 标题栏
+            list_secid_fields_name = ['SecurityID', 'code', '证券代码', 'stkId']  # 标题栏
             set_secloan_secids_2b_matched = set()
             for sheet_name, df_ in dict_dfs_secloan_secids_2b_matched.items():
                 for secid_field_name in list_secid_fields_name:
@@ -504,12 +509,12 @@ class Globals:
         return i_secloan_secids
 
     def output_provided_secloan_analysis_xlsx(self):
-        list_broker_alias_for_secloan_analysis = ['hait', 'huat', 'swhy', 'gtja']
+        list_broker_alias_for_secloan_analysis = ['hait', 'huat', 'swhy', 'gtja', 'zx']
         list_dicts_secloan_analysis_among_brokers = []
         for broker_alias in list_broker_alias_for_secloan_analysis:
             i_secloan_secids = task.secloan_match(
-                f'D:/projects/autot0/data/input/tgt_secpools/{self.str_today}_target_secids.csv',
-                f'D:/projects/autot0/data/input/pretrddata/marginable_secpools/{broker_alias}/'
+                f'D:/projects/autot0/data/input/pretrddata/tgtsecids/{self.str_today}_target_secids.csv',
+                f'D:/projects/autot0/data/input/pretrddata/market_data/{broker_alias}/'
                 f'每日券池-{self.str_today}.xlsx'
             )
             dict_secloan_analysis_among_brokers = {
@@ -533,5 +538,5 @@ if __name__ == '__main__':
     # 盘后运行, 更新数据库
     task = Globals(download_winddata_mark=0)
     task.output_provided_secloan_analysis_xlsx()
-
+    #
     print('Done')

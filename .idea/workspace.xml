@@ -23,9 +23,28 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="94617ebe-9a89-4ddb-bd66-872b475c77a4" name="Default Changelist" comment="update indirect method for hait_ehfz">
+      <change afterPath="$PROJECT_DIR$/data/doc/zx/网厅约券使用说明.pptx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/market_data/huat/xml.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/market_data/zx/每日券池-20210119.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20210119_target_secids.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/trade_data_patch/huat/private_security_loan.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/security_loan_demand_analysis/20210118_security_loan_demand_analysis.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/security_loan_demand_analysis/20210119_security_loan_demand_analysis.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/output/security_loan_order/8111_m_huat_9239_secloan_order.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/trade_data_patch/huat/private_security_loan.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/input/trade_data_patch/huat/private_security_loan.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/20210115可融券查询.xls" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/input/pretrddata/market_data/huat/private_security_loan.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/data/input/pretrddata/market_data/huat/private_security_loan.xlsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/input/pretrddata/market_data/huat/public_security_loan.xls" beforeDir="false" afterPath="$PROJECT_DIR$/data/input/pretrddata/market_data/huat/public_security_loan.xls" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/input/pretrddata/market_data/huat/每日券池-20210106.xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/input/pretrddata/market_data/huat/每日券池-20210108.xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/input/pretrddata/market_data/huat/每日券池-20210111.xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/input/pretrddata/market_data/huat/每日券池-20210113.xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/input/pretrddata/market_data/huat/每日券池-20210114.xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/input/pretrddata/market_data/huat/每日券池-20210115.xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/input/trade_data_patch/huat/private_security_loan.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/output/security_loan/provided_security_loan_analysis.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/data/output/security_loan/provided_security_loan_analysis.xlsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/globals.py" beforeDir="false" afterPath="$PROJECT_DIR$/globals.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/posttrdmng.py" beforeDir="false" afterPath="$PROJECT_DIR$/posttrdmng.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pretrdmng_huat.py" beforeDir="false" afterPath="$PROJECT_DIR$/pretrdmng_huat.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/trading_mng.py" beforeDir="false" afterPath="$PROJECT_DIR$/trading_mng.py" afterDir="false" />
     </list>
@@ -80,13 +99,14 @@
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="database.data.extractors.current.export.id" value="Excel (xlsx)" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/data/input" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../MaxincerGroup/trading_monitor" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
     <property name="node.js.path.for.package.tslint" value="project" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="restartRequiresConfirmation" value="false" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
@@ -121,9 +141,6 @@
       <module name="autot0" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
       <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="true" />
@@ -187,9 +204,6 @@
       <module name="autot0" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
       <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="true" />
@@ -209,9 +223,6 @@
       <module name="autot0" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
       <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="true" />
@@ -230,9 +241,9 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.globals" />
-        <item itemvalue="Python.posttrdmng" />
-        <item itemvalue="Python.pretrdmng_huat" />
         <item itemvalue="Python.trading_mng" />
+        <item itemvalue="Python.pretrdmng_huat" />
+        <item itemvalue="Python.posttrdmng" />
         <item itemvalue="Python.pretrdmng_hait (1)" />
       </list>
     </recent_temporary>
@@ -304,7 +315,8 @@
       <workItem from="1610413231369" duration="8274000" />
       <workItem from="1610458188363" duration="17356000" />
       <workItem from="1610523432017" duration="53772000" />
-      <workItem from="1610784960728" duration="32541000" />
+      <workItem from="1610784960728" duration="32653000" />
+      <workItem from="1610932293744" duration="53722000" />
     </task>
     <task id="LOCAL-00001" summary="initialize">
       <created>1604806214551</created>
@@ -418,7 +430,14 @@
       <option name="project" value="LOCAL" />
       <updated>1610793211586</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="update indirect method for hait_ehfz">
+      <created>1610900715453</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1610900715453</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -454,24 +473,24 @@
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+        <line-breakpoint enabled="true" log-message="true" suspend="NONE" type="python-line">
           <url>file://$PROJECT_DIR$/posttrdmng.py</url>
-          <line>789</line>
-          <option name="timeStamp" value="2" />
+          <line>231</line>
+          <option name="timeStamp" value="28" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/autot0$pretrdmng.coverage" NAME="pretrdmng Coverage Results" MODIFIED="1609116691839" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/autot0$trading_mng.coverage" NAME="trading_mng Coverage Results" MODIFIED="1610520580105" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/autot0$trading_mng.coverage" NAME="trading_mng Coverage Results" MODIFIED="1611035099767" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/autot0$temp.coverage" NAME="temp Coverage Results" MODIFIED="1609142482758" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/autot0$globals.coverage" NAME="globals Coverage Results" MODIFIED="1610624813563" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/autot0$globals.coverage" NAME="globals Coverage Results" MODIFIED="1611045735478" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/autot0$secloan_mng.coverage" NAME="secloan_mng Coverage Results" MODIFIED="1604989924798" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/autot0$pretrdmng__1_.coverage" NAME="pretrdmng (1) Coverage Results" MODIFIED="1607560772704" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/autot0$307_vs_918__1_.coverage" NAME="307_vs_918 (1) Coverage Results" MODIFIED="1608881790987" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/autot0$scheduler.coverage" NAME="scheduler Coverage Results" MODIFIED="1607271714200" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/autot0$pretrdmng_huat.coverage" NAME="pretrdmng_huat Coverage Results" MODIFIED="1610674616399" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/autot0$pretrdmng_huat.coverage" NAME="pretrdmng_huat Coverage Results" MODIFIED="1611032975505" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/autot0$posttrdmng.coverage" NAME="posttrdmng Coverage Results" MODIFIED="1610586638118" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/autot0$pretrdmng_hait__1_.coverage" NAME="pretrdmng_hait (1) Coverage Results" MODIFIED="1610499566012" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>

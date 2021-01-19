@@ -44,14 +44,16 @@ Input Data: post trading data 清算后数据
 
 Note:
     1. post-trade 的input data为清算后数据, 具体为:
-        1. 交割单数据
+        1. 对账单数据
         2. 估值表数据
+        3. 券息发生额及应付利息数据
     2. trade 的 input data 为资金数据、委托数据、持仓数据， 这个是实时数据
     3. 交割单数据需要使用营业部柜台数据，否则少费用科目
     4. 邮件数据的处理，一定是先下载为文件， 后读取处理
     5. 注意区分 position 与 holding
     6. 重要假设： 公用券池的未平仓合约由未结利息推出
     7. 重要约定： QtyToBeChargedInterest，在公用合约中为未还数量，在私用合约中为占用额度数量
+    8. 重要假定： 盘前运行（T日清算T-1的损益）
 
 Warning:
     1. 海通证券e海通财在晚上10点导出的清算后的私用券源合约是不准确的，应该以次日8:30发送的邮件中的信息为准。
@@ -74,11 +76,11 @@ from globals import Globals, STR_TODAY
 class PostTrdMng:
     def __init__(self, str_trddate=STR_TODAY, download_winddata_mark=0):
         self.gl = Globals(str_trddate, download_winddata_mark=download_winddata_mark)
-        self.gl.update_attachments_from_email(
-            f'鸣石满天星7号清算后数据{self.gl.str_today}', f'{self.gl.str_today}', self.gl.dirpath_posttrddata_from_email
-        )
+        # self.gl.update_attachments_from_email(
+        #     f'鸣石满天星7号清算后数据{self.gl.str_today}', f'{self.gl.str_today}', self.gl.dirpath_posttrddata_from_email
+        # )
 
-    def upload_posttrd_rawdata(self, posttrd_rawdata_data_source_type):
+    def upload_posttrd_rawdata(self, acctidbymxz):
         """
         将需要的原始数据上传至数据库：
             1. holding
@@ -87,8 +89,26 @@ class PostTrdMng:
             4. fee_from_secloan
         """
 
+        dict_acctinfo = self.gl.col_acctinfo.find_one({'DataDate': self.gl.str_today, 'AcctIDByMXZ': acctidbymxz})
+        data_srctype = dict_acctinfo['DataSourceType']
+        dldfilter = dict_acctinfo['DownloadDataFilter']
+        if not dldfilter:
+            dldfilter = dict_acctinfo['AcctIDByBroker']
+
+        list_fpaths_trade_data = [_.strip() for _ in dict_acctinfo['DataFilePath'][1:-1].split(',')]
+        fpath_input_csv_margin_account_fund = list_fpaths_trade_data[0].replace('<YYYYMMDD>', self.gl.str_today)
+        fpath_input_csv_margin_account_holding = list_fpaths_trade_data[1].replace(
+            '<YYYYMMDD>', self.gl.str_last_trddate
+        )
+        fpath_input_csv_margin_account_order = list_fpaths_trade_data[2].replace(
+            '<YYYYMMDD>', self.gl.str_last_trddate
+        )
+        fpath_input_csv_margin_account_rqmx = list_fpaths_trade_data[3].replace(
+            '<YYYYMMDD>', self.gl.str_last_trddate
+        )
+
         # posttrd_rawdata_fund
-        if posttrd_rawdata_data_source_type in ['hait_ehtc']:
+        if data_srctype in ['hait_ehtc']:
             df_input_rawdata_fund = pd.read_excel(
                 self.gl.fpath_input_xlsx_fund,
                 skiprows=1,
@@ -117,7 +137,7 @@ class PostTrdMng:
                 },
             )
 
-        elif posttrd_rawdata_data_source_type in ['hait_ehfz']:
+        elif data_srctype in ['hait_ehfz']:
             df_input_rawdata_fund = pd.read_csv(
                 self.gl.fpath_input_rawdata_fund,
                 dtype={
@@ -133,6 +153,13 @@ class PostTrdMng:
                 },
             )
 
+        elif data_srctype in ['huat_matic_tsi']:
+            df_input_rawdata_fund = pd.read_csv(
+                fpath_input_csv_margin_account_fund,
+                dtype={'fund_account': str, 'assure_asset': float, 'market_value': float}
+            )
+            df_input_rawdata_fund = df_input_rawdata_fund[df_input_rawdata_fund['fund_account'] == dldfilter].copy()
+
         else:
             raise ValueError('Wrong data source type.')
 
@@ -147,7 +174,7 @@ class PostTrdMng:
             self.gl.col_posttrd_rawdata_fund.insert_many(list_dicts_rawdata_fund)
 
         # posttrd_rawdata_holding
-        if posttrd_rawdata_data_source_type in ['hait_ehtc']:
+        if data_srctype in ['hait_ehtc']:
             df_input_rawdata_holding = pd.read_excel(
                 self.gl.fpath_input_xlsx_holding,
                 skiprows=4,
@@ -159,7 +186,7 @@ class PostTrdMng:
                 },
                 converters={'证券代码': lambda x: str(x).zfill(6)}
             )
-        elif posttrd_rawdata_data_source_type in ['hait_ehfz']:
+        elif data_srctype in ['hait_ehfz']:
             df_input_rawdata_holding = pd.read_csv(
                 self.gl.fpath_input_rawdata_holding,
                 dtype={
@@ -175,6 +202,15 @@ class PostTrdMng:
                     '浮动盈亏': float,
                 },
                 converters={'代码': lambda x: str(x).zfill(6)}
+            )
+        elif data_srctype in ['huat_matic_tsi']:
+            df_input_rawdata_holding = pd.read_csv(
+                fpath_input_csv_margin_account_holding,
+                dtype={'fund_account': str, 'current_amount': float},
+                converters={'stock_code': lambda x: str(x).zfill(6)}
+            )
+            df_input_rawdata_holding = (
+                df_input_rawdata_holding[df_input_rawdata_holding['fund_account'] == dldfilter].copy()
             )
 
         else:
@@ -192,38 +228,39 @@ class PostTrdMng:
             self.gl.col_posttrd_rawdata_holding.insert_many(list_dicts_rawdata_holding)
 
         # posttrd_rawdata_secloan_from_private_secpool
-        df_input_xlsx_secloan_from_private_secpool = pd.read_excel(
-            self.gl.fpath_input_xlsx_secloan_from_private_secpool,
-            dtype={
-                '营业部代码': str,
-                '客户号': str,
-                '证券账号': str,
-                '证券代码': str,
-                '私用转融券费率': float,
-                '发生日期': str,
-                '合约数量': float,
-                '收回数量': float,
-                '合约预计利息': float,
-                '合约理论到期日期': str,
-                '合约流水号': str,
-                '借入人合约号': str,
-                '出借人合约号': str,
-            }
-        )
-
-        df_input_xlsx_secloan_from_private_secpool = (
-            df_input_xlsx_secloan_from_private_secpool.where(df_input_xlsx_secloan_from_private_secpool.notnull(), None)
-        )
-        df_input_xlsx_secloan_from_private_secpool['DataDate'] = self.gl.str_last_trddate
-        df_input_xlsx_secloan_from_private_secpool['AcctIDByMXZ'] = self.gl.acctidbymxz
-        list_dicts_secloan_from_private_secpool = df_input_xlsx_secloan_from_private_secpool.to_dict('records')
-        self.gl.col_posttrd_rawdata_secloan_from_private_secpool.delete_many(
-            {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': self.gl.acctidbymxz}
-        )
-        if list_dicts_secloan_from_private_secpool:
-            self.gl.col_posttrd_rawdata_secloan_from_private_secpool.insert_many(
-                list_dicts_secloan_from_private_secpool
+        if data_srctype in ['hait_ehtc']:
+            df_input_rawdata_rqmx = pd.read_excel(
+                fpath_input_csv_margin_account_rqmx,
+                dtype={
+                    '营业部代码': str,
+                    '客户号': str,
+                    '证券账号': str,
+                    '证券代码': str,
+                    '私用转融券费率': float,
+                    '发生日期': str,
+                    '合约数量': float,
+                    '收回数量': float,
+                    '合约预计利息': float,
+                    '合约理论到期日期': str,
+                    '合约流水号': str,
+                    '借入人合约号': str,
+                    '出借人合约号': str,
+                }
             )
+
+        elif data_srctype in ['huat_matic_tsi']:
+            df_input_rawdata_rqmx = pd.read_csv(fpath_input_csv_margin_account_rqmx, dtype='str')
+        
+        else: 
+            raise ValueError('Wrong data source type.')
+
+        df_input_rawdata_rqmx = df_input_rawdata_rqmx.where(df_input_rawdata_rqmx.notnull(), None)
+        df_input_rawdata_rqmx['DataDate'] = self.gl.str_last_trddate
+        df_input_rawdata_rqmx['AcctIDByMXZ'] = self.gl.acctidbymxz
+        list_dicts_rawdata_rqmx = df_input_rawdata_rqmx.to_dict('records')
+        self.gl.col_posttrd_rawdata_rqmx.delete_many({'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': self.gl.acctidbymxz})
+        if list_dicts_rawdata_rqmx:
+            self.gl.col_posttrd_rawdata_rqmx.insert_many(list_dicts_rawdata_rqmx)
 
         # posttrd_rawdata_secloan_from_public_secpool
         df_input_xlsx_secloan_from_public_secpool = pd.read_excel(
@@ -1393,13 +1430,14 @@ class PostTrdMng:
         self.gl.col_posttrd_cf_from_indirect_method.insert_one(dict_posttrd_cf_from_indirect_method)
 
     def run(self):
-        self.upload_posttrd_rawdata('hait_ehtc')
-        self.upload_posttrd_fmtdata()
-        self.get_and_upload_col_post_trddata_pnl()
-        self.get_col_secloan_utility_analysis()
-        self.get_longamt_histogram()
-        self.check_pnl_via_indirect_method()
-        self.output_xlsx_posttrd_analysis()
+        for acctidbymxz in self.gl.list_acctidsbymxz:
+            self.upload_posttrd_rawdata(acctidbymxz)
+            self.upload_posttrd_fmtdata(acctidbymxz)
+            self.get_and_upload_col_post_trddata_pnl(acctidbymxz)
+            self.get_col_secloan_utility_analysis(acctidbymxz)
+            self.get_longamt_histogram(acctidbymxz)
+            self.check_pnl_via_indirect_method(acctidbymxz)
+            self.output_xlsx_posttrd_analysis(acctidbymxz)
 
 
 if __name__ == '__main__':
