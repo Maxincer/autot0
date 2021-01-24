@@ -108,10 +108,10 @@ class PreTrdMng:
         fpath_pretrd_md_public_secloan = dict_acctinfo['PreTradeDataFilePath']['PublicSecurityLoanMarketData']
         with open(fpath_pretrd_md_public_secloan, 'rb') as f:
             list_datalines = f.readlines()
-            list_fields = [_.decode('ansi') for _ in list_datalines[0].split(b'\t')][:-1]
+            list_fields = [_.decode('ansi').replace('"', '').replace('=', '') for _ in list_datalines[0].split(b'\t')]
             list_dicts_md_public_secloan = []
             for datalines in list_datalines[1:]:
-                list_data = [_.decode('ansi') for _ in datalines.split(b'\t')][:-1]
+                list_data = [_.decode('ansi').replace('"', '').replace('=', '') for _ in datalines.split(b'\t')]
                 dict_md_public_secloan = dict(zip(list_fields, list_data))
                 dict_md_public_secloan['DataDate'] = self.gl.str_today
                 dict_md_public_secloan['AcctIDByMXZ'] = acctidbymxz
@@ -157,14 +157,14 @@ class PreTrdMng:
         # col_pretrd_fmtdata_md_secloan
         broker_abbr = acctidbymxz.split('_')[2]
         if broker_abbr in ['huat']:
-            # todo 默认普通券池的MD原格式默认为专业版3导出格式，专项券池的MD原格式为matic导出的格式
+            # 默认普通券池的MD原格式默认为高级版导出格式，专项券池的MD原格式为matic导出的格式
             # 将普通券池与专项券池合并，并以secloan_src加以区分: public/private
             list_pretrd_fmtdata_md_security_loan = []
             for dict_rawdata_public_secloan in self.gl.col_pretrd_rawdata_md_public_secloan.find(
                     {'DataDate': self.gl.str_today, 'AcctIDByMXZ': acctidbymxz}
             ):
                 secid = dict_rawdata_public_secloan['证券代码'].zfill(6)
-                avlqty = float(dict_rawdata_public_secloan['融券限额'])
+                avlqty = float(dict_rawdata_public_secloan['可卖数量'])
                 if avlqty:
                     dict_pretrd_fmtdata_md_security_loan = {
                         'DataDate': self.gl.str_today,
@@ -316,7 +316,7 @@ class PreTrdMng:
                     tgtqty - secloan_quota - ordqty_from_public_secloan - ordqty_from_private_secloan, 0
                 )
 
-                # 计算需要终止的融券额度(由于目标券池发生变化导致): 目标数量 - 最新已持有数量 todo 目前为quota_last_trddate
+                # 计算需要终止的融券额度(由于目标券池发生变化导致): 目标数量 - 最新已持有数量
                 quota2terminate = max(secloan_quota - tgtqty, 0)
 
                 dict_secloan_demand_analysis = {
@@ -444,7 +444,11 @@ class PreTrdMng:
                                 continue
                             avlqty = dict_md_private_ssq_secloan['AvlQty']
                             ordqty = ceil(min(tgtordqty_from_private_ssq_secloan, avlqty)/100)*100
-                            if not ordqty:
+                            # todo 华泰的order最少1000，根据30万元上限，将700的order近似为1000
+                            if 700 <= ordqty < 1000:
+                                ordqty = 1000
+
+                            if ordqty < 700:
                                 continue
                             ir = dict_md_private_ssq_secloan['SecurityLoanInterestRate']
                             dict_secloan_order = {
@@ -483,7 +487,11 @@ class PreTrdMng:
                                 continue
                             avlqty = dict_md_private_jpq_secloan['AvlQty']
                             ordqty = ceil(min(tgtordqty_from_private_jpq_secloan, avlqty)/100)*100
-                            if not ordqty:
+
+                            if 700 <= ordqty < 1000:
+                                ordqty = 1000
+
+                            if ordqty < 700:
                                 continue
                             ir = 0.09  # todo 最多接受0.09 但需要改进，需要获得融入券息报价，然后参考之报价
                             dict_secloan_order = {
@@ -505,29 +513,54 @@ class PreTrdMng:
                     )
                     if tgtordqty_from_outside_secloan:
                         # 报14天与28天的期限，0.085的利率，对半数量申请
-
-
-
-
-                        list_secloan_terms = [14, 28]
-                        for secloan_term in list_secloan_terms:
-                            ordqty = (
-                                    (round(dict_pretrd_secloan_demand_analysis['OrdQtyFromOutsideSource']/200, 0))
-                                    * 100
-                            )
-                            if not ordqty:
-                                continue
+                        ordqty_from_outside_src = dict_pretrd_secloan_demand_analysis['OrdQtyFromOutsideSource']
+                        if 1000 <= ordqty_from_outside_src < 2000:
                             dict_secloan_order = {
                                 '资产账号': acctidbybroker,
                                 '证券代码': secid,
                                 '市场': exchange,
                                 '申报类型': '非约定申报',
                                 '约定号': '',
-                                '期限': secloan_term,
+                                '期限': 14,
                                 '利率': 0.085,
-                                '数量': ordqty,
+                                '数量': ordqty_from_outside_src,
                             }
                             list_dicts_secloan_order.append(dict_secloan_order)
+
+                        elif 700 <= ordqty_from_outside_src < 1000:
+                            dict_secloan_order = {
+                                '资产账号': acctidbybroker,
+                                '证券代码': secid,
+                                '市场': exchange,
+                                '申报类型': '非约定申报',
+                                '约定号': '',
+                                '期限': 14,
+                                '利率': 0.085,
+                                '数量': 1000,
+                            }
+                            list_dicts_secloan_order.append(dict_secloan_order)
+
+                        elif ordqty_from_outside_src <= 700:
+                            continue
+
+                        else:
+                            list_secloan_terms = [14, 28]
+                            for secloan_term in list_secloan_terms:
+                                ordqty = (
+                                        (round(dict_pretrd_secloan_demand_analysis['OrdQtyFromOutsideSource']/200, 0))
+                                        * 100
+                                )
+                                dict_secloan_order = {
+                                    '资产账号': acctidbybroker,
+                                    '证券代码': secid,
+                                    '市场': exchange,
+                                    '申报类型': '非约定申报',
+                                    '约定号': '',
+                                    '期限': secloan_term,
+                                    '利率': 0.085,
+                                    '数量': ordqty,
+                                }
+                                list_dicts_secloan_order.append(dict_secloan_order)
 
             df_secloan_order = pd.DataFrame(list_dicts_secloan_order)
             fn_secloan_order = f'{acctidbymxz}_secloan_order.csv'

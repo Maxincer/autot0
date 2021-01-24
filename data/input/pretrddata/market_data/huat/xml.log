@@ -144,3 +144,149 @@
 	</class>
 
 </XD_Function>
+<?xml version="1.0" encoding="GB2312"?>
+<XD_Function>
+	<class id="2001" name="回购" delete="1"></class>
+	<class name="股票" id="129" reqtype="2304" extra_cmd="click_gupiao_htsc" menu_req="1">
+		<item icon2="369" id_pos="163" icon="369" icon_name="ico_gsxwsb" id="0" name="港股通">
+			<item icon="161" icon_name="ico_mairu" name="买入" type="hxui" pkg="ggt.pkg;" jump_htm="ggt/ggt_maichu.htm;" html="ggt/ggt_mairu.htm;"/>
+			<item icon="218" icon_name="ico_maichu" name="卖出" type="hxui" pkg="ggt.pkg;" jump_htm="ggt/ggt_mairu.htm;" html="ggt/ggt_maichu.htm;"/>
+			<item icon="218" icon_name="ico_lgmc" name="零股卖出" type="hxui" pkg="ggt.pkg;" html="ggt/ggt_linggumaichu.htm;"/>
+			<item icon="218" icon_name="ico_wltp1" name="投票申报" type="hxui" pkg="ggt.pkg;" html="ggt/ggt_tpsb_new.htm;"/>
+			<item icon="218" icon_name="ico_gsxwsb"name="公司行为申报" type="hxui" pkg="ggt.pkg;" html="ggt/ggt_gsxwsb.htm;"/>
+			<item icon="218" icon_name="ico_chedan" name="撤单" type="hxui" pkg="ggt.pkg;" html="ggt/ggt_chedan.htm;"/>
+			<item icon="218" icon_name="ico_chedan" name="公司行为申报撤单" type="hxui" pkg="ggt.pkg;" html="ggt/ggt_chedan_drgsxwsb.htm;"/>
+			<item icon="218" icon_name="ico_zjye" name="查询资金股票" type="hxui" pkg="ggt.pkg;" html="ggt/ggt_query_zc.htm;"/>
+			<item icon="218" icon_name="ico_drwt" name="查询当日委托" type="cx_template" reqtype="2317" extra_cmd="ggt_query_drwt" />
+			<item icon="218" icon_name="ico_drcj" name="查询当日成交" type="cx_template" reqtype="2317" extra_cmd="ggt_query_drcj" />
+			<item icon="218" icon_name="ico_lscj" name="查询历史成交" type="cx_template" show_date="1" reqtype="2317" extra_cmd="ggt_query_lscj" />
+			<item icon="218" icon_name="ico_chaxun2" name="查询投票委托" type="cx_template" reqtype="2317" extra_cmd="ggt_query_tpwt" />
+			<item icon="218" icon_name="ico_chaxun2" name="查历史投票结果" type="cx_template" show_date="1" reqtype="2317" extra_cmd="ggt_cxlstpjg" />
+			<item icon="218" icon_name="ico_chaxun2" name="查询资金明细" type="cx_template" show_date="1" reqtype="2317" extra_cmd="ggt_query_zjmx" />
+			<item icon="218" icon_name="ico_chaxun2" name="查询交割单" type="cx_template" show_date="1" reqtype="2317" extra_cmd="ggt_query_jgd" />
+			<item icon="218" icon_name="ico_chaxun2" name="查询交易日" type="cx_template" reqtype="2317" extra_cmd="ggt_query_jyrl" />
+		</item>
+		<item id="0" name="新股申购">
+			<item icon="161" id="5478" name="新债申购" name_pos="批量新股申购"/>
+			<item icon="161" id="5501" name="批量新债申购" name_pos="新债申购"/>
+		</item>
+		<item id="0" name="查询[F4]">
+			<item icon="218" icon_name="ico_chaxun2" name="查限售股详情" type="cx_template" reqtype="2304" extra_cmd="cx_xsgxq" />
+		</item>
+		<item id="0" name="港股通" delete="1"></item>
+		<item id="0" name="泰融e" delete="1"></item>
+		<item id="0" name="紫金财富平台" delete="1"></item>
+		<item id="0" name="份额转让" delete="1"></item>
+		<item id="0" name="股转系统">
+			<item icon="167" icon_name="ico_chaxun2"  name="查账户信息查询" reqtype="2304" extra_cmd="cx_gzxt_zhxx" type="cx_template" show_date="0" qsrq="-7"/>
+			<item icon="167" icon_name="ico_chaxun2"  name="可交易代码查询" reqtype="2304" extra_cmd="cx_gzxt_kjydm" type="cx_template" show_date="0" qsrq="-7"/>
+			<item id="0" name="公开发行">
+				<item icon="167" icon_name="ico_chaxun2"  name="当前询价结果" reqtype="2304" extra_cmd="cx_gzxt_ipo" type="cx_template" show_date="1" qsrq="-7"/>
+				<item icon="167" icon_name="ico_chaxun2"  name="历史询价结果" reqtype="2304" extra_cmd="cx_gzxt_ipohis" type="cx_template" show_date="1" qsrq="-7"/>
+				<item icon="167" icon_name="ico_chaxun2"  name="申购结果查询" reqtype="2304" extra_cmd="cx_gzxt_cxsgjg" type="cx_template" show_date="1" qsrq="-7"/>
+			</item>
+		</item>
+		<item id="0" name="报价回购" delete="1"></item>
+		<item id="723" name="股票出借" delete="1"></item><item id="728" name="股票出借合约查询" delete="1"></item>
+		<item icon2="408" icon_name="ico_xgkhxx" icon="408" id="0" name="账户权限管理">
+			<item icon2="167" icon_name="ico_chaxun2" icon="167" id="806" name="开通上交所警示股交易" html="https://service.htsc.com.cn/service/login/jstsclientCommissionlogin.do?xd_enc=$xd_enc$"></item>
+			<item icon2="167" icon_name="ico_chaxun2" icon="167" id="807" name="开通退市整理股票交易" html="https://service.htsc.com.cn/service/login/jstsclientCommissionlogin.do?xd_enc=$xd_enc$"></item>
+			<item icon2="167" icon_name="ico_chaxun2" icon="167" id="808" name="个股期权仿真测试开户" html="https://service.htsc.com.cn/service/login/ggqqclientCommissionlogin.do?xd_enc=$xd_enc$"></item>
+		</item>
+		<item icon2="369" icon="369" id="0" name="其它交易">
+			<item id="0" name="股票出借"><item id="0" name="查询"><item icon="167" icon_name="ico_chaxun2" name="部分归还合约查询" reqtype="2304" extra_cmd="cx_zrt_bfghhy" type="cx_template" show_date="1" qsrq="-7"/></item></item>
+			<item id="725" name="提前索还" delete="1"></item>
+			<item id="726" name="展期申请" delete="1"></item>
+			<item id="0" name="股票出借" delete="1"></item>
+			<item icon2="150" icon="150" id="0" name="网络投票">
+				<item icon="151" icon_name="ico_chaxun2" name="股东大会" pkg="wltp.pkg;" type="hxui" jump_htm="wltp/wltp_tpcx.htm;" html="wltp/wltp_gddhnew.htm;"/>
+				<item icon="167" icon_name="ico_chaxun2" id="5500" id_pos="" name="投票查询" />
+				<item icon="167" icon_name="ico_chaxun2" id="5491" id_pos="" name="网络投票密码管理" />
+			</item>
+		</item>
+		<item icon2="0" icon="0" id="0" name="老版场内基金">
+			<item icon2="150" icon="150" id="0" name="LOF基金">
+			<item icon="161" icon_name="ico_rengou" name="认购" type="hxui" pkg="lof.pkg;" jump_htm="lof/lof_shengou.htm" html="lof/lof_renggou.htm"/>
+				<item icon="161" icon_name="ico_shengou" name="申购" type="hxui" pkg="lof.pkg;" jump_htm="lof/lof_shengou.htm" html="lof/lof_shengou.htm"/>
+				<item icon="218" icon_name="ico_shuhui" name="赎回" type="hxui" pkg="lof.pkg;" jump_htm="lof/lof_shengou.htm" html="lof/lof_shuhui.htm"/>
+				<item icon="218" icon_name="ico_chaxun2" name="合并" type="hxui" pkg="lof.pkg;" jump_htm="lof/lof_shengou.htm" html="lof/lof_hebing.htm"/>
+				<item icon="218" icon_name="ico_chaxun2" name="分拆" type="hxui" pkg="lof.pkg;" jump_htm="lof/lof_shengou.htm" html="lof/lof_fencai.htm"/>
+				<item icon="218" icon_name="ico_chedan" name="撤单" type="hxui" pkg="lof.pkg;" html="lof/lof_chedan.htm;"/>
+				<item icon="218" icon_name="ico_chaxun2" name="查询当日委托" type="hxui" pkg="lof.pkg;" html="lof/lof_cxdrwt.htm;"/>
+				<item icon="218" icon_name="ico_chaxun2" name="查询当日成交" type="hxui" pkg="lof.pkg;" html="lof/lof_cxdrcj.htm;"/>
+			</item>
+		</item>
+		<item id="0" name="老版场内基金" delete="1"></item>
+		<item id="0" name="债券回购">
+			<item name="国债逆回购（新）" icon="218" icon_name="ico_rzhg" id="5290" pkg="gznhg.pkg;" html="gznhg/html/gznhg.html" auto_refresh="1"/>
+			<item name="质押券入库范围" icon="218" id="0" pkg="zqhg.pkg;" html="zqhg/zyk.html" auto_refresh="1"/>
+		</item>
+		<item name="修改客户资料 " icon="218" icon_name="ico_xgkhxx" id="0" pkg="khxx.pkg;" html="khxx/index.html" auto_refresh="1"/>
+		<item name="风险承受能力评估" icon="218" icon_name="ico_chaxun2" id="801" pkg="fxcp.pkg;" html="fxcp/test.html" auto_refresh="1"/>
+		
+		
+		<item id="2011" name="认购" delete="1"></item>
+		<item id="717" icon_name="ico_chaxun2" name="逆回购" reqtype="2304" extra_cmd="click_zqhg_nhg" menu_req="1"></item>
+		<item id="403" name="修改客户资料" delete="1"></item>
+		<item name="沪市指定交易" icon="218" icon_name="ico_chaxun2" id="0" pkg="zdjy.pkg;" html="zdjy/index.html" auto_refresh="1"/>
+	</class>
+	<class id="2047" name="银行理财" delete="1"></class>
+	<class id="2049" name="紫金理财">
+		<item icon="161" icon_name="ico_chaxun2" name="预约退出" id_pos="226" type="hxui" pkg="zjlc.pkg;" html="zjlc/zjlc_yytc.htm;"/>
+		<item id="0" name="多空如弈" delete="1"></item>
+		<item name="风险承受能力评估" icon_name="ico_chaxun2" icon="218" id="801" pkg="fxcp.pkg;" html="fxcp/test.html" auto_refresh="1"/>
+		<item icon2="167" icon_name="ico_chaxun2" icon="167" id="809" name="修改对账单寄送地址" html="https://service.htsc.com.cn/service/login/clientCommissionlogin.do?xd_enc=$xd_enc$"></item>
+	</class>
+	<class id="5093" name="账户余额增值-天天发">
+			<item icon="167" icon_name="ico_chaxun2" id="813" name="开通" auto_refresh="1"  pkg="comm.pkg;func.pkg;css.pkg;image.pkg;" html="html/ttf/ktttf.html"/>
+			<item icon="167" icon_name="ico_chaxun2" id="814" name="设置" auto_refresh="1"  pkg="comm.pkg;func.pkg;css.pkg;image.pkg;" html="html/ttf/sz.html"/>
+			<item icon="167" icon_name="ico_chaxun2" id="815" name="申购" auto_refresh="1"  pkg="comm.pkg;func.pkg;css.pkg;image.pkg;" html="html/ttf/sg.html"/>
+			<item icon="167" icon_name="ico_chaxun2" id="817" name="赎回" auto_refresh="1"  pkg="comm.pkg;func.pkg;css.pkg;image.pkg;" html="html/ttf/sh.html"/>
+			<item icon="167" icon_name="ico_chaxun2" id="818" name="预约取款" auto_refresh="1"  pkg="comm.pkg;func.pkg;css.pkg;image.pkg;" html="html/ttf/yyqk.html"/>
+			<item icon="167" icon_name="ico_chaxun2" id="822" name="快速取现" auto_refresh="1"  pkg="comm.pkg;func.pkg;css.pkg;image.pkg;" html="html/ttf/ksqk_ttf.html"/>
+			<item icon="167" icon_name="ico_yzzz" id="823" name="银证转账" auto_refresh="1"  pkg="comm.pkg;func.pkg;css.pkg;image.pkg;" html="html/ttf/yzzz.html"/>
+			<item icon="167" icon_name="ico_chaxun2" id="819" name="取消" auto_refresh="1"  pkg="comm.pkg;func.pkg;css.pkg;image.pkg;" html="html/ttf/qx.html"/>
+			<item icon="167" icon_name="ico_chaxun2" name="查收益" reqtype="2304" extra_cmd="ttf_cxsy" type="cx_template"/>
+			<item icon="167" icon_name="ico_chaxun2" name="查历史明细" reqtype="2304" show_date="1" extra_cmd="ttf_cxlsmx" type="cx_template"/>
+	</class>
+	<class id="5094" name="天天财">
+			<item icon="167" id="829" icon_name="ico_chaxun2" name="开通" auto_refresh="1"  pkg="comm.pkg;func.pkg;css.pkg;image.pkg;" html="html/ttc/ktttc.html"/>
+			<item icon="167" id="826" icon_name="ico_shengou" name="申购" auto_refresh="1"  pkg="comm.pkg;func.pkg;css.pkg;image.pkg;" html="html/ttc/sg.html"/>
+			<item icon2="167" icon="167" id="0" icon_name="ico_chaxun2" name="查询">
+				<item icon="167" icon_name="ico_chaxun2" name="查询委托" reqtype="2304" extra_cmd="ttc_cxwt" type="cx_template" show_detail="1" detail_param="wtrq=2139;htbh=2135;"/>
+				<item icon="167" icon_name="ico_chaxun2" name="查询累计收益" reqtype="2304" extra_cmd="ttc_cxljsy" type="cx_template"/>
+				<item icon="167" icon_name="ico_chaxun2" name="查固定收益流水" reqtype="2304" show_date="1" extra_cmd="ttc_cxljgdsy" type="cx_template"/>
+				<item icon="167" icon_name="ico_chaxun2" name="查浮动收益流水" reqtype="2304" show_date="1" extra_cmd="ttc_cxljfdsy" type="cx_template"/>
+			</item>
+			<item icon="167" icon_name="ico_yzzz" name="银证转账" auto_refresh="1"  pkg="comm.pkg;func.pkg;css.pkg;image.pkg;" html="html/ttc/yzzz.html"/>
+	</class>
+	<class name="基金" id="240" reqtype="2304" extra_cmd="click_jijin_htsc" menu_req="1">
+		<item id="0" name="多空如弈" delete="1"></item>
+		<item id="5719" name="快速赎回" delete="1"></item>
+		<item icon2="184" icon="184" id="0" name="查询">
+			<item icon="167" icon_name="ico_chaxun2" id="1001" name="短期理财产品份额明细" reqtype="2304" extra_cmd="kfjj_cx_dqlccpfemx" type="cx_template"/>
+			<item icon="167" id="0" name="T+0基金委托" reqtype="2304" extra_cmd="kfjj_cx_qbwt" type="cx_template"/>
+		</item>
+		<item name="风险承受能力评估" icon_name="ico_chaxun2" icon="218" id="801" pkg="fxcp.pkg;" html="fxcp/test.html" auto_refresh="1"/>
+	</class>
+	<class id="3073" name="华泰OTC">
+	</class>
+	<class id="513" name="信用">
+		<item icon2="184" icon="184" id="0" name="新股申购">
+			<item icon="167" icon_name="ico_chaxun2" id="1003" name="查询可申购额度" reqtype="2304" extra_cmd="cx_rzrq_xgksged" type="cx_template"/>
+			<item icon="167" icon_name="ico_chaxun2" id="1004" name="查询新股配号" reqtype="2304" extra_cmd="cx_rzrq_xgph" type="cx_template" show_date="1" qsrq="-7"/>
+			<item icon="167" icon_name="ico_chaxun2" id="1005" name="查询新股中签" reqtype="2304" extra_cmd="cx_rzrq_xgzq" type="cx_template" show_date="1" qsrq="-7"/>
+		</item>
+		<item icon2="369" icon="369" id="0" name="其他功能">
+				<item icon2="150" icon_name="ico_chaxun2" icon="150" id="0" name="网络投票">
+				<item icon="151" icon_name="ico_chaxun2" name="股东大会" pkg="wltp.pkg;" type="hxui" jump_htm="wltp/wltp_tpcx.htm;" html="wltp/wltp_gddhnew.htm;"/>
+				<item icon="167" icon_name="ico_chaxun2" id="5500" id_pos="" name="投票查询" />
+			</item>
+			<item icon="167" icon_name="ico_chaxun2" name="合约延期" type="hxui" pkg="rzrqhyzq.pkg;" html="plhyzq/plhyzq.htm"/>
+		</item>
+		<item id="4660" icon_name="ico_chaxun2" name="担保证券融资" reqtype="2304" show_mode="1" extra_cmd="click_dbzqrz" menu_req="1"></item>
+		
+		<item id="4660" name="担保证券融资" delete="1"></item>
+	</class>
+
+</XD_Function>

@@ -107,7 +107,7 @@ class UpdateTradeRawDataHolding(Thread):
 
         fpath_input_csv_margin_account_holding = list_fpaths_trade_data[1].replace('<YYYYMMDD>', self.str_today)
         fpath_input_csv_margin_account_holding_last_trddate = list_fpaths_trade_data[1].replace(
-            '<YYYYMMDD>',self.gl.str_last_trddate
+            '<YYYYMMDD>', self.gl.str_last_trddate
         )
 
         db_trade_data = server_mongodb['trade_data']
@@ -700,79 +700,82 @@ class UpdateTradeSSQuotaFromSecLoan(Thread):
         col_trade_position = db_trade_data['trade_position']
         col_trade_ssquota_from_secloan = db_trade_data['trade_ssquota_from_security_loan']
 
-        set_secid_from_public_secloan = set()
-        set_secid_from_private_secloan = set()
-        iter_col_trade_fmtdata_public_secloan = col_trade_fmtdata_public_secloan.find(
-            {'DataDate': self.str_today, 'AcctIDByMXZ': self.acctidbymxz}
-        )
-        iter_col_trade_fmtdata_private_secloan = col_trade_fmtdata_private_secloan.find(
-            {'DataDate': self.str_today, 'AcctIDByMXZ': self.acctidbymxz}
-        )
-        for dict_trade_fmtdata_public_secloan in iter_col_trade_fmtdata_public_secloan:
-            secid = dict_trade_fmtdata_public_secloan['SecurityID']
-            set_secid_from_public_secloan.add(secid)
-
-        for dict_trade_fmtdata_private_secloan in iter_col_trade_fmtdata_private_secloan:
-            secid = dict_trade_fmtdata_private_secloan['SecurityID']
-            set_secid_from_private_secloan.add(secid)
-
-        set_secid_in_ssquota = set_secid_from_public_secloan | set_secid_from_private_secloan
-
-        # 将 secloan_from_public_secloan 表中的QtyToBeChargedInterest数据按照 股票代码 汇总
-        dict_secid2ssquota_from_public_secloan = {}
-        for secid_in_ssquota in set_secid_in_ssquota:
-            ssquota_from_public_secloan = 0
-            for dict_trade_fmtdata_secloan_from_public_secloan in col_trade_fmtdata_public_secloan.find(
-                    {'DataDate': self.str_today, 'AcctIDByMXZ': self.acctidbymxz, 'SecurityID': secid_in_ssquota}
-            ):
-                ssquota_from_public_secloan += dict_trade_fmtdata_secloan_from_public_secloan['QtyToBeChargedInterest']
-            dict_secid2ssquota_from_public_secloan[secid_in_ssquota] = ssquota_from_public_secloan
-
-        dict_secid2ssquota_from_private_secloan = {}
-        for secid_in_ssquota in set_secid_in_ssquota:
-            ssquota_from_private_secloan = 0
-            for dict_trade_fmtdata_private_secloan in col_trade_fmtdata_private_secloan.find(
-                    {'DataDate': self.str_today, 'AcctIDByMXZ': self.acctidbymxz, 'SecurityID': secid_in_ssquota}
-            ):
-                ssquota_from_private_secloan += dict_trade_fmtdata_private_secloan['QtyToBeChargedInterest']
-            dict_secid2ssquota_from_private_secloan[secid_in_ssquota] = ssquota_from_private_secloan
-
-        # # 计算ssquota_from_public_secpool 与 ssquota_from_private_secpool
-        list_dicts_trade_ssquota_from_secloan = []
-        for secid_in_ssquota in set_secid_in_ssquota:
-            if secid_in_ssquota in self.gl.dict_secid2composite:
-                cpssrc = self.gl.dict_secid2composite[secid_in_ssquota]
-            else:
-                cpssrc = 'AutoT0'
-            ssquota_from_public_secloan = dict_secid2ssquota_from_public_secloan[secid_in_ssquota]
-            ssquota_from_private_secloan = dict_secid2ssquota_from_private_secloan[secid_in_ssquota]
-            dict_trade_position = col_trade_position.find_one(
-                {'DataDate': self.str_today, 'AcctIDByMXZ': self.acctidbymxz, 'SecurityID': secid_in_ssquota}
+        while True:
+            set_secid_from_public_secloan = set()
+            set_secid_from_private_secloan = set()
+            iter_col_trade_fmtdata_public_secloan = col_trade_fmtdata_public_secloan.find(
+                {'DataDate': self.str_today, 'AcctIDByMXZ': self.acctidbymxz}
             )
-            if dict_trade_position:
-                shortqty = dict_trade_position['ShortQty']
-            else:
-                shortqty = 0
+            iter_col_trade_fmtdata_private_secloan = col_trade_fmtdata_private_secloan.find(
+                {'DataDate': self.str_today, 'AcctIDByMXZ': self.acctidbymxz}
+            )
+            for dict_trade_fmtdata_public_secloan in iter_col_trade_fmtdata_public_secloan:
+                secid = dict_trade_fmtdata_public_secloan['SecurityID']
+                set_secid_from_public_secloan.add(secid)
 
-            ssquota = ssquota_from_public_secloan + ssquota_from_private_secloan
-            str_update_time = datetime.now().strftime('%H%M%S')
-            dict_trade_fmtdata_ssquota_from_secloan = {
-                'DataDate': self.str_today,
-                'AcctIDByMXZ': self.acctidbymxz,
-                'UpdateTime': str_update_time,
-                'SecurityID': secid_in_ssquota,
-                'SSQuota': ssquota,
-                'ShortQty': shortqty,
-                'SSQuotaFromPublicSecPool': ssquota_from_public_secloan,
-                'SSQuotaFromPrivateSecPool': ssquota_from_private_secloan,
-                'AvailableSSQuota': ssquota - shortqty,
-                'CompositeSource': cpssrc,
-            }
-            list_dicts_trade_ssquota_from_secloan.append(dict_trade_fmtdata_ssquota_from_secloan)
+            for dict_trade_fmtdata_private_secloan in iter_col_trade_fmtdata_private_secloan:
+                secid = dict_trade_fmtdata_private_secloan['SecurityID']
+                set_secid_from_private_secloan.add(secid)
 
-        col_trade_ssquota_from_secloan.delete_many({'DataDate': self.str_today, 'AcctIDByMXZ': self.acctidbymxz})
-        if list_dicts_trade_ssquota_from_secloan:
-            col_trade_ssquota_from_secloan.insert_many(list_dicts_trade_ssquota_from_secloan)
+            set_secid_in_ssquota = set_secid_from_public_secloan | set_secid_from_private_secloan
+
+            # 将 secloan_from_public_secloan 表中的QtyToBeChargedInterest数据按照 股票代码 汇总
+            dict_secid2ssquota_from_public_secloan = {}
+            for secid_in_ssquota in set_secid_in_ssquota:
+                ssquota_from_public_secloan = 0
+                for dict_trade_fmtdata_secloan_from_public_secloan in col_trade_fmtdata_public_secloan.find(
+                        {'DataDate': self.str_today, 'AcctIDByMXZ': self.acctidbymxz, 'SecurityID': secid_in_ssquota}
+                ):
+                    ssquota_from_public_secloan += dict_trade_fmtdata_secloan_from_public_secloan['QtyToBeChargedInterest']
+                dict_secid2ssquota_from_public_secloan[secid_in_ssquota] = ssquota_from_public_secloan
+
+            dict_secid2ssquota_from_private_secloan = {}
+            for secid_in_ssquota in set_secid_in_ssquota:
+                ssquota_from_private_secloan = 0
+                for dict_trade_fmtdata_private_secloan in col_trade_fmtdata_private_secloan.find(
+                        {'DataDate': self.str_today, 'AcctIDByMXZ': self.acctidbymxz, 'SecurityID': secid_in_ssquota}
+                ):
+                    ssquota_from_private_secloan += dict_trade_fmtdata_private_secloan['QtyToBeChargedInterest']
+                dict_secid2ssquota_from_private_secloan[secid_in_ssquota] = ssquota_from_private_secloan
+
+            # # 计算ssquota_from_public_secpool 与 ssquota_from_private_secpool
+            list_dicts_trade_ssquota_from_secloan = []
+            for secid_in_ssquota in set_secid_in_ssquota:
+                if secid_in_ssquota in self.gl.dict_secid2composite:
+                    cpssrc = self.gl.dict_secid2composite[secid_in_ssquota]
+                else:
+                    cpssrc = 'AutoT0'
+                ssquota_from_public_secloan = dict_secid2ssquota_from_public_secloan[secid_in_ssquota]
+                ssquota_from_private_secloan = dict_secid2ssquota_from_private_secloan[secid_in_ssquota]
+                dict_trade_position = col_trade_position.find_one(
+                    {'DataDate': self.str_today, 'AcctIDByMXZ': self.acctidbymxz, 'SecurityID': secid_in_ssquota}
+                )
+                if dict_trade_position:
+                    shortqty = dict_trade_position['ShortQty']
+                else:
+                    shortqty = 0
+
+                ssquota = ssquota_from_public_secloan + ssquota_from_private_secloan
+                str_update_time = datetime.now().strftime('%H%M%S')
+                dict_trade_fmtdata_ssquota_from_secloan = {
+                    'DataDate': self.str_today,
+                    'AcctIDByMXZ': self.acctidbymxz,
+                    'UpdateTime': str_update_time,
+                    'SecurityID': secid_in_ssquota,
+                    'SSQuota': ssquota,
+                    'ShortQty': shortqty,
+                    'SSQuotaFromPublicSecPool': ssquota_from_public_secloan,
+                    'SSQuotaFromPrivateSecPool': ssquota_from_private_secloan,
+                    'AvailableSSQuota': ssquota - shortqty,
+                    'CompositeSource': cpssrc,
+                }
+                list_dicts_trade_ssquota_from_secloan.append(dict_trade_fmtdata_ssquota_from_secloan)
+
+            col_trade_ssquota_from_secloan.delete_many({'DataDate': self.str_today, 'AcctIDByMXZ': self.acctidbymxz})
+            if list_dicts_trade_ssquota_from_secloan:
+                col_trade_ssquota_from_secloan.insert_many(list_dicts_trade_ssquota_from_secloan)
+            print('Update_trade_ssquota_from_secloan finished, sleep 10s')
+            sleep(10)
 
 
 class UpdateTradePosition(Thread):

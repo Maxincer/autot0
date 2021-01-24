@@ -1,0 +1,59 @@
+posttrd_analysis_doc.xlsx 说明
+0. 文件由pnl_analysis演变而来（添加sheet页，增加fund）
+1. 文件路径为: \\192.168.2.162\data3\output\pnl\pnl_analysis.xlsx，每日生成，全量覆盖。设计生成时间为8:40。
+2. 文件用于展示PNL拆分数据，以及信用户保证金状况
+3. sheet pnl_analysis字段说明
+    1. DataDate: 数据的发生日期, 现阶段与交易日期一致。
+    2. AcctIDByMXZ: 由马新哲指定的资金账户命名规则定义的资金账户别名。
+    3. CompositeSource: 组合的策略名称，目前有且仅有如下分类:
+        1. AutoT0: 机器T0策略组合
+        2. ManuT0: 人工T0策略组合
+        3. NotInComposite: 非策略组合
+    4. PNL_Part1: 按最新价计算的卖出交易盈亏 = ∑[(卖出成交价－当日结算价)×卖出量]
+    5. PNL_Part2: 按最新价计算的买入交易盈亏 = ∑[(当日结算价－买入成交价)×买入量]
+    6. PNL_Part3: 持仓隔夜盈亏 = (上一交易日结算价－当日结算价)×(上一交易日卖出持仓量－上一交易日买入持仓量)
+    7. PNL_Sum: 逐日盯市制度下的当日盈亏 = PNL_Part1 + PNL_Part2 + PNL_Part3
+    8. FeeFromTradingActivity: 归属于交易活动的费用(五费)
+        1. 证管费/监管费
+        2. 经手费
+        3. 过户费
+        4. 佣金
+        5. 印花税
+     9. FeeFromSecLoan: 归属于融券活动的费用
+        1. 利息: 来自于公用券池融券合约
+        2. 额度占用费: 来自于私用券池融券合约
+    10. PNLBySecID: 按SecurityID汇总上述各项损益的合计，再将各证券的损益合计进行加总。
+
+4. sheet fund重要字段说明
+    1. CashFromSS: 卖出融券所得资金
+    2. ShortSellAmt: 空头市值，short exposure
+    3. SecurityMarketValue: 证券市值
+    4. 融券占用保证金
+    5. 担保证券市值
+    6. LiabilityFromSecLoan：应付利息
+
+5. security_loan_utility_analysis 字段说明
+    1. ExpectedNetAsset: 根据当前short exposure计算的理想状态下的净资产。ExpectedNetAsset = 1.5 * ShortExposure
+    2. TradingAmt: 根据交割单计算的交易额，为买卖双边交易额绝对值之和。
+    3. SecuritiesCountInTrading: 交易的股票支数
+    4. SecuritiesCountInSecLoanQuota: 借入股票的实际支数
+    5. SecuritiesCountInTargetSecurityLoanPool: 借入股票的目标支数，从股票支数角度反应当前融券策略的目标券池大小。
+    6. LongExposure: 多头风险暴露，为正值
+    7. ShortExposure: 空头风险暴露，为正值
+    8. NetExposure: 净风险暴露 = LongExposure - ShortExposure
+    9. GrossExposure:  总风险暴露 = LongExposure + ShortExposure
+    10. SecLoanMarketValue: 借入的股票的市值(以收盘价计算)
+    11. PctOfTradingAmtByGrossExposure: 交易额与总风险暴露之比，从金额角度反应对目前仓位交易的充分程度
+    12. PctOfSecCountInTradingBySecCountInSecLoanQuota: 交易股票支数与借入股票支数之比，从标的数量角度反应对目前仓位交易的充分程度。
+    13. PctOfSecCountInSecLoanQuotaBySecCountInTgtSecLoan: 借入股票实际数量与借入股票目标数量之比，从标的数量角度反应借入股票支数的潜在空间。
+    14. PctOfShortExposureBySecLoanQuotaMarketValue: 空头暴露与借入股票市值之比，反应借入股票后利用的充分程度。
+
+6. [pre-trade] 目标股票券池的筛选步骤:
+    1. 读取target_secids.csv
+    2. 筛除与其他策略相冲突的股票
+    3. 筛除非两融标的股票
+    4. 筛除前收价小于5元或大于300元的股票
+    5. 将筛除后的股票池作为融券目标券池
+
+
+

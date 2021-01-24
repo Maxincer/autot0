@@ -26,7 +26,8 @@ from pymongo import MongoClient
 
 from WindPy import w
 
-STR_TODAY = datetime.today().strftime('%Y%m%d')
+# STR_TODAY = datetime.today().strftime('%Y%m%d')
+STR_TODAY = '20210115'
 
 
 class Globals:
@@ -47,27 +48,14 @@ class Globals:
         self.str_next_trddate = self.list_str_trdcalendar[idx_str_today + 1]
         self.str_last_last_trddate = self.list_str_trdcalendar[idx_str_today - 2]
         self.str_next_next_trddate = self.list_str_trdcalendar[idx_str_today + 2]
-
+        self.list_acctidsbymxz = ['8111_m_huat_9239']
         # 配置文件部分: basicinfo
         self.db_basicinfo = self.server_mongodb['basicinfo']
         self.col_acctinfo = self.db_basicinfo['acctinfo']
         self.col_prdinfo = self.db_basicinfo['prdinfo']
         self.col_strategy_info = self.db_basicinfo['strategy_info']
-        self.list_acctinfo = list(self.col_acctinfo.find({'DataDate': self.str_today}))
-        self.list_acctidsbymxz = ['307_m_hait_2000', '8111_m_huat_9239']
-        self.acctidbymxz = '307_m_hait_2000'
-        self.prdalias = '鸣石满天星7号'
+
         # 路径部分
-        # # basicinfo
-        dict_acctinfo = self.col_acctinfo.find_one(
-            {'DataDate': self.str_today, 'AcctIDByMXZ': self.acctidbymxz}
-        )
-
-        str_path = '(Y:\investment_manager_products\hait_ehfz_api\YYYYMMDD_1882842000_fund.csv,Y:\investment_manager_products\hait_ehfz_api\YYYYMMDD_1882842000_holding.csv,Y:\investment_manager_products\hait_ehfz_api\YYYYMMDD_1882842000_order.csv,Y:\investment_manager_products\hait_ehfz_api\YYYYMMDD_1882842000_security_loan.csv)'
-        list_fpaths_data_file_path = [
-            _.strip() for _ in str_path.replace('YYYYMMDD', self.str_today)[1:-1].split(',')
-        ]
-
         # # SecLoanContractsPoolMng
         dict_strategy_info = self.col_strategy_info.find_one({'DataDate': self.str_today, 'StrategyName': 'AutoT0'})
         self.fpath_input_csv_target_secids = (
@@ -153,12 +141,6 @@ class Globals:
         self.col_pretrd_fmtdata_md_security_loan = self.db_pretrddata['pre_trade_fmtdata_md_security_loan']
 
         # trade
-        # # filepath
-        self.fpath_input_csv_margin_account_fund = list_fpaths_data_file_path[0]
-        self.fpath_input_csv_margin_account_holding = list_fpaths_data_file_path[1]
-        self.fpath_input_csv_margin_account_order = list_fpaths_data_file_path[2]
-        self.fpath_input_csv_margin_account_secloan = list_fpaths_data_file_path[3]
-
         # # database
         self.db_trade_data = self.server_mongodb['trade_data']
         self.col_trade_rawdata_fund = self.db_trade_data['trade_rawdata_fund']
@@ -171,88 +153,43 @@ class Globals:
         self.col_trade_ssquota_from_secloan = self.db_trade_data['trade_ssquota_from_security_loan']
 
         # post-trade
-        # # dict_map
-        # # # todo 重要假设： 根据股票代码区分策略归属，不计数量
-        self.dict_secid2composite = {}
-        for dict_pretrddata_grp_tgt_secids_by_composite in (
-                self.col_pretrd_grp_tgtsecids_by_cps.find(
-                    {'DataDate': self.str_last_trddate, 'AcctIDByMXZ': self.acctidbymxz}
-                )
-        ):
-            secid = dict_pretrddata_grp_tgt_secids_by_composite['SecurityID']
-            composite = dict_pretrddata_grp_tgt_secids_by_composite['Composite']
-            self.dict_secid2composite.update({secid: composite})
-
-        # # database
         self.db_posttrddata = self.server_mongodb['post_trade_data']
-        self.col_posttrd_rawdata_rqmx = self.db_posttrddata['post_trade_rawdata_rqmx']
-        self.col_shortqty_from_secloan = self.db_posttrddata['shortqty_from_secloan']
-        self.col_posttrd_fmtdata_secloan_from_private_secpool = (
-            self.db_posttrddata['post_trade_fmtdata_secloan_from_private_secpool']
+
+        self.col_posttrd_rawdata_fund = self.db_posttrddata['post_trade_raw_data_fund']
+        self.col_posttrd_fmtdata_fund = self.db_posttrddata['post_trade_formatted_data_fund']
+        self.col_posttrd_rawdata_holding = self.db_posttrddata['post_trade_raw_data_holding']
+        self.col_posttrd_fmtdata_holding = self.db_posttrddata['post_trade_formatted_data_holding']
+
+        self.col_posttrd_rawdata_short_position = self.db_posttrddata['post_trade_raw_data_short_position']
+        self.col_posttrd_fmtdata_short_position = self.db_posttrddata['post_trade_formatted_data_short_position']
+        self.col_posttrd_rawdata_public_secloan = self.db_posttrddata['post_trade_raw_data_public_security_loan']
+        self.col_posttrd_fmtdata_public_secloan = self.db_posttrddata['post_trade_formatted_data_public_security_loan']
+        self.col_posttrd_rawdata_private_secloan = self.db_posttrddata['post_trade_raw_data_private_security_loan']
+        self.col_posttrd_fmtdata_private_secloan = (
+            self.db_posttrddata['post_trade_formatted_data_private_security_loan']
         )
-        self.col_posttrd_fmtdata_secloan_from_public_secpool = (
-            self.db_posttrddata['post_trade_fmtdata_secloan_from_public_secpool']
+        self.col_posttrd_rawdata_jgd = self.db_posttrddata['post_trade_raw_data_jgd']
+        self.col_posttrd_fmtdata_jgd = self.db_posttrddata['post_trade_formatted_data_jgd']
+        self.col_posttrd_rawdata_fee_from_secloan = self.db_posttrddata['post_trade_raw_data_fee_from_security_loan']
+        self.col_posttrd_fmtdata_fee_from_secloan = (
+            self.db_posttrddata['post_trade_formatted_data_fee_from_security_loan']
         )
+
         self.col_ssquota_by_secid_from_private_secpool = self.db_posttrddata['ssquota_by_secid_from_private_secpool']
-        self.col_posttrd_rawdata_holding = self.db_posttrddata['post_trade_rawdata_holding']
-        self.col_posttrd_fmtdata_holding = self.db_posttrddata['post_trade_fmtdata_holding']
-        self.col_posttrd_rawdata_secloan_from_private_secpool = (
-            self.db_posttrddata['post_trade_rawdata_secloan_from_private_secpool']
-        )
-        self.col_posttrd_rawdata_secloan_from_public_secpool = (
-            self.db_posttrddata['post_trade_rawdata_secloan_from_public_secpool']
-        )
-        self.col_posttrd_rawdata_shortqty_from_secloan = (
-            self.db_posttrddata['post_trade_rawdata_shortqty_from_secloan']
-        )
-        self.col_posttrd_fmtdata_shortqty_from_secloan = (
-            self.db_posttrddata['post_trade_fmtdata_shortqty_from_secloan']
-        )
         self.col_posttrd_position = self.db_posttrddata['post_trade_position']
-        self.col_posttrd_fmtdata_fee_from_secloan = self.db_posttrddata['post_trade_fmtdata_fee_from_secloan']
         self.col_posttrd_fmtdata_ssquota_from_secloan = self.db_posttrddata['post_trade_fmtdata_ssquota_from_secloan']
-        self.col_posttrd_rawdata_fee_from_secloan = self.db_posttrddata['post_trade_rawdata_fee_from_secloan']
-        self.col_posttrd_rawdata_jgd = self.db_posttrddata['post_trade_rawdata_jgd']
-        self.col_posttrd_fmtdata_jgd = self.db_posttrddata['post_trade_fmtdata_jgd']
+
         self.col_posttrd_pnl = self.db_posttrddata['post_trade_pnl']
         self.col_posttrd_pnl_by_secid = self.db_posttrddata['post_trade_pnl_by_secid']
         self.col_posttrd_pnl_by_acctidbymxz_cps = self.db_posttrddata['post_trade_pnl_by_acctidbymxz_cps']
-        self.col_posttrd_rawdata_fund = self.db_posttrddata['post_trade_rawdata_fund']
-        self.col_posttrd_fmtdata_fund = self.db_posttrddata['post_trade_fmtdata_fund']
+
         self.col_posttrd_secloan_utility_analysis = self.db_posttrddata['post_trade_secloan_utility_analysis']
         self.col_posttrd_pnl_by_acctidbymxz = self.db_posttrddata['post_trade_pnl_by_acctidbymxz']
         self.col_posttrd_cf_from_indirect_method = self.db_posttrddata['post_trade_cf_from_indirect_method']
 
-        # # posttrd_holding: 程序在T日运行，清算T-1日数据，部分文件名为T-1，文件包日期为T-1日期
-        self.fpath_input_rawdata_fund = list_fpaths_data_file_path[0]
-        self.fpath_input_rawdata_holding = list_fpaths_data_file_path[1]
-        self.fpath_input_rawdata_secloan_shortqty = list_fpaths_data_file_path[3]
+        self.col_posttrd_fmtdata_excluded_secids = self.db_posttrddata['post_trade_formatted_data_excluded_security_ids']
 
-        # todo: 成本考虑, 特殊指定hait_ehtc数据
-        self.fpath_input_xlsx_fund = (
-            f"data/input/post_trddata/{self.str_last_trddate}/两融_资产导出_{self.str_last_trddate}.xlsx"
-        )
-
-        self.fpath_input_xlsx_holding = (
-            f"data/input/post_trddata/{self.str_last_trddate}/两融_资产导出_{self.str_last_trddate}.xlsx"
-        )
-
-        self.fpath_input_xlsx_shortqty = (
-            f"data/input/post_trddata/{self.str_last_trddate}/融券明细_未了结仓单_{self.str_last_trddate}.xlsx"
-        )
-        self.fpath_input_xlsx_secloan_from_private_secpool = (
-            f"data/input/post_trddata/{self.str_last_trddate}/私用券源合约{self.str_today}.xls"
-        )
-        self.fpath_input_xlsx_secloan_from_public_secpool = (
-            f"data/input/post_trddata/{self.str_last_trddate}/融券公用合约_{self.str_last_trddate}.xlsx"
-        )
-        self.fpath_input_xls_fee_from_secloan = (
-            f"data/input/post_trddata/{self.str_last_trddate}/{self.prdalias}未结利息{self.str_today}.xls"
-        )
-        self.fpath_input_xlsx_jgd = (
-            f"data/input/post_trddata/{self.str_last_trddate}/{self.prdalias}每日交割单-{self.str_today}.xlsx"
-        )
-        self.fpath_output_xlsx_posttrd_analysis = "data/output/report/posttrd_analysis.xlsx"
+        self.fpath_output_xlsx_posttrd_analysis = 'D:/projects/autot0/data/output/posttrd_analysis.xlsx'
 
         # # wind的公共数据下载， 下载的时间为自然时间， 交易日为查询日当天
         self.col_fmtted_wssdata = self.db_global['fmtted_wssdata']
@@ -502,21 +439,24 @@ class Globals:
             set_matched_secloan_secids = set_secloan_secids_2b_matched & set_secloan_secids_tgt
             list_matched_secloan_secids = list(set_matched_secloan_secids)
             list_matched_secloan_secids.sort()
-            print(fpath_xlsx_secloan_secids_2b_matched, list_matched_secloan_secids)
             i_secloan_secids = len(list_matched_secloan_secids)
+            print(i_secloan_secids, fpath_xlsx_secloan_secids_2b_matched, list_matched_secloan_secids)
         else:
             i_secloan_secids = 'DataFileNotExists'
-        return i_secloan_secids
+            set_matched_secloan_secids = set()
+        return i_secloan_secids, set_matched_secloan_secids
 
     def output_provided_secloan_analysis_xlsx(self):
         list_broker_alias_for_secloan_analysis = ['hait', 'huat', 'swhy', 'gtja', 'zx']
         list_dicts_secloan_analysis_among_brokers = []
+        set_matched_secloan_secids = set()
         for broker_alias in list_broker_alias_for_secloan_analysis:
-            i_secloan_secids = task.secloan_match(
+            i_secloan_secids, set_matched_secloan_secids_delta = task.secloan_match(
                 f'D:/projects/autot0/data/input/pretrddata/tgtsecids/{self.str_today}_target_secids.csv',
                 f'D:/projects/autot0/data/input/pretrddata/market_data/{broker_alias}/'
                 f'每日券池-{self.str_today}.xlsx'
             )
+            set_matched_secloan_secids = set_matched_secloan_secids | set_matched_secloan_secids_delta
             dict_secloan_analysis_among_brokers = {
                 'DataDate': self.str_today,
                 'BrokerAlias': broker_alias,
@@ -526,6 +466,17 @@ class Globals:
         self.col_provided_secloan_analysis.delete_many({'DataDate': self.str_today})
         if list_dicts_secloan_analysis_among_brokers:
             self.col_provided_secloan_analysis.insert_many(list_dicts_secloan_analysis_among_brokers)
+        print(len(set_matched_secloan_secids), set_matched_secloan_secids)
+        iter_col_trade_secloan = self.db_trade_data['trade_ssquota_from_security_loan']
+        set_secloan_secids_in_ssquota = set()
+        for secid in iter_col_trade_secloan.find({'DataDate': self.str_today}):
+            set_secloan_secids_in_ssquota.add(secid['SecurityID'])
+
+        print(len(set_secloan_secids_in_ssquota))
+
+        set_secloan_secids_tgt = set_matched_secloan_secids | set_secloan_secids_in_ssquota
+        print(len(set_secloan_secids_tgt), set_secloan_secids_tgt)
+
 
         iter_secloan_analysis = self.col_provided_secloan_analysis.find({}, {'_id': 0})
         df_secloan_analysis = pd.DataFrame(iter_secloan_analysis)
@@ -537,6 +488,5 @@ class Globals:
 if __name__ == '__main__':
     # 盘后运行, 更新数据库
     task = Globals(download_winddata_mark=0)
-    task.output_provided_secloan_analysis_xlsx()
-    #
+    # task.output_provided_secloan_analysis_xlsx()
     print('Done')
