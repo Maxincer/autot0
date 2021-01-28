@@ -1,0 +1,4 @@
+fund_account,asset_prop,exchange_type,stock_code,stock_name,stock_type,current_amount,hold_amount,enable_amount,last_price,cost_price,income_balance,hand_flag,market_value,av_buy_price,av_income_balance,cost_balance,uncome_buy_amount,uncome_sell_amount,entrust_sell_amount,real_buy_amount,real_sell_amount,asset_price,keep_cost_price,assure_ratio
+960000039239,7,2,300014,亿纬锂能,c,2200.000,2200.000,0.000,89.100,90.714,-3550.760,0,196020.000,89.490,0.000,199570.760,0.000,0.000,2200.000,2200.000,2200.000,89.100,90.714,0.550
+960000039239,7,1,511990,华宝添益,j,290016,290000.000,290000.000,99.996,98.941,305888.750,0,28998840.000,100.007,266964.440,28692951.250,0.000,0.000,0.000,0.000,0.000,99.996,98.941,0.950
+960000039239,7,2,300315,掌趣科技,c,30000.000,30000.000,0.000,5.010,5.243,-7004.370,0,150300.000,5.090,0.000,157304.370,0.000,0.000,30000.000,30000.000,30000.000,5.010,5.243,0.650

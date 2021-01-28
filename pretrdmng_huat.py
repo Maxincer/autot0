@@ -223,9 +223,9 @@ class PreTrdMng:
         # 遍历tgtwindcodes:
         for tgtwindcode in list_tgtwindcodes:
             tgtsecid = tgtwindcode.split('.')[0]
-            margin_or_not_mark = self.gl.dict_fmtted_wssdata['MarginOrNotMark'][tgtwindcode]
-            symbol = self.gl.dict_fmtted_wssdata['Symbol'][tgtwindcode]
-            preclose = self.gl.dict_fmtted_wssdata['PreClose'][tgtwindcode]
+            margin_or_not_mark = self.gl.dict_fmtted_wssdata_today['MarginOrNotMark'][tgtwindcode]
+            symbol = self.gl.dict_fmtted_wssdata_today['Symbol'][tgtwindcode]
+            preclose = self.gl.dict_fmtted_wssdata_today['PreClose'][tgtwindcode]
 
             if broker_abbr in ['huat']:
                 # market_data
@@ -233,15 +233,9 @@ class PreTrdMng:
                 public_secloan_avlqty = 0
                 private_ssq_secloan_avlqty = 0
                 private_jpq_secloan_avlqty = 0
-                iter_col_pretrd_fmtdata_md_secloan = self.gl.col_pretrd_fmtdata_md_security_loan.find(
-                        {
-                            'DataDate': self.gl.str_today,
-                            'AcctIDByMXZ': acctidbymxz,
-                            'SecurityID': tgtsecid,
-                        }
-                )
-
-                for dict_pretrd_fmtdata_md_secloan in iter_col_pretrd_fmtdata_md_secloan:
+                for dict_pretrd_fmtdata_md_secloan in self.gl.col_pretrd_fmtdata_md_security_loan.find(
+                        {'DataDate': self.gl.str_today, 'AcctIDByMXZ': acctidbymxz, 'SecurityID': tgtsecid}
+                ):
                     secloan_src = dict_pretrd_fmtdata_md_secloan['SecurityLoanSource']
                     if secloan_src in ['Private_SSQ']:
                         private_ssq_secloan_avlqty += dict_pretrd_fmtdata_md_secloan['AvlQty']
@@ -257,34 +251,27 @@ class PreTrdMng:
                 # Quota:
                 # # RealTimeQuota:
                 public_secloan_quota = 0
-                iter_col_trade_fmtdata_public_secloan = self.gl.col_trade_fmtdata_public_secloan.find(
+
+                for dict_trade_fmtdata_public_secloan in self.gl.col_trade_fmtdata_public_secloan.find(
                     {'DataDate': self.gl.str_today, 'AcctIDByMXZ': acctidbymxz, 'SecurityID': tgtsecid}
-                )
-                for dict_trade_fmtdata_public_secloan in iter_col_trade_fmtdata_public_secloan:
+                ):
                     public_secloan_quota += dict_trade_fmtdata_public_secloan['QtyToBeChargedInterest']
 
                 private_secloan_quota = 0
-                iter_col_trade_fmtdata_private_secloan = self.gl.col_trade_fmtdata_private_secloan.find(
+                for dict_trade_fmtdata_private_secloan in self.gl.col_trade_fmtdata_private_secloan.find(
                     {'DataDate': self.gl.str_today, 'AcctIDByMXZ': acctidbymxz, 'SecurityID': tgtsecid}
-                )
-                for dict_trade_fmtdata_private_secloan in iter_col_trade_fmtdata_private_secloan:
+                ):
                     private_secloan_quota += dict_trade_fmtdata_private_secloan['QtyToBeChargedInterest']
 
                 secloan_quota = public_secloan_quota + private_secloan_quota
 
                 # # QuotaOnLastTrdDate
                 quota_last_trddate = 0
-                iter_col_posttrd_fmtdata_ssquota_from_secloan_last_trddate = (
-                    self.gl.col_posttrd_fmtdata_ssquota_from_secloan.find(
-                        {
-                            'DataDate': self.gl.str_last_trddate,
-                            'AcctIDByMXZ': self.gl.acctidbymxz,
-                            'SecurityID': tgtsecid,
-                        }
-                    )
-                )
+
                 for dict_posttrd_fmtdata_ssquota_from_secloan_last_trddate in (
-                        iter_col_posttrd_fmtdata_ssquota_from_secloan_last_trddate
+                        self.gl.col_posttrd_fmtdata_ssquota_from_secloan.find(
+                            {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': acctidbymxz, 'SecurityID': tgtsecid}
+                        )
                 ):
                     quota_last_trddate += dict_posttrd_fmtdata_ssquota_from_secloan_last_trddate['SSQuota']
 
@@ -347,11 +334,9 @@ class PreTrdMng:
                 raise ValueError('Unknown broker abbr.')
 
         # 遍历已持有合约
-        iter_col_trade_secloan = self.gl.col_trade_ssquota_from_secloan.find(
+        for dict_trade_secloan in self.gl.col_trade_ssquota_from_secloan.find(
             {'DataDate': self.gl.str_today, 'AcctIDByMXZ': acctidbymxz}
-        )
-
-        for dict_trade_secloan in iter_col_trade_secloan:
+        ):
             secid = dict_trade_secloan['SecurityID']
             if secid[0] in ['6', '5']:
                 windcode = f"{secid}.SH"
@@ -359,8 +344,8 @@ class PreTrdMng:
                 windcode = f"{secid}.SZ"
             else:
                 raise ValueError('Unknown security id')
-            symbol = self.gl.dict_fmtted_wssdata['Symbol'][windcode]
-            margin_or_not_mark = self.gl.dict_fmtted_wssdata['MarginOrNotMark'][windcode]
+            symbol = self.gl.dict_fmtted_wssdata_today['Symbol'][windcode]
+            margin_or_not_mark = self.gl.dict_fmtted_wssdata_today['MarginOrNotMark'][windcode]
 
             if windcode not in list_tgtwindcodes:
                 ssquota = dict_trade_secloan['SSQuota']
@@ -396,7 +381,8 @@ class PreTrdMng:
         self.gl.col_pretrd_secloan_demand_analysis.delete_many(
             {'DataDate': self.gl.str_today, 'AcctIDByMXZ': acctidbymxz}
         )
-        self.gl.col_pretrd_secloan_demand_analysis.insert_many(list_dicts_secloan_demand_analysis)
+        if list_dicts_secloan_demand_analysis:
+            self.gl.col_pretrd_secloan_demand_analysis.insert_many(list_dicts_secloan_demand_analysis)
         print(f"{self.gl.str_today}_secloan_demand_analysis Finished.")
 
     def output_secloan_order(self, acctidbymxz):

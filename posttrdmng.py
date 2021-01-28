@@ -51,7 +51,7 @@ Note:
     6. 重要假设： 公用券池的未平仓合约由未结利息推出
     7. 重要约定： QtyToBeChargedInterest，在公用合约中为未还数量，在私用合约中为占用额度数量
     8. 重要假设： 盘前运行（T日清算T-1的损益）
-    9.
+    9. 出于多账户自动下载的考虑，不能使用手动下载的数据作为清算数据，还是要使用8点的数据
 
 
 Warning:
@@ -65,6 +65,7 @@ Naming Convention:
 # todo
     1. position 中 添加SecurityType 和 SecurityIDSource 字段
     2. 将多个账户共同实现AutoT0的情况考虑进来: 如 occt + macct
+    3. 在归还日当天，不应该融券卖出，需要注意。ssquota应该为0，而qty2charge是有的，目前未处理这个问题。
 """
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -181,12 +182,12 @@ class PostTrdMng:
 
         elif data_srctype in ['huat_matic_tsi']:
             list_dicts_rawdata_fund = []
-            with open(fpath_posttrd_rawdata_fund, encoding='utf-8') as f:
+            with open(fpath_posttrd_rawdata_fund, 'rb') as f:
                 list_list_datalines = f.readlines()
-                list_fields = list_list_datalines[0].split(',')
+                list_fields = [_.decode('ansi', errors='replace') for _ in list_list_datalines[0].split(b',')]
                 if len(list_list_datalines) > 1:
                     for list_datalines in list_list_datalines[1:]:
-                        list_data = list_datalines.split(',')
+                        list_data = [_.decode('ansi', errors='replace') for _ in list_datalines.split(b',')]
                         dict_rawdata_fund = dict(zip(list_fields, list_data))
                         if dict_rawdata_fund['fund_account'] == dldfilter:
                             dict_rawdata_fund['AcctIDByMXZ'] = acctidbymxz
@@ -246,12 +247,12 @@ class PostTrdMng:
 
         elif data_srctype in ['huat_matic_tsi']:
             list_dicts_rawdata_holding = []
-            with open(fpath_posttrd_rawdata_holding, encoding='utf-8') as f:
+            with open(fpath_posttrd_rawdata_holding, 'rb') as f:
                 list_list_datalines = f.readlines()
-                list_fields = list_list_datalines[0].split(',')
+                list_fields = [_.decode('ansi', errors='replace') for _ in list_list_datalines[0].split(b',')]
                 if len(list_list_datalines) > 1:
                     for list_datalines in list_list_datalines[1:]:
-                        list_data = [_.strip() for _ in list_datalines.split(',')]
+                        list_data = [_.decode('utf-8', errors='replace').strip() for _ in list_datalines.split(b',')]
                         dict_rawdata_holding = dict(zip(list_fields, list_data))
                         if dict_rawdata_holding['fund_account'] == dldfilter:
                             dict_rawdata_holding['AcctIDByMXZ'] = acctidbymxz
@@ -320,7 +321,8 @@ class PostTrdMng:
                 }
             )
             df_input_xlsx_secloan_from_public_secpool = (
-                df_input_xlsx_secloan_from_public_secpool.where(df_input_xlsx_secloan_from_public_secpool.notnull(), None)
+                df_input_xlsx_secloan_from_public_secpool
+                    .where(df_input_xlsx_secloan_from_public_secpool.notnull(), None)
             )
             df_input_xlsx_secloan_from_public_secpool['DataDate'] = self.gl.str_last_trddate
             df_input_xlsx_secloan_from_public_secpool['AcctIDByMXZ'] = acctidbymxz
@@ -342,7 +344,8 @@ class PostTrdMng:
                         dict_rawdata_public_secloan = dict(zip(list_fields, list_data))
                         dict_rawdata_public_secloan['AcctIDByMXZ'] = acctidbymxz
                         dict_rawdata_public_secloan['DataDate'] = self.gl.str_last_trddate
-                        list_dicts_posttrd_rawdata_public_secloan.append(dict_rawdata_public_secloan)
+                        if dict_rawdata_public_secloan['合约类型'] in ['融券合约']:
+                            list_dicts_posttrd_rawdata_public_secloan.append(dict_rawdata_public_secloan)
 
             self.gl.col_posttrd_rawdata_public_secloan.delete_many(
                 {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': acctidbymxz}
@@ -601,13 +604,13 @@ class PostTrdMng:
             )
             set_secid_in_fmtdata_short_position = set()
             for dict_posttrd_rawdata_short_position in iter_dicts_posttrd_rawdata_short_position:
-                secid = dict_posttrd_rawdata_short_position['证券代码']
+                secid = str(dict_posttrd_rawdata_short_position['证券代码']).zfill(6)
                 if secid in set_secids_nic:
                     cpssrc = 'NotInComposite'
                 else:
                     cpssrc = 'AutoT0'
                 symbol = dict_posttrd_rawdata_short_position['证券名称']
-                shortqty = float(dict_posttrd_rawdata_short_position['合约开仓数量'])
+                shortqty = float(dict_posttrd_rawdata_short_position['未还数量'])
                 contract_id = dict_posttrd_rawdata_short_position['合约编号']
                 dict_posttrd_fmtdata_shortqty_from_secloan = {
                     'DataDate': self.gl.str_last_trddate,
@@ -622,18 +625,17 @@ class PostTrdMng:
                 set_secid_in_fmtdata_short_position.add(secid)
 
             # col_posttrd_fmtdata_public_secloan
-            iter_dicts_posttrd_rawdata_public_secloan = self.gl.col_posttrd_rawdata_public_secloan.find(
-                {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': acctidbymxz}
-            )
             set_secid_in_fmtdata_public_secloan = set()
-            for dict_posttrd_rawdata_public_secloan in iter_dicts_posttrd_rawdata_public_secloan:
-                secid = dict_posttrd_rawdata_public_secloan['证券代码']
+            for dict_posttrd_rawdata_public_secloan in self.gl.col_posttrd_rawdata_public_secloan.find(
+                {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': acctidbymxz}
+            ):
+                secid = str(dict_posttrd_rawdata_public_secloan['证券代码']).zfill(6)
                 if secid in set_secids_nic:
                     cpssrc = 'NotInComposite'
                 else:
                     cpssrc = 'AutoT0'
                 contract_id = dict_posttrd_rawdata_public_secloan['合约编号']
-                qty_to_be_charged_interest = float(dict_posttrd_rawdata_public_secloan['合约开仓数量'])
+                qty_to_be_charged_interest = float(dict_posttrd_rawdata_public_secloan['未还数量'])
                 interest = float(dict_posttrd_rawdata_public_secloan['合约年利率'].replace('%', ''))/100
                 str_startdate = dict_posttrd_rawdata_public_secloan['开仓日期']
                 str_maturity_date = dict_posttrd_rawdata_public_secloan['归还截至日期']
@@ -654,11 +656,10 @@ class PostTrdMng:
                 list_dicts_posttrd_fmtdata_public_secloan.append(dict_posttrd_fmtdata_public_secloan)
 
             # col_posttrd_fmtdata_private_secloan
-            iter_dicts_posttrd_rawdata_private_secloan = self.gl.col_posttrd_rawdata_private_secloan.find(
-                {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': acctidbymxz}
-            )
             set_secid_in_fmtdata_private_secloan = set()
-            for dict_posttrd_rawdata_private_secloan in iter_dicts_posttrd_rawdata_private_secloan:
+            for dict_posttrd_rawdata_private_secloan in self.gl.col_posttrd_rawdata_private_secloan.find(
+                {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': acctidbymxz}
+            ):
                 secid = str(dict_posttrd_rawdata_private_secloan['证券代码']).zfill(6)
                 if secid in set_secids_nic:
                     cpssrc = 'NotInComposite'
@@ -716,10 +717,10 @@ class PostTrdMng:
                     side = 2
                 else:
                     raise ValueError('交割单读取错误，未知业务类型。')
-                cumqty = dict_posttrd_rawdata_jgd['成交数量']
-                avgpx = dict_posttrd_rawdata_jgd['成交价格']
-                cumamt = dict_posttrd_rawdata_jgd['成交金额']
-                cash_balance = dict_posttrd_rawdata_jgd['资金余额']
+                cumqty = abs(float(dict_posttrd_rawdata_jgd['成交数量']))
+                avgpx = abs(float(dict_posttrd_rawdata_jgd['成交价格']))
+                cumamt = abs(float(dict_posttrd_rawdata_jgd['成交金额']))
+                cash_balance = float(dict_posttrd_rawdata_jgd['资金余额'])
                 str_entrust_time = dict_posttrd_rawdata_jgd['报盘时间']
                 if str_entrust_time:
                     str_entrust_datetime = f"{str_trddate}{str_entrust_time.replace(':', '')}"
@@ -740,7 +741,7 @@ class PostTrdMng:
                 dict_posttrd_fmtdata_jgd = {
                     'DataDate': self.gl.str_last_trddate,
                     'AcctIDByMXZ': acctidbymxz,
-                    'TradeDate': str_trddate,
+                    'TradeDate': self.gl.str_last_trddate,
                     'SecurityID': secid,
                     'SecurityIDSource': secidsrc,
                     'CompositeSource': cpssrc,
@@ -793,12 +794,11 @@ class PostTrdMng:
                 list_dicts_posttrd_fmtdata_fund.append(dict_posttrd_fmtdata_fund)
 
             # col_posttrd_fmtdata_holding
-            iter_dicts_posttrd_rawdata_holding = self.gl.col_posttrd_rawdata_holding.find(
-                {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': acctidbymxz}
-            )
             set_secid_in_fmtdata_holding = set()
-            for dict_posttrd_rawdata_holding in iter_dicts_posttrd_rawdata_holding:
-                secid = dict_posttrd_rawdata_holding['stock_code']
+            for dict_posttrd_rawdata_holding in self.gl.col_posttrd_rawdata_holding.find(
+                {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': acctidbymxz}
+            ):
+                secid = str(dict_posttrd_rawdata_holding['stock_code']).zfill(6)
                 if secid in set_secids_nic:
                     cpssrc = 'NotInComposite'
                 else:
@@ -822,18 +822,17 @@ class PostTrdMng:
                 set_secid_in_fmtdata_holding.add(secid)
 
             # col_posttrd_fmtdata_short_position
-            iter_dicts_posttrd_rawdata_short_position = self.gl.col_posttrd_rawdata_short_position.find(
-                {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': acctidbymxz}
-            )
             set_secid_in_fmtdata_short_position = set()
-            for dict_posttrd_rawdata_short_position in iter_dicts_posttrd_rawdata_short_position:
-                secid = dict_posttrd_rawdata_short_position['证券代码']
+            for dict_posttrd_rawdata_short_position in self.gl.col_posttrd_rawdata_short_position.find(
+                {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': acctidbymxz}
+            ):
+                secid = str(dict_posttrd_rawdata_short_position['证券代码']).zfill(6)
                 if secid in set_secids_nic:
                     cpssrc = 'NotInComposite'
                 else:
                     cpssrc = 'AutoT0'
                 symbol = dict_posttrd_rawdata_short_position['证券名称']
-                shortqty = float(dict_posttrd_rawdata_short_position['合约开仓数量'])
+                shortqty = float(dict_posttrd_rawdata_short_position['未还数量'])
                 contract_id = dict_posttrd_rawdata_short_position['合约编号']
                 dict_posttrd_fmtdata_shortqty_from_secloan = {
                     'DataDate': self.gl.str_last_trddate,
@@ -848,18 +847,17 @@ class PostTrdMng:
                 set_secid_in_fmtdata_short_position.add(secid)
 
             # col_posttrd_fmtdata_public_secloan
-            iter_dicts_posttrd_rawdata_public_secloan = self.gl.col_posttrd_rawdata_public_secloan.find(
-                {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': acctidbymxz}
-            )
             set_secid_in_fmtdata_public_secloan = set()
-            for dict_posttrd_rawdata_public_secloan in iter_dicts_posttrd_rawdata_public_secloan:
-                secid = dict_posttrd_rawdata_public_secloan['证券代码']
+            for dict_posttrd_rawdata_public_secloan in self.gl.col_posttrd_rawdata_public_secloan.find(
+                {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': acctidbymxz}
+            ):
+                secid = str(dict_posttrd_rawdata_public_secloan['证券代码']).zfill(6)
                 if secid in set_secids_nic:
                     cpssrc = 'NotInComposite'
                 else:
                     cpssrc = 'AutoT0'
                 contract_id = dict_posttrd_rawdata_public_secloan['合约编号']
-                qty_to_be_charged_interest = float(dict_posttrd_rawdata_public_secloan['合约开仓数量'])
+                qty_to_be_charged_interest = float(dict_posttrd_rawdata_public_secloan['未还数量'])
                 interest = dict_posttrd_rawdata_public_secloan['合约年利率']
                 str_startdate = dict_posttrd_rawdata_public_secloan['开仓日期']
                 str_maturity_date = dict_posttrd_rawdata_public_secloan['归还截至日期']
@@ -880,21 +878,27 @@ class PostTrdMng:
                 list_dicts_posttrd_fmtdata_public_secloan.append(dict_posttrd_fmtdata_public_secloan)
 
             # col_posttrd_fmtdata_private_secloan
-            iter_dicts_posttrd_rawdata_private_secloan = self.gl.col_posttrd_rawdata_private_secloan.find(
-                {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': acctidbymxz}
-            )
             set_secid_in_fmtdata_private_secloan = set()
-            for dict_posttrd_rawdata_private_secloan in iter_dicts_posttrd_rawdata_private_secloan:
+            for dict_posttrd_rawdata_private_secloan in self.gl.col_posttrd_rawdata_private_secloan.find(
+                {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': acctidbymxz}
+            ):
                 secid = str(dict_posttrd_rawdata_private_secloan['证券代码']).zfill(6)
                 if secid in set_secids_nic:
                     cpssrc = 'NotInComposite'
                 else:
                     cpssrc = 'AutoT0'
                 contract_id = dict_posttrd_rawdata_private_secloan['合约编号']
-                qty_to_be_charged_interest = float(dict_posttrd_rawdata_private_secloan['合约数量'])
+
+                str_maturity_date = str(dict_posttrd_rawdata_private_secloan['到期日']).replace('-', '')
+
+                if str_maturity_date <= self.gl.str_last_trddate:
+                    qty_to_be_charged_interest = 0
+                else:
+                    qty_to_be_charged_interest = float(dict_posttrd_rawdata_private_secloan['合约数量'])
+
                 interest = dict_posttrd_rawdata_private_secloan['占用利率']
                 str_startdate = dict_posttrd_rawdata_private_secloan['起始日']
-                str_maturity_date = dict_posttrd_rawdata_private_secloan['到期日']
+                str_maturity_date = str(dict_posttrd_rawdata_private_secloan['到期日']).replace('-','')
                 expiration_days = dict_posttrd_rawdata_private_secloan['剩余期限']
                 set_secid_in_fmtdata_private_secloan.add(secid)
                 dict_posttrd_fmtdata_private_secloan = {
@@ -940,16 +944,18 @@ class PostTrdMng:
                     side = 'XQHQ'
                 elif trade_mark in ['红股入帐']:
                     side = 'HGRZ'
+                elif trade_mark in ['权证上账']:
+                    continue
                 else:
                     raise ValueError('交割单读取错误，未知业务类型。')
-                cumqty = float(dict_posttrd_rawdata_jgd['成交数量'])
-                avgpx = float(dict_posttrd_rawdata_jgd['成交价格'])
-                cumamt = float(dict_posttrd_rawdata_jgd['成交金额'])
-                cash_balance = float(dict_posttrd_rawdata_jgd['剩余金额'])
+                cumqty = abs(float(dict_posttrd_rawdata_jgd['成交数量']))
+                avgpx = abs(float(dict_posttrd_rawdata_jgd['成交价格']))
+                cumamt = abs(float(dict_posttrd_rawdata_jgd['成交金额']))
+                cash_balance = abs(float(dict_posttrd_rawdata_jgd['剩余金额']))
                 fee_from_trdactivity = (
-                        + float(dict_posttrd_rawdata_jgd['佣金'])
-                        + float(dict_posttrd_rawdata_jgd['印花税'])
-                        + float(dict_posttrd_rawdata_jgd['过户费'])
+                        + abs(float(dict_posttrd_rawdata_jgd['佣金']))
+                        + abs(float(dict_posttrd_rawdata_jgd['印花税']))
+                        + abs(float(dict_posttrd_rawdata_jgd['过户费']))
                 )
 
                 if secid in set_secids_nic:
@@ -971,9 +977,9 @@ class PostTrdMng:
                     'CumAmt': cumamt,
                     'CashBalance': cash_balance,
                     'SerialNumber': serial_number,
-                    '佣金': float(dict_posttrd_rawdata_jgd['佣金']),
-                    '印花税': float(dict_posttrd_rawdata_jgd['印花税']),
-                    '过户费': float(dict_posttrd_rawdata_jgd['过户费']),
+                    '佣金': abs(float(dict_posttrd_rawdata_jgd['佣金'])),
+                    '印花税': abs(float(dict_posttrd_rawdata_jgd['印花税'])),
+                    '过户费': abs(float(dict_posttrd_rawdata_jgd['过户费'])),
                     'FeeFromTradingActivity': fee_from_trdactivity,
                 }
                 list_dicts_posttrd_fmtdata_jgd.append(dict_posttrd_fmtdata_jgd)
@@ -1053,8 +1059,9 @@ class PostTrdMng:
             sectype = self.gl.get_mingshi_sectype_from_code(windcode)
             if sectype in ['IrrelevantItem']:
                 continue
-            longamt = longqty * self.gl.dict_fmtted_wssdata['PreClose'][windcode]
-            shortamt = shortqty * self.gl.dict_fmtted_wssdata['PreClose'][windcode]
+            close = self.gl.dict_fmtted_wssdata_last_trddate['Close'][windcode]
+            longamt = longqty * close
+            shortamt = shortqty * close
             if secid_in_position in set_secids_nic:
                 cpssrc = 'NotInComposite'
             else:
@@ -1071,6 +1078,7 @@ class PostTrdMng:
                 'LongAmt': longamt,
                 'ShortAmt': shortamt,
                 'NetAmt': longamt - shortamt,
+                'Close': close,
                 'CompositeSource': cpssrc,
             }
             list_dicts_posttrd_position.append(dict_posttrd_position)
@@ -1108,15 +1116,23 @@ class PostTrdMng:
             ssquota_from_public_secloan = dict_secid2ssquota_from_public_secloan[secid_in_ssquota]
             ssquota_from_private_secloan = dict_secid2ssquota_from_private_secloan[secid_in_ssquota]
             shortqty = 0
-            for dict_posttrd_position in list_dicts_posttrd_position:
-                if secid_in_ssquota == dict_posttrd_position['SecurityID']:
-                    shortqty = dict_posttrd_position['ShortQty']
+            dict_posttrd_position = self.gl.col_posttrd_position.find_one(
+                {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': acctidbymxz, 'SecurityID': secid_in_ssquota}
+            )
+            if dict_posttrd_position:
+                shortqty = dict_posttrd_position['ShortQty']
             ssquota = ssquota_from_public_secloan + ssquota_from_private_secloan
+            preclose = (
+                self.gl.dict_fmtted_wssdata_last_trddate['PreClose'][self.gl.get_secid2windcode(secid_in_ssquota)]
+            )
+            ssquota_amt = ssquota * preclose
+
             dict_posttrd_fmtdata_ssquota_from_secloan = {
                 'DataDate': self.gl.str_last_trddate,
                 'AcctIDByMXZ': acctidbymxz,
                 'SecurityID': secid_in_ssquota,
                 'SSQuota': ssquota,
+                'SSQuotaAmt': ssquota_amt,
                 'ShortQty': shortqty,
                 'SSQuotaFromPrivateSecPool': ssquota_from_private_secloan,
                 'SSQuotaFromPublicSecPool': ssquota_from_public_secloan,
@@ -1313,10 +1329,25 @@ class PostTrdMng:
             for dict_posttrd_rawdata_fee_from_secloan in self.gl.col_posttrd_rawdata_fee_from_secloan.find(
                     {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': acctidbymxz}
             ):
+                accrued_fee_from_secloan_last_last_trddate = self.gl.col_posttrd_fmtdata_fee_from_secloan.find_one(
+                    {'DataDate': self.gl.str_last_last_trddate, 'AcctIDByMXZ': acctidbymxz}
+                )['AccruedFeeFromSecLoan']
+                accrued_fee_from_secloan_last_trddate = float(dict_posttrd_rawdata_fee_from_secloan['应付利息_融券'])
+                cash_paid_for_fee_from_secloan_last_trddate = float(
+                    dict_posttrd_rawdata_fee_from_secloan['CashPaidForFeeFromSecLoan']
+                )
+
+                fee_from_secloan = (
+                        accrued_fee_from_secloan_last_trddate
+                        - accrued_fee_from_secloan_last_last_trddate
+                        + cash_paid_for_fee_from_secloan_last_trddate
+                )
                 dict_posttrd_fmtdata_fee_from_secloan = {
                     'DataDate': self.gl.str_last_trddate,
                     'AcctIDByMXZ': acctidbymxz,
-                    'AccruedFeeFromSecLoan': float(dict_posttrd_rawdata_fee_from_secloan['应付利息_融券']),
+                    'AccruedFeeFromSecLoan': accrued_fee_from_secloan_last_trddate,
+                    'CashPaidForFeeFromSecLoan': cash_paid_for_fee_from_secloan_last_trddate,
+                    'FeeFromSecLoan': fee_from_secloan,
                 }
                 list_dicts_posttrd_fmtdata_fee_from_secloan.append(dict_posttrd_fmtdata_fee_from_secloan)
         else:
@@ -1389,13 +1420,6 @@ class PostTrdMng:
                 | set_secids_in_fee_from_secloan
         )
 
-        df_fmtted_wssdata = pd.DataFrame(
-            self.gl.col_fmtted_wssdata.find({'DataDate': self.gl.str_last_trddate}, {'_id': 0})
-        )
-        dict_fmtted_wssdata = df_fmtted_wssdata.set_index('WindCode').to_dict()
-        dict_windcodes2close = dict_fmtted_wssdata['Close']
-        dict_windcodes2preclose = dict_fmtted_wssdata['PreClose']
-
         # 2. 计算: 按股票归集  # todo 添加时间参数
         # todo 重要假设： 1. 目前由于按照股票进行策略区分，不涉及股数，所以出于成本考虑，直接从pnl层次进行分组;
         # todo 重要假设： 2. 约定: 不在人工T0 tgtlist 的股票，为机器T0策略;
@@ -1427,24 +1451,29 @@ class PostTrdMng:
             # # 2. pnl_part2 = ∑[(当日结算价－买入成交价)×买入量]
             pnl_part1 = 0
             pnl_part2 = 0
-            close = dict_windcodes2close[self.gl.get_secid2windcode(secids_in_pnl)]
-            preclose = dict_windcodes2preclose[self.gl.get_secid2windcode(secids_in_pnl)]
+            close = self.gl.dict_fmtted_wssdata_last_trddate['Close'][self.gl.get_secid2windcode(secids_in_pnl)]
+            preclose = self.gl.dict_fmtted_wssdata_last_trddate['PreClose'][self.gl.get_secid2windcode(secids_in_pnl)]
             for dict_posttrd_jgd in self.gl.col_posttrd_fmtdata_jgd.find(
-                    {'DataDate': self.gl.str_last_trddate, 'TradeDate': self.gl.str_last_trddate}
+                    {
+                        'DataDate': self.gl.str_last_trddate,
+                        'TradeDate': self.gl.str_last_trddate,
+                        'SecurityID': secids_in_pnl
+                    }
             ):
-                secid = dict_posttrd_jgd['SecurityID']
-                if secids_in_pnl == secid:
-                    avgpx = dict_posttrd_jgd['AvgPx']
-                    cumqty = dict_posttrd_jgd['CumQty']
-                    side = dict_posttrd_jgd['Side']
-                    if side in ['2', '5']:
-                        pnl_part1 += (avgpx - close) * cumqty
-                    elif side in ['1', 'HGRZ']:
-                        pnl_part2 += (close - avgpx) * cumqty
-                    elif side in ['XQHQ']:
-                        pass
-                    else:
-                        raise ValueError('Unknown side when deal with jgd_data.')
+                avgpx = dict_posttrd_jgd['AvgPx']
+                cumqty = dict_posttrd_jgd['CumQty']
+                side = dict_posttrd_jgd['Side']
+                if side in ['2', '5']:
+                    pnl_part1 += (avgpx - close) * cumqty
+                elif side in ['1']:
+                    pnl_part2 += (close - avgpx) * cumqty
+                elif side in ['HGRZ']:
+                    pnl_part2 += (close - 0) * cumqty
+
+                elif side in ['XQHQ']:
+                    pass
+                else:
+                    raise ValueError('Unknown side when deal with jgd_data.')
 
             # # 3. pnl_part3 = (上一交易日结算价－当日结算价)×(上一交易日卖出持仓量－上一交易日买入持仓量) (历史持仓盈亏)
             dict_posttrd_position_last_last_trddate = (
@@ -1490,7 +1519,7 @@ class PostTrdMng:
 
             pnl_by_secid = pnl_123 - fee_from_trdactivity - fee_from_secloan
             dict_posttrd_pnl_by_secid = {
-                'DataDate': self.gl.str_last_trddate,  # todo 改为可变参数
+                'DataDate': self.gl.str_last_trddate,
                 'AcctIDByMXZ': acctidbymxz,
                 'SecurityID': secids_in_pnl,
                 'CompositeSource': cpssrc,
@@ -1521,27 +1550,12 @@ class PostTrdMng:
 
         if data_srctype in ['huat_matic_tsi']:
             # todo 扣除fee_from_secloan, 假设都是autoT0的
-            cash_repay_last_trddate = 0  # todo 暂定方案
             dict_posttrd_fmtdata_fee_from_secloan_last_trddate = self.gl.col_posttrd_fmtdata_fee_from_secloan.find_one(
                 {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': acctidbymxz}
             )
-            accrued_fee_from_secloan_last_trddate = (
-                dict_posttrd_fmtdata_fee_from_secloan_last_trddate['AccruedFeeFromSecLoan']
-            )
-            dict_posttrd_fmtdata_fee_from_secloan_last_last_trddate = self.gl.col_posttrd_fmtdata_fee_from_secloan.find_one(
-                {'DataDate': self.gl.str_last_last_trddate, 'AcctIDByMXZ': acctidbymxz}
-            )
-            # accrued_fee_from_secloan_last_last_trddate = (
-            #     dict_posttrd_fmtdata_fee_from_secloan_last_last_trddate['AccruedFeeFromSecLoan']
-            # )
+            fee_from_secloan_last_trddate = dict_posttrd_fmtdata_fee_from_secloan_last_trddate['FeeFromSecLoan']
 
-            accrued_fee_from_secloan_last_last_trddate = 0
-
-            fee_from_secloan_last_trddate = (
-                    accrued_fee_from_secloan_last_trddate
-                    - accrued_fee_from_secloan_last_last_trddate
-                    - cash_repay_last_trddate
-            )
+            list_dicts_posttrd_pnl_by_acctidbymxz_cps_after_fee_from_secloan = []
             for dict_posttrd_pnl_by_acctidbymxz_cps in list_dicts_posttrd_pnl_by_acctidbymxz_cps:
                 if (
                         dict_posttrd_pnl_by_acctidbymxz_cps['DataDate'] == self.gl.str_last_trddate
@@ -1552,12 +1566,21 @@ class PostTrdMng:
                     dict_posttrd_pnl_by_acctidbymxz_cps['PNLBySecID'] = (
                         dict_posttrd_pnl_by_acctidbymxz_cps['PNLBySecID'] - fee_from_secloan_last_trddate
                     )
+                    list_dicts_posttrd_pnl_by_acctidbymxz_cps_after_fee_from_secloan.append(
+                        dict_posttrd_pnl_by_acctidbymxz_cps
+                    )
+                else:
+                    list_dicts_posttrd_pnl_by_acctidbymxz_cps_after_fee_from_secloan.append(
+                        dict_posttrd_pnl_by_acctidbymxz_cps
+                    )
 
-        self.gl.col_posttrd_pnl_by_acctidbymxz_cps.delete_many(
-            {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': acctidbymxz}
-        )
-        if list_dicts_posttrd_pnl_by_acctidbymxz_cps:
-            self.gl.col_posttrd_pnl_by_acctidbymxz_cps.insert_many(list_dicts_posttrd_pnl_by_acctidbymxz_cps)
+            self.gl.col_posttrd_pnl_by_acctidbymxz_cps.delete_many(
+                {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': acctidbymxz}
+            )
+            if list_dicts_posttrd_pnl_by_acctidbymxz_cps:
+                self.gl.col_posttrd_pnl_by_acctidbymxz_cps.insert_many(
+                    list_dicts_posttrd_pnl_by_acctidbymxz_cps_after_fee_from_secloan
+                )
 
         # 4. 计算： 按账户归集
         if list_dicts_posttrd_pnl_by_acctidbymxz_cps:
@@ -1579,25 +1602,22 @@ class PostTrdMng:
         """
         分析融券券池的使用效率
         """
-        # todo 仅分析了autot0策略的
+        # 假设仅分析autot0策略的
         # 计算策略交易额与交易股票的支数
         set_secids_nic = set()
         for dict_excluded_secids in self.gl.col_posttrd_fmtdata_excluded_secids.find(
                 {'DataDate': self.gl.str_last_trddate, 'Composite': 'NotInComposite', 'AcctIDByMXZ': acctidbymxz}
         ):
             set_secids_nic.add(dict_excluded_secids['SecurityID'])
-        iter_dicts_postfmtdata_jgd = self.gl.col_posttrd_fmtdata_jgd.find(
-            {
-                'DataDate': self.gl.str_last_trddate,
-                'AcctIDByMXZ': acctidbymxz,
-                'CompositeSource': 'AutoT0',
-                'TradeDate': self.gl.str_last_trddate
-
-            }
-        )
         trdamt_autot0 = 0
         set_secids_from_trading = set()
-        for dict_postfmtdata_jgd in iter_dicts_postfmtdata_jgd:
+        for dict_postfmtdata_jgd in self.gl.col_posttrd_fmtdata_jgd.find(
+                {
+                    'DataDate': self.gl.str_last_trddate,
+                    'AcctIDByMXZ': acctidbymxz,
+                    'CompositeSource': 'AutoT0',
+                    'TradeDate': self.gl.str_last_trddate}
+        ):
             secid = dict_postfmtdata_jgd['SecurityID']
             if secid in set_secids_nic:
                 trdamt_autot0_delta = 0
@@ -1609,26 +1629,23 @@ class PostTrdMng:
 
         # 计算目标融券支数
         i_secids_from_tgtsecloan = 0
-        iter_dicts_pretrd_tgtsecloan_mngdraft = self.gl.col_pretrd_tgtsecloan_mngdraft.find(
+        for dict_pretrd_secloan_demand_analysis in self.gl.col_pretrd_secloan_demand_analysis.find(
             {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': acctidbymxz}
-        )
-        for dict_pretrd_tgtsecloan_mngdraft in iter_dicts_pretrd_tgtsecloan_mngdraft:
-            tgtqty = dict_pretrd_tgtsecloan_mngdraft['TgtQty']
-            if tgtqty:
+        ):
+            if dict_pretrd_secloan_demand_analysis['TgtQty']:
                 i_secids_from_tgtsecloan += 1
 
         # 计算融券额度中股票的支数
-        iter_dicts_posttrd_fmtdata_ssquota_from_secloan = self.gl.col_posttrd_fmtdata_ssquota_from_secloan.find(
-            {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': acctidbymxz, 'CompositeSource': 'AutoT0'}
-        )
         ssquota_mv = 0
         set_secids_from_ssquota_from_secloan = set()
-        for dict_posttrd_fmtdata_ssquota_from_secloan in iter_dicts_posttrd_fmtdata_ssquota_from_secloan:
+        for dict_posttrd_fmtdata_ssquota_from_secloan in self.gl.col_posttrd_fmtdata_ssquota_from_secloan.find(
+            {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': acctidbymxz, 'CompositeSource': 'AutoT0'}
+        ):
             secid = dict_posttrd_fmtdata_ssquota_from_secloan['SecurityID']
             set_secids_from_ssquota_from_secloan.add(secid)
             ssquota_mv_delta = (
                     dict_posttrd_fmtdata_ssquota_from_secloan['SSQuota']
-                    * self.gl.dict_fmtted_wssdata['PreClose'][self.gl.get_secid2windcode(secid)]
+                    * self.gl.dict_fmtted_wssdata_last_trddate['Close'][self.gl.get_secid2windcode(secid)]
             )
             ssquota_mv += ssquota_mv_delta
         i_secids_from_ssquota_from_secloan = len(set_secids_from_ssquota_from_secloan)
@@ -1794,8 +1811,7 @@ class PostTrdMng:
 
     def check_pnl_via_indirect_method(self, acctidbymxz):
         """
-        检查机制，根据PNL计算CF
-        # todo 账户级别 到 区分 策略
+        检查机制，根据PNL计算CF, 以账户为单位
         """
         # 获取PNL
         dict_posttrd_pnl_by_acctidbymxz = self.gl.col_posttrd_pnl_by_acctidbymxz.find_one(
@@ -1805,27 +1821,25 @@ class PostTrdMng:
 
         # 获取清算数据 资产变动和负债变动
         # # CF_T = PNL + Liability_delta - non-current_Asset_delta
-        # todo non-current_asset 还包括保证金利息
+        # todo non-current_asset 还包括保证金利息 -> 均计入CashFlowFrom
         # # last_last_trddate
         # # # liability_last_last_trddate = shortamt + liability_from_secloan
-        list_posttrd_position_last_last_trddate = list(
-            self.gl.col_posttrd_position.find(
-                {'DataDate': self.gl.str_last_last_trddate, 'AcctIDByMXZ': acctidbymxz}
-            )
-        )
         shortamt_last_last_trddate = 0
-        for dict_posttrd_position_last_last_trddate in list_posttrd_position_last_last_trddate:
+        for dict_posttrd_position_last_last_trddate in self.gl.col_posttrd_position.find(
+                {'DataDate': self.gl.str_last_last_trddate, 'AcctIDByMXZ': acctidbymxz}
+        ):
             shortamt_last_last_trddate += dict_posttrd_position_last_last_trddate['ShortAmt']
 
         longamt_last_last_trddate = 0
-        for dict_posttrd_position_last_last_trddate in list_posttrd_position_last_last_trddate:
+        for dict_posttrd_position_last_last_trddate in self.gl.col_posttrd_position.find(
+                {'DataDate': self.gl.str_last_last_trddate, 'AcctIDByMXZ': acctidbymxz}
+        ):
             longamt_last_last_trddate += dict_posttrd_position_last_last_trddate['LongAmt']
 
-        iter_posttrd_fee_from_secloan_last_last_trddate = self.gl.col_posttrd_fmtdata_fee_from_secloan.find(
-            {'DataDate': self.gl.str_last_last_trddate, 'AcctIDByMXZ': acctidbymxz}
-        )
         liability_from_secloan_last_last_trddate = 0
-        for dict_posttrd_fee_from_secloan_last_last_trddate in iter_posttrd_fee_from_secloan_last_last_trddate:
+        for dict_posttrd_fee_from_secloan_last_last_trddate in self.gl.col_posttrd_fmtdata_fee_from_secloan.find(
+            {'DataDate': self.gl.str_last_last_trddate, 'AcctIDByMXZ': acctidbymxz}
+        ):
             liability_from_secloan_last_last_trddate += (
                 dict_posttrd_fee_from_secloan_last_last_trddate['AccruedFeeFromSecLoan']
             )
@@ -1833,24 +1847,23 @@ class PostTrdMng:
         non_current_asset_last_last_trddate = longamt_last_last_trddate
 
         # # last_trddate
-        list_dicts_posttrd_position_last_trddate = list(
-            self.gl.col_posttrd_position.find(
-                {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': acctidbymxz}
-            )
-        )
+
         shortamt_last_trddate = 0
-        for dict_posttrd_position_last_trddate in list_dicts_posttrd_position_last_trddate:
+        for dict_posttrd_position_last_trddate in self.gl.col_posttrd_position.find(
+                {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': acctidbymxz}
+        ):
             shortamt_last_trddate += dict_posttrd_position_last_trddate['ShortAmt']
 
         longamt_last_trddate = 0
-        for dict_posttrd_position_last_trddate in list_dicts_posttrd_position_last_trddate:
+        for dict_posttrd_position_last_trddate in self.gl.col_posttrd_position.find(
+                {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': acctidbymxz}
+        ):
             longamt_last_trddate += dict_posttrd_position_last_trddate['LongAmt']
 
-        iter_posttrd_fee_from_secloan_last_trddate = self.gl.col_posttrd_fmtdata_fee_from_secloan.find(
-            {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': acctidbymxz}
-        )
         liability_from_secloan_last_trddate = 0
-        for dict_posttrd_fee_from_secloan_last_trddate in iter_posttrd_fee_from_secloan_last_trddate:
+        for dict_posttrd_fee_from_secloan_last_trddate in self.gl.col_posttrd_fmtdata_fee_from_secloan.find(
+            {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': acctidbymxz}
+        ):
             liability_from_secloan_last_trddate += (
                 dict_posttrd_fee_from_secloan_last_trddate['AccruedFeeFromSecLoan']
             )
@@ -1869,7 +1882,7 @@ class PostTrdMng:
         dict_posttrd_fmtdata_fund_last_trddate = self.gl.col_posttrd_fmtdata_fund.find_one(
             {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': acctidbymxz}
         )
-        # cash_ending_last_trddate = 29351698
+
         cash_ending_last_trddate = dict_posttrd_fmtdata_fund_last_trddate['Cash']
         dict_posttrd_fmtdata_fund_last_last_trddate = self.gl.col_posttrd_fmtdata_fund.find_one(
             {'DataDate': self.gl.str_last_last_trddate, 'AcctIDByMXZ': acctidbymxz}
@@ -1878,7 +1891,7 @@ class PostTrdMng:
             cf_posttrd = 'N/A'
             dif_cf_from_indirect_method = 'N/A'
         else:
-            cash_ending_last_last_trddate = dict_posttrd_fmtdata_fund_last_last_trddate['CashBalance']
+            cash_ending_last_last_trddate = dict_posttrd_fmtdata_fund_last_last_trddate['Cash']
             cf_posttrd = cash_ending_last_trddate - cash_ending_last_last_trddate
             dif_cf_from_indirect_method = cf_from_indirect_method - cf_posttrd
 

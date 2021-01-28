@@ -594,7 +594,7 @@ class UpdateTradeFmtDataPublicSecLoan(Thread):
                         expiration_days = 180
                         maturity_date = str(dict_trade_rawdata_rqmx['ret_end_date'])
                         open_date = str(dict_trade_rawdata_rqmx['open_date'])
-                        qty = float(dict_trade_rawdata_rqmx['business_amount'])
+                        qty = float(dict_trade_rawdata_rqmx['real_compact_amount'])
                         ir = float(dict_trade_rawdata_rqmx['year_rate'])
 
                         dict_trade_fmtdata_public_secloan = {
@@ -641,21 +641,23 @@ class UpdateTradeFmtDataPrivateSecLoan(Thread):
 
         while True:
             str_update_time = datetime.now().strftime('%H%M%S')
-            iter_trade_rawdata_private_secloan = col_trade_rawdata_private_secloan.find(
-                {'DataDate': self.str_today, 'AcctIDByMXZ': self.acctidbymxz}
-            )
+
             list_dicts_trade_fmtdata_private_secloan = []
             if data_srctype in ['hait_ehfz']:
                 pass
 
             elif data_srctype in ['huat_matic_tsi']:
-                for dict_trade_rawdata_private_secloan in iter_trade_rawdata_private_secloan:
+                for dict_trade_rawdata_private_secloan in col_trade_rawdata_private_secloan.find(
+                        {'DataDate': self.str_today, 'AcctIDByMXZ': self.acctidbymxz}
+                ):
                     contract_id = str(dict_trade_rawdata_private_secloan['合约编号'])
                     secid = str(dict_trade_rawdata_private_secloan['证券代码']).zfill(6)
                     expiration_days = int(dict_trade_rawdata_private_secloan['剩余期限'])
-                    maturity_date = str(dict_trade_rawdata_private_secloan['到期日'])
-                    open_date = str(dict_trade_rawdata_private_secloan['起始日'])
+                    maturity_date = str(dict_trade_rawdata_private_secloan['到期日'].replace('-', ''))
                     qty = float(dict_trade_rawdata_private_secloan['合约数量'])
+                    if maturity_date == self.str_today:
+                        qty = 0
+                    open_date = str(dict_trade_rawdata_private_secloan['起始日'])
                     ir = float(dict_trade_rawdata_private_secloan['占用利率'])
                     if ir > 1:
                         ir = ir / 100
@@ -700,6 +702,12 @@ class UpdateTradeSSQuotaFromSecLoan(Thread):
         col_trade_position = db_trade_data['trade_position']
         col_trade_ssquota_from_secloan = db_trade_data['trade_ssquota_from_security_loan']
 
+        set_secids_nic = set()
+        for dict_excluded_secids in self.gl.col_posttrd_fmtdata_excluded_secids.find(
+                {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': self.acctidbymxz, 'Composite': 'NotInComposite'}
+        ):
+            set_secids_nic.add(dict_excluded_secids['SecurityID'])
+
         while True:
             set_secid_from_public_secloan = set()
             set_secid_from_private_secloan = set()
@@ -741,8 +749,12 @@ class UpdateTradeSSQuotaFromSecLoan(Thread):
             # # 计算ssquota_from_public_secpool 与 ssquota_from_private_secpool
             list_dicts_trade_ssquota_from_secloan = []
             for secid_in_ssquota in set_secid_in_ssquota:
-                if secid_in_ssquota in self.gl.dict_secid2composite:
-                    cpssrc = self.gl.dict_secid2composite[secid_in_ssquota]
+                # if secid_in_ssquota in self.gl.dict_secid2composite:
+                #     cpssrc = self.gl.dict_secid2composite[secid_in_ssquota]
+                # else:
+                #     cpssrc = 'AutoT0'
+                if secid_in_ssquota in set_secids_nic:
+                    cpssrc = 'NotInComposite'
                 else:
                     cpssrc = 'AutoT0'
                 ssquota_from_public_secloan = dict_secid2ssquota_from_public_secloan[secid_in_ssquota]
@@ -938,9 +950,8 @@ class UpdateTradePosition(Thread):
                     shortqty = 0
                     for dict_trade_rawdata_rqmx in list_dicts_trade_rawdata_rqmx:  # todo fmt_rqmx
                         if str(dict_trade_rawdata_rqmx['stock_code']) == secid:
-                            shortqty += float(dict_trade_rawdata_rqmx['business_amount'])
+                            shortqty += float(dict_trade_rawdata_rqmx['real_compact_amount'])
 
-                    # todo longqty 的还券问题
                     str_update_time = datetime.now().strftime('%H%M%S')
                     dict_trade_position = {
                         'DataDate': self.gl.str_today,

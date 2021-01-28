@@ -1,19 +1,17 @@
+from dbfread import DBF
 import pandas as pd
 
-fpath_tgt = r'D:\projects\autot0\data\input\tgt_secpools\20210114_target_secids.csv'
+table1 = DBF(r'D:\projects\autot0\data\rzrq_dzls.DBF')
+table2 = DBF(r'D:\projects\autot0\data\rzrq_jyls.DBF')
 
-df_tgt = pd.read_csv(fpath_tgt, converters={'SecurityID': lambda x: str(x).zfill(6)})
+df1 = pd.DataFrame(table1)
+df1.to_excel('df1.xlsx')
+print(df1)
 
-list_secids = df_tgt['SecurityID'].to_list()
+df2 = pd.DataFrame(table2)
+df2.to_excel('df2.xlsx')
 
-fpath_marginable = r'D:\projects\autot0\data\input\pretrddata\marginable_secpools\huat\每日券池-20210114.xlsx'
-df_marginable = pd.read_excel(
-    fpath_marginable,
-    dtype={'委托数量': float, '委托期限': int, '委托利率': float},
-    converters={'证券代码': lambda x: str(x).zfill(6)}
-)
-list_dicts_marginable = df_marginable.to_dict('records')
-for dict_marginable in list_dicts_marginable:
-    secid = dict_marginable['证券代码']
-    if secid in list_secids:
+print(df2)
+
+
 
