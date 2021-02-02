@@ -81,24 +81,6 @@ class PreTrdMng:
         )
         self.list_dicts_public_secpool = df_public_secpool.to_dict('records')
 
-        # todo 自定义券池， 未使用
-        df_input_xlsx_secpool_from_outside_src = pd.read_excel(
-            self.gl.fpath_input_xlsx_secpool_from_outside_src,
-            dtype={
-                'DataDate': str,
-                'AvlQty': float,
-            },
-            converters={
-                'SecurityID': lambda x: str(x).zfill(6)
-            }
-        )
-        df_input_xlsx_secpool_from_outside_src = (
-            df_input_xlsx_secpool_from_outside_src[
-                df_input_xlsx_secpool_from_outside_src['DataDate'] == self.gl.str_today
-            ]
-        )
-        self.list_dicts_secpool_from_outside_src = df_input_xlsx_secpool_from_outside_src.to_dict('records')
-
         self.list_dicts_posttrd_fmtdata_ssquota_from_secloan_last_trddate = list(
             self.gl.col_posttrd_fmtdata_ssquota_from_secloan.find(
                {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': self.gl.acctidbymxz}

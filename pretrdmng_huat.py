@@ -51,9 +51,9 @@ from globals import Globals, STR_TODAY, datetime, os
 class PreTrdMng:
     def __init__(self, str_trddate=STR_TODAY, download_winddata_mark=0):
         self.gl = Globals(str_trddate, download_winddata_mark)
-        self.list_acctidsbymxz = ['8111_m_huat_9239']
-        iter_dict_fmtted_wssdata = self.gl.col_fmtted_wssdata.find({'DataDate': self.gl.str_today}, {'_id': 0})
-        df_fmtted_wssdata_today = pd.DataFrame(iter_dict_fmtted_wssdata)
+        df_fmtted_wssdata_today = pd.DataFrame(
+            self.gl.col_fmtted_wssdata.find({'DataDate': self.gl.str_today}, {'_id': 0})
+        )
         self.dict_fmtted_wssdata_of_today = df_fmtted_wssdata_today.set_index('WindCode').to_dict()
 
     def upload_pretrd_rawdata(self, acctidbymxz):
@@ -568,7 +568,7 @@ class PreTrdMng:
 
     def run(self):
         # 先运行T日的post_trddata_mng, 将T-1的清算数据上传
-        for acctidbymxz in self.list_acctidsbymxz:
+        for acctidbymxz in self.gl.list_acctidsbymxz:
             self.upload_pretrd_rawdata(acctidbymxz)
             self.upload_pretrd_fmtdata(acctidbymxz)
             self.upload_secloan_demand_analysis(acctidbymxz)

@@ -80,9 +80,17 @@ class PostTrdMng:
     def dld_data_from_email(self, acctidbymxz):
         dict_acctinfo = self.gl.col_acctinfo.find_one({'DataDate': self.gl.str_today, 'AcctIDByMXZ': acctidbymxz})
         broker_abbr = dict_acctinfo['BrokerAbbr']
+        prdcode = dict_acctinfo['PrdCode']
+        prdalias_in_email = self.gl.col_prdinfo.find_one(
+            {'DataDate': self.gl.str_today, 'PrdCode': prdcode}
+        )['PrdAliasInEmail']
+        dirpath_posttrddata_from_email = (
+            f'D:/projects/autot0/data/input/post_trddata/{self.gl.str_last_trddate}/{acctidbymxz}'
+        )
         if broker_abbr in ['hait']:
+            email_subject = f'{prdalias_in_email}清算后数据{self.gl.str_today}'
             self.gl.update_attachments_from_email(
-                f'鸣石满天星7号清算后数据{self.gl.str_today}', f'{self.gl.str_today}', self.gl.dirpath_posttrddata_from_email
+                email_subject, f'{self.gl.str_today}', dirpath_posttrddata_from_email
             )
         elif broker_abbr in ['huat']:
             pass
@@ -94,12 +102,13 @@ class PostTrdMng:
     def upload_posttrd_rawdata(self, acctidbymxz):
         """
         将需要的原始数据上传至数据库：
-            1. holding
-            2. secloan from private secpool： 注，该表中的收回数量指的是额度，不是空头数量。
-            3. shortqty from secloan
-            4. fee_from_secloan
+            1. fund
+            2. holding
+            3. short_position
+            4. private_security_loan
+                1. 注，海通表中的收回数量指的是额度，不是空头数量。
+            5. fee_from_security_loan
         """
-
         dict_acctinfo = self.gl.col_acctinfo.find_one({'DataDate': self.gl.str_today, 'AcctIDByMXZ': acctidbymxz})
         data_srctype = dict_acctinfo['DataSourceType']
         dldfilter = dict_acctinfo['DownloadDataFilter']
@@ -125,6 +134,7 @@ class PostTrdMng:
             '<YYYYMMDD>', self.gl.str_last_trddate
         )
         fpath_posttrd_rawdata_jgd = list_fpaths_post_trade_data[7].replace('<YYYYMMDD>', self.gl.str_last_trddate)
+        list_fields_dldfilter = ['fund_account', '资金帐号', '资金账号']
 
         # posttrd_rawdata_fund
         if data_srctype in ['hait_ehtc']:
@@ -160,40 +170,24 @@ class PostTrdMng:
             df_input_rawdata_fund['AcctIDByMXZ'] = acctidbymxz
             list_dicts_rawdata_fund = df_input_rawdata_fund.to_dict('records')
 
-        elif data_srctype in ['hait_ehfz']:
-            df_input_rawdata_fund = pd.read_csv(
-                fpath_posttrd_rawdata_fund,
-                dtype={
-                    '资金账户': str,
-                    '币种': str,
-                    '可用金额': float,
-                    '可取余额': float,
-                    '冻结金额': float,
-                    '证券市值': float,
-                    '资金余额': float,
-                    '资产总值': float,
-                    '总盈亏': float
-                },
-            )
-            df_input_rawdata_fund = df_input_rawdata_fund.where(df_input_rawdata_fund.notnull(), None)
-            df_input_rawdata_fund['DataDate'] = self.gl.str_last_trddate
-            df_input_rawdata_fund['AcctIDByMXZ'] = acctidbymxz
-            list_dicts_rawdata_fund = df_input_rawdata_fund.to_dict('records')
-
-        elif data_srctype in ['huat_matic_tsi']:
+        elif data_srctype in ['huat_matic_tsi', 'hait_ehfz']:
             list_dicts_rawdata_fund = []
             with open(fpath_posttrd_rawdata_fund, 'rb') as f:
                 list_list_datalines = f.readlines()
                 list_fields = [_.decode('ansi', errors='replace') for _ in list_list_datalines[0].split(b',')]
+                _field = ''
+                for field_dldfilter in list_fields_dldfilter:
+                    if field_dldfilter in list_fields:
+                        _field = field_dldfilter
+
                 if len(list_list_datalines) > 1:
                     for list_datalines in list_list_datalines[1:]:
                         list_data = [_.decode('ansi', errors='replace') for _ in list_datalines.split(b',')]
                         dict_rawdata_fund = dict(zip(list_fields, list_data))
-                        if dict_rawdata_fund['fund_account'] == dldfilter:
+                        if dict_rawdata_fund[_field] == dldfilter:
                             dict_rawdata_fund['AcctIDByMXZ'] = acctidbymxz
                             dict_rawdata_fund['DataDate'] = self.gl.str_last_trddate
                             list_dicts_rawdata_fund.append(dict_rawdata_fund)
-
         else:
             raise ValueError('Wrong data source type.')
 
@@ -222,45 +216,29 @@ class PostTrdMng:
             df_input_rawdata_holding['AcctIDByMXZ'] = acctidbymxz
             list_dicts_rawdata_holding = df_input_rawdata_holding.to_dict('records')
 
-        elif data_srctype in ['hait_ehfz']:
-            df_input_rawdata_holding = pd.read_csv(
-                fpath_posttrd_rawdata_holding,
-                dtype={
-                    '资金账号': str,
-                    '市场': float,
-                    '昨日持仓量': float,
-                    '股份余额': float,
-                    '可卖数量': float,
-                    '可申购数量': float,
-                    '当前拥股数量': float,
-                    '成本价格': float,
-                    '证券市值': float,
-                    '浮动盈亏': float,
-                },
-                converters={'代码': lambda x: str(x).zfill(6)}
-            )
-
-            df_input_rawdata_holding = df_input_rawdata_holding.where(df_input_rawdata_holding.notnull(), None)
-            df_input_rawdata_holding['DataDate'] = self.gl.str_last_trddate
-            df_input_rawdata_holding['AcctIDByMXZ'] = acctidbymxz
-            list_dicts_rawdata_holding = df_input_rawdata_holding.to_dict('records')
-
-        elif data_srctype in ['huat_matic_tsi']:
+        elif data_srctype in ['huat_matic_tsi', 'hait_ehfz']:
             list_dicts_rawdata_holding = []
             with open(fpath_posttrd_rawdata_holding, 'rb') as f:
                 list_list_datalines = f.readlines()
                 list_fields = [_.decode('ansi', errors='replace') for _ in list_list_datalines[0].split(b',')]
+
+                _field = ''
+                for field_dldfilter in list_fields_dldfilter:
+                    if field_dldfilter in list_fields:
+                        _field = field_dldfilter
+
                 if len(list_list_datalines) > 1:
                     for list_datalines in list_list_datalines[1:]:
                         list_data = [_.decode('utf-8', errors='replace').strip() for _ in list_datalines.split(b',')]
                         dict_rawdata_holding = dict(zip(list_fields, list_data))
-                        if dict_rawdata_holding['fund_account'] == dldfilter:
+                        if dict_rawdata_holding[_field] == dldfilter:
                             dict_rawdata_holding['AcctIDByMXZ'] = acctidbymxz
                             dict_rawdata_holding['DataDate'] = self.gl.str_last_trddate
                             list_dicts_rawdata_holding.append(dict_rawdata_holding)
 
         else:
             raise ValueError('Wrong data source type.')
+
         self.gl.col_posttrd_rawdata_holding.delete_many(
             {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': acctidbymxz}
         )
@@ -276,6 +254,24 @@ class PostTrdMng:
             df_xlsx_shortqty['DataDate'] = self.gl.str_last_trddate
             df_xlsx_shortqty['AcctIDByMXZ'] = acctidbymxz
             list_dicts_posttrd_rawdata_short_position = df_xlsx_shortqty.to_dict('records')
+
+        elif data_srctype in ['hait_ehfz']:
+            list_dicts_posttrd_rawdata_short_position = []
+            with open(fpath_posttrd_rawdata_short_position) as f:
+                list_list_datalines = f.readlines()
+                list_fields = list_list_datalines[0].split(',')
+                _field = ''
+                for field_dldfilter in list_fields_dldfilter:
+                    if field_dldfilter in list_fields:
+                        _field = field_dldfilter
+                if len(list_list_datalines) > 1:
+                    for list_datalines in list_list_datalines[1:]:
+                        list_data = list_datalines.split(',')
+                        dict_rawdata_short_position = dict(zip(list_fields, list_data))
+                        if dict_rawdata_holding[_field] == dldfilter:
+                            dict_rawdata_short_position['AcctIDByMXZ'] = acctidbymxz
+                            dict_rawdata_short_position['DataDate'] = self.gl.str_last_trddate
+                            list_dicts_posttrd_rawdata_short_position.append(dict_rawdata_short_position)
 
         elif data_srctype in ['huat_matic_tsi']:
             list_dicts_posttrd_rawdata_short_position = []
@@ -301,7 +297,7 @@ class PostTrdMng:
 
         # posttrd_rawdata_public_secloan
         if data_srctype in ['hait_ehtc']:
-            df_input_xlsx_secloan_from_public_secpool = pd.read_excel(
+            df_input_xlsx_public_secloan = pd.read_excel(
                 fpath_posttrd_rawdata_public_secloan,
                 dtype={
                     '证券代码': str,
@@ -320,18 +316,26 @@ class PostTrdMng:
                     '融券卖出价': float,
                 }
             )
-            df_input_xlsx_secloan_from_public_secpool = (
-                df_input_xlsx_secloan_from_public_secpool
-                    .where(df_input_xlsx_secloan_from_public_secpool.notnull(), None)
+            df_input_xlsx_public_secloan = (
+                df_input_xlsx_public_secloan.where(df_input_xlsx_public_secloan.notnull(), None)
             )
-            df_input_xlsx_secloan_from_public_secpool['DataDate'] = self.gl.str_last_trddate
-            df_input_xlsx_secloan_from_public_secpool['AcctIDByMXZ'] = acctidbymxz
-            list_dicts_secloan_from_public_secpool = df_input_xlsx_secloan_from_public_secpool.to_dict('records')
+            df_input_xlsx_public_secloan['DataDate'] = self.gl.str_last_trddate
+            df_input_xlsx_public_secloan['AcctIDByMXZ'] = acctidbymxz
+            list_dicts_public_secloan = df_input_xlsx_public_secloan.to_dict('records')
             self.gl.col_posttrd_rawdata_public_secloan.delete_many(
                 {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': acctidbymxz}
             )
-            if list_dicts_secloan_from_public_secpool:
-                self.gl.col_posttrd_rawdata_public_secloan.insert_many(list_dicts_secloan_from_public_secpool)
+            if list_dicts_public_secloan:
+                self.gl.col_posttrd_rawdata_public_secloan.insert_many(list_dicts_public_secloan)
+
+        elif data_srctype in ['hait_ehfz']:
+            # 由于目前方舟不支持公用券池交易，故假设公共券池合约为空
+            list_dicts_posttrd_rawdata_public_secloan = []
+            self.gl.col_posttrd_rawdata_public_secloan.delete_many(
+                {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': acctidbymxz}
+            )
+            if list_dicts_posttrd_rawdata_public_secloan:
+                self.gl.col_posttrd_rawdata_public_secloan.insert_many(list_dicts_posttrd_rawdata_public_secloan)
 
         elif data_srctype in ['huat_matic_tsi']:
             list_dicts_posttrd_rawdata_public_secloan = []
@@ -380,6 +384,13 @@ class PostTrdMng:
             df_private_secloan['AcctIDByMXZ'] = acctidbymxz
             list_dicts_posttrd_rawdata_private_secloan = df_private_secloan.to_dict('records')
 
+        elif data_srctype in ['hait_ehfz']:
+            df_private_secloan = pd.read_html(fpath_posttrd_rawdata_private_secloan, header=0)[0]
+            df_private_secloan = df_private_secloan.where(df_private_secloan.notnull(), None)
+            df_private_secloan['DataDate'] = self.gl.str_last_trddate
+            df_private_secloan['AcctIDByMXZ'] = acctidbymxz
+            list_dicts_posttrd_rawdata_private_secloan = df_private_secloan.to_dict('records')
+
         elif data_srctype in ['huat_matic_tsi']:
             with open(fpath_posttrd_rawdata_private_secloan) as f:
                 list_dicts_posttrd_rawdata_private_secloan = []
@@ -403,7 +414,7 @@ class PostTrdMng:
             self.gl.col_posttrd_rawdata_private_secloan.insert_many(list_dicts_posttrd_rawdata_private_secloan)
 
         # posttrd_rawdata_fee_from_secloan
-        if data_srctype in ['hait_ehtc', 'hait_ehfz']:
+        if data_srctype in ['hait_ehtc']:
             df_xls_fee_from_secloan = pd.read_excel(
                 fpath_posttrd_rawdata_fee_from_security_loan,
                 dtype={
@@ -432,6 +443,17 @@ class PostTrdMng:
             df_xls_fee_from_secloan['DataDate'] = self.gl.str_last_trddate
             df_xls_fee_from_secloan['AcctIDByMXZ'] = acctidbymxz
             list_dicts_posttrd_rawdata_fee_from_secloan = df_xls_fee_from_secloan.to_dict('records')
+
+        elif data_srctype in ['hait_ehfz']:
+            df_posttrd_rawdata_fee_from_secloan = (
+                pd.read_html(fpath_posttrd_rawdata_fee_from_security_loan, header=0)[0]
+            )
+            df_posttrd_rawdata_fee_from_secloan = (
+                df_posttrd_rawdata_fee_from_secloan.where(df_posttrd_rawdata_fee_from_secloan.notnull(), None)
+            )
+            df_posttrd_rawdata_fee_from_secloan['DataDate'] = self.gl.str_last_trddate
+            df_posttrd_rawdata_fee_from_secloan['AcctIDByMXZ'] = acctidbymxz
+            list_dicts_posttrd_rawdata_fee_from_secloan = df_posttrd_rawdata_fee_from_secloan.to_dict('records')
 
         elif data_srctype in ['huat_matic_tsi']:
             list_dicts_posttrd_rawdata_fee_from_secloan = []
@@ -468,6 +490,14 @@ class PostTrdMng:
                         dict_rawdata_jgd['AcctIDByMXZ'] = acctidbymxz
                         dict_rawdata_jgd['DataDate'] = self.gl.str_last_trddate
                         list_dicts_posttrd_rawdata_jgd.append(dict_rawdata_jgd)
+
+        elif data_srctype in ['hait_ehfz']:
+            df_posttrd_rawdata_jgd = pd.read_html(fpath_posttrd_rawdata_jgd, header=0)[0]
+            df_posttrd_rawdata_jgd = df_posttrd_rawdata_jgd.where(df_posttrd_rawdata_jgd.notnull(), None)
+            df_posttrd_rawdata_jgd['DataDate'] = self.gl.str_last_trddate
+            df_posttrd_rawdata_jgd['AcctIDByMXZ'] = acctidbymxz
+            list_dicts_posttrd_rawdata_jgd = df_posttrd_rawdata_jgd.to_dict('records')
+
         else:
             raise ValueError('Wrong data source type.')
 
@@ -477,6 +507,8 @@ class PostTrdMng:
         if list_dicts_posttrd_rawdata_jgd:
             self.gl.col_posttrd_rawdata_jgd.insert_many(list_dicts_posttrd_rawdata_jgd)
 
+
+    # todo 做到这了
     def upload_posttrd_fmtdata(self, acctidbymxz):
         dict_acctinfo = self.gl.col_acctinfo.find_one(
             {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': acctidbymxz}
@@ -1912,6 +1944,7 @@ class PostTrdMng:
 
     def run(self):
         for acctidbymxz in self.gl.list_acctidsbymxz:
+            self.dld_data_from_email(acctidbymxz)
             self.upload_posttrd_rawdata(acctidbymxz)
             self.upload_posttrd_fmtdata(acctidbymxz)
             self.get_and_upload_col_post_trddata_pnl(acctidbymxz)

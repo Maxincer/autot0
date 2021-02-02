@@ -48,15 +48,14 @@ class Globals:
         self.str_next_trddate = self.list_str_trdcalendar[idx_str_today + 1]
         self.str_last_last_trddate = self.list_str_trdcalendar[idx_str_today - 2]
         self.str_next_next_trddate = self.list_str_trdcalendar[idx_str_today + 2]
-        self.list_acctidsbymxz = ['8111_m_huat_9239']
+        # self.list_acctidsbymxz = ['8111_m_huat_9239']
+        self.list_acctidsbymxz = ['3004_m_hait_8866']
+
         # 配置文件部分: basicinfo
         self.db_basicinfo = self.server_mongodb['basicinfo']
         self.col_acctinfo = self.db_basicinfo['acctinfo']
         self.col_prdinfo = self.db_basicinfo['prdinfo']
         self.col_strategy_info = self.db_basicinfo['strategy_info']
-
-        # 路径部分
-        # # SecLoanContractsPoolMng
         dict_strategy_info = self.col_strategy_info.find_one({'DataDate': self.str_today, 'StrategyName': 'AutoT0'})
         self.fpath_input_csv_target_secids = (
             dict_strategy_info['TargetSecurityIDDataFilePath'].replace('<YYYYMMDD>', self.str_today)
@@ -70,62 +69,17 @@ class Globals:
                     dict_strategy_info['TargetSecurityIDDataFilePath'].replace('<YYYYMMDD>', self.str_last_last_trddate)
                 )
 
-        self.fpath_input_xlsx_private_secpool_ready = (
-            f"data/input/marginable_secpools/{self.str_today}即时可用券池-发布.xlsx"
-        )
-        self.fpath_input_csv_ssquota = (
-            f"data/output/192.168.5.8_accounts_python_YZJ_xujie_accounts_307/"
-            f"{self.str_last_trddate}_autot0_short_selling_quota.csv"
-        )
-        self.fpath_input_xls_public_secpool = f"data/input/marginable_secpools/公共券池{self.str_today}.xls"
-        self.fpath_output_csv_tgtsecloan_mngdraft = (
-            f"data/output/tgtsecloan_mngdraft/{self.str_today}_tgtsecloan_mngdraft.csv"
-        )
-        self.fpath_output_csv_secloan_demand_analysis = (
-            f"data/output/security_loan_demand_analysis/{self.str_today}_security_loan_demand_analysis.csv"
-        )
-        self.dirpath_output_csv_secloan_order = "data/output/security_loan_order"
-        self.fpath_json_dict_windcode2wssdata = (
-            f"data/input/windcode2wssdata/{self.str_today}_dict_windcode2wssdata.json"
-        )
-
-        self.fpath_input_xlsx_unfulfill_secloan_contract = f"data/input/trddata/融券明细_未了结仓单_{self.str_today}.xlsx"
-        self.fpath_input_xlsx_private_secloan_contract = f"data/input/trddata/融券私用合约_{self.str_today}.xlsx"
-        if not os.path.exists(self.fpath_input_xlsx_unfulfill_secloan_contract):
-            self.fpath_input_xlsx_unfulfill_secloan_contract = (
-                f'data/input/trddata/融券明细_未了结仓单_{self.str_last_trddate}.xlsx'
-            )
-            self.fpath_input_xlsx_private_secloan_contract = (
-                f"data/input/trddata/融券私用合约_{self.str_last_trddate}.xlsx"
-            )
-
-        # 外部券源(预约券池)： 目前为自定义格式： 为提供给我们的可锁券数量（日更，全量）。主要来自于外部询券
-        self.fpath_input_xlsx_secpool_from_outside_src = (
-            f"data/input/pretrddata/marginable_secpools/ts_secpool_from_outside_source.xlsx"
-        )
-        self.fpath_input_xlsx_marginable_secpools_from_hait = (
-            f"data/input/pretrddata/marginable_secpools/hait/每日券池-{self.str_today}.xlsx"
-        )
-
-        self.dirpath_input_xlsx_marginable_secpools_from_hait = "data/input/pretrddata/marginable_secpools/hait"
-        self.dirpath_posttrddata_from_email = f'data/input/post_trddata/{self.str_last_trddate}'
-        # 预约券申请文件，模板 -> plan text version
-        self.fpath_output_xlsx_demand_of_secpool_from_outside_src = (
-            f"data/output/mode_files/{self.str_today}_demand_of_secpool_from_outside_src.xlsx"
-        )
         # 预约券申请文件发送邮箱参数信息
         self.email_from_addr = 'maxinzhe@mingshiim.com'
         self.email_pwd = 'D3cqJ7GpDiPNCubu'
-        self.email_to_addr_haitsecpool_from_outside_src = '009995@htsec.com'
-        self.email_subject_haitsecpool_from_outside_src = f'【券源需求】鸣石满天星七号-{self.str_today}'
+        self.email_addr_to_hait = '009995@htsec.com'
+        self.email_subject_to_hait = f'【券源需求】鸣石满天星四号-{self.str_today}'
 
         # pre-trade
         self.fpath_input_csv_excluded_secids = 'data/input/pretrddata/excluded_secids.csv'
         self.fpath_output_xlsx_provided_secloan_analysis = (
             'data/output/security_loan/provided_security_loan_analysis.xlsx'
         )
-
-        # # database
         self.db_pretrddata = self.server_mongodb['pre_trade_data']
         self.col_pretrd_grp_tgtsecids_by_cps = self.db_pretrddata['group_target_secids_by_composite']
         self.col_pretrd_secloan_demand_analysis = self.db_pretrddata['secloan_demand_analysis']
@@ -138,8 +92,12 @@ class Globals:
         self.col_pretrd_rawdata_md_public_secloan = self.db_pretrddata['pre_trade_rawdata_md_public_security_loan']
         self.col_pretrd_fmtdata_md_security_loan = self.db_pretrddata['pre_trade_fmtdata_md_security_loan']
 
+        self.fpath_output_csv_secloan_demand_analysis = (
+            f"data/output/security_loan_demand_analysis/{self.str_today}_security_loan_demand_analysis.csv"
+        )
+        self.dirpath_output_csv_secloan_order = "data/output/security_loan_order"
+
         # trade
-        # # database
         self.db_trade_data = self.server_mongodb['trade_data']
         self.col_trade_rawdata_fund = self.db_trade_data['trade_rawdata_fund']
         self.col_trade_rawdata_holding = self.db_trade_data['trade_rawdata_holding']
@@ -279,7 +237,7 @@ class Globals:
                 fn = dh[0][0]
                 if dh[0][1]:
                     # 将附件名称可读化
-                    fn = self.decode_str(str(fn, dh[0][1]))
+                    fn = self.decode_str(str(fn, dh[0][1])).replace('-', '').replace(self.str_today, '')
                 # 下载附件
                 data = part.get_payload(decode=True)
                 # 在指定目录下创建文件，注意二进制文件需要用wb模式打开
@@ -288,10 +246,10 @@ class Globals:
                     os.mkdir(dirpath_output_attachment)
                 with open(fpath_output_attachment, 'wb') as f:
                     f.write(data)  # 保存附件
-                    print(f"The attachment {fn} downloaded to {dirpath_output_attachment}.")
+                    print(f"The attachment {fn} has been downloaded to {dirpath_output_attachment}.")
 
     def update_attachments_from_email(self, str_email_subject, str_email_tgtdate, dirpath_output_attachment):
-        # todo 下载指定邮件中的所有附件到指定文件夹中，如果文件夹不存在，则新建文件夹
+        # 下载指定邮件中的所有附件到指定文件夹中(文件名、格式均不变)，如果文件夹不存在，则新建文件夹
         # 从邮件中下载数据
         addr_pop3_server = 'pop.exmail.qq.com'
         server_pop3 = POP3_SSL(addr_pop3_server, 995)
@@ -307,23 +265,11 @@ class Globals:
             subject = self.decode_str(msg.get('Subject')).strip()
             str_date_in_msg = self.decode_str(msg.get('date')).strip()
             list_str_date_in_msg_split = str_date_in_msg.split()
-            i_split_str_date = len(list_str_date_in_msg_split)
-            if i_split_str_date == 2:
-                dt_email_recvdate = datetime.strptime(list_str_date_in_msg_split[0], '%Y-%m-%d')
-            elif i_split_str_date == 6:
-                try:
-                    dt_email_recvdate = datetime.strptime(str_date_in_msg, '%a, %d %b %Y %H:%M:%S +0800')
-                except ValueError:
-                    dt_email_recvdate = datetime.strptime(str_date_in_msg, '%a, %d %b %Y %H:%M:%S -0000')
-
-            elif i_split_str_date == 7:
-                try:
-                    dt_email_recvdate = datetime.strptime(str_date_in_msg, '%a, %d %b %Y %H:%M:%S +0800 (GMT+08:00)')
-                except ValueError:
-                    dt_email_recvdate = datetime.strptime(str_date_in_msg, '%a, %d %b %Y %H:%M:%S +0800 (CST)')
-
-            else:
-                raise ValueError(f'Unknown date format from email: {str_date_in_msg}')
+            str_date_in_msg = ' '.join(list_str_date_in_msg_split[:4])
+            try:
+                dt_email_recvdate = datetime.strptime(str_date_in_msg, '%a, %d %b %Y')
+            except ValueError:
+                dt_email_recvdate = datetime.strptime(str_date_in_msg.split()[0], '%Y-%m-%d')
 
             str_email_recvdate = dt_email_recvdate.strftime('%Y%m%d')
             if subject == str_email_subject and str_email_recvdate == str_email_tgtdate:
@@ -332,7 +278,7 @@ class Globals:
                 break
         if not mark_tgtmail_exist:
             print(f'Warning: {str_email_subject} not found.')
-        # server_pop3.quit()
+        server_pop3.quit()
         print('The attachment from email download finished.')
 
     def send_file_via_email(self, email_to_addr, subject, fpath_file, fn_attachment):
