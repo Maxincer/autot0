@@ -731,10 +731,10 @@ class UpdateTradeSSQuotaFromSecLoan(Thread):
             dict_secid2ssquota_from_public_secloan = {}
             for secid_in_ssquota in set_secid_in_ssquota:
                 ssquota_from_public_secloan = 0
-                for dict_trade_fmtdata_secloan_from_public_secloan in col_trade_fmtdata_public_secloan.find(
+                for dict_trade_fmtdata_public_secloan in col_trade_fmtdata_public_secloan.find(
                         {'DataDate': self.str_today, 'AcctIDByMXZ': self.acctidbymxz, 'SecurityID': secid_in_ssquota}
                 ):
-                    ssquota_from_public_secloan += dict_trade_fmtdata_secloan_from_public_secloan['QtyToBeChargedInterest']
+                    ssquota_from_public_secloan += dict_trade_fmtdata_public_secloan['QtyToBeChargedInterest']
                 dict_secid2ssquota_from_public_secloan[secid_in_ssquota] = ssquota_from_public_secloan
 
             dict_secid2ssquota_from_private_secloan = {}

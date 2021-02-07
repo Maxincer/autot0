@@ -22,78 +22,70 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="94617ebe-9a89-4ddb-bd66-872b475c77a4" name="Default Changelist" comment="update indirect method for hait_ehfz">
-      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/other.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210128/3004_m_hait_8866/私用券源合约.htm" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210128/3004_m_hait_8866/鸣石满天星4号未结利息-20210129.htm" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210128/3004_m_hait_8866/鸣石满天星4号每日交割单-20210129.htm" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210128/8111_m_huat_9239/fee_from_security_loan.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210128/8111_m_huat_9239/fund.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210128/8111_m_huat_9239/fund_and_holding.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210128/8111_m_huat_9239/holding.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210128/8111_m_huat_9239/jgd.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210128/8111_m_huat_9239/private_security_loan.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210128/8111_m_huat_9239/short_position.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210129/3004_m_hait_8866/私用券源合约.htm" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210129/3004_m_hait_8866/鸣石满天星4号未结利息-20210201.htm" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210129/3004_m_hait_8866/鸣石满天星4号每日交割单-20210201.htm" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210129/8111_m_huat_9239/fee_from_security_loan.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210129/8111_m_huat_9239/fund.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210129/8111_m_huat_9239/fund_and_holding.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210129/8111_m_huat_9239/holding.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210129/8111_m_huat_9239/jgd.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210129/8111_m_huat_9239/private_security_loan.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210129/8111_m_huat_9239/short_position.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210201/3004_m_hait_8866/fund.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210201/3004_m_hait_8866/holding.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210201/3004_m_hait_8866/short_position.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210201/3004_m_hait_8866/私用券源合约.htm" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210201/3004_m_hait_8866/鸣石满天星4号未结利息-20210202.htm" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210201/3004_m_hait_8866/鸣石满天星4号未结利息.htm" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210201/3004_m_hait_8866/鸣石满天星4号每日交割单-20210202.htm" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210201/3004_m_hait_8866/鸣石满天星4号每日交割单.htm" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210201/8111_m_huat_9239/fee_from_security_loan.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210201/8111_m_huat_9239/fund.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210201/8111_m_huat_9239/fund_and_holding.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210201/8111_m_huat_9239/holding.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210201/8111_m_huat_9239/jgd.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210201/8111_m_huat_9239/private_security_loan.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210201/8111_m_huat_9239/short_position.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210202/8111_m_huat_9239/fee_from_security_loan.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210202/8111_m_huat_9239/fund.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210202/8111_m_huat_9239/fund_and_holding.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210202/8111_m_huat_9239/holding.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210202/8111_m_huat_9239/jgd.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210202/8111_m_huat_9239/private_security_loan.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210202/8111_m_huat_9239/short_position.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20210201_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/20210202_target_secids.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/security_loan_demand_analysis/20210129_security_loan_demand_analysis.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/security_loan_demand_analysis/20210201_security_loan_demand_analysis.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/output/security_loan_demand_analysis/20210202_security_loan_demand_analysis.csv" afterDir="false" />
+    <list default="true" id="94617ebe-9a89-4ddb-bd66-872b475c77a4" name="Default Changelist" comment="update rawdata for hait_ehfz">
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210202/8111_m_huat_9239/SLA773_鸣石宽墨十一号私募证券投资基金_产品估值表_日报_20210202.xls" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210203/3004_m_hait_8866/fund.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210203/3004_m_hait_8866/holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210203/3004_m_hait_8866/short_position.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210203/3004_m_hait_8866/私用券源合约.htm" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210203/3004_m_hait_8866/鸣石满天星4号未结利息.htm" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210203/3004_m_hait_8866/鸣石满天星4号每日交割单.htm" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210203/8111_m_huat_9239/fee_from_security_loan.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210203/8111_m_huat_9239/fund.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210203/8111_m_huat_9239/fund_and_holding.xls" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210203/8111_m_huat_9239/holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210203/8111_m_huat_9239/jgd.xls" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210203/8111_m_huat_9239/private_security_loan.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210203/8111_m_huat_9239/short_position.xls" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210204/3004_m_hait_8866/fund.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210204/3004_m_hait_8866/holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210204/3004_m_hait_8866/short_position.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210204/3004_m_hait_8866/私用券源合约.htm" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210204/3004_m_hait_8866/鸣石满天星4号未结利息.htm" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210204/3004_m_hait_8866/鸣石满天星4号每日交割单.htm" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210204/8111_m_huat_9239/20210205资金流水查询.xls" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210204/8111_m_huat_9239/fee_from_security_loan.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210204/8111_m_huat_9239/fund.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210204/8111_m_huat_9239/fund_and_holding.xls" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210204/8111_m_huat_9239/holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210204/8111_m_huat_9239/jgd.xls" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210204/8111_m_huat_9239/private_security_loan.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210204/8111_m_huat_9239/short_position.xls" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210205/3004_m_hait_8866/fund.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210205/3004_m_hait_8866/holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210205/3004_m_hait_8866/short_position.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210205/3004_m_hait_8866/私用券源合约.htm" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210205/3004_m_hait_8866/鸣石满天星4号未结利息.htm" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210205/3004_m_hait_8866/鸣石满天星4号每日交割单.htm" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210205/8111_m_huat_9239/20210205资金流水查询.xls" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210205/8111_m_huat_9239/20210207资金流水查询.xls" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210205/8111_m_huat_9239/fee_from_security_loan.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210205/8111_m_huat_9239/fund.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210205/8111_m_huat_9239/fund_and_holding.xls" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210205/8111_m_huat_9239/holding.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210205/8111_m_huat_9239/jgd.xls" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210205/8111_m_huat_9239/private_security_loan.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/post_trddata/20210205/8111_m_huat_9239/short_position.xls" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/input/pretrddata/tgtsecids/excluded_secids.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/111.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/memo/307_m_hait_2000AutoT0策略数据备份/111.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/20201208.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/memo/307_m_hait_2000AutoT0策略数据备份/20201208.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/20201209.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/memo/307_m_hait_2000AutoT0策略数据备份/20201209.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/222.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/memo/307_m_hait_2000AutoT0策略数据备份/222.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/307_vs_918.py" beforeDir="false" afterPath="$PROJECT_DIR$/data/memo/307_m_hait_2000AutoT0策略数据备份/307_vs_918.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/post_trddata/20210125/8111_m_huat_9239/fee_from_security_loan.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/input/post_trddata/20210125/8111_m_huat_9239/fee_from_security_loan.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/post_trddata/20210127/8111_m_huat_9239/fee_from_security_loan.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/input/post_trddata/20210127/8111_m_huat_9239/fee_from_security_loan.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/post_trddata/20210127/8111_m_huat_9239/fund_and_holding.xls" beforeDir="false" afterPath="$PROJECT_DIR$/data/input/post_trddata/20210127/8111_m_huat_9239/fund_and_holding.xls" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/pretrddata/market_data/huat/private_security_loan.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/data/input/pretrddata/market_data/huat/private_security_loan.xlsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/pretrddata/market_data/huat/public_security_loan.xls" beforeDir="false" afterPath="$PROJECT_DIR$/data/input/pretrddata/market_data/huat/public_security_loan.xls" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/input/pretrddata/market_data/huat/新建 Microsoft Excel 工作表.xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/input/post_trddata/20210201/3004_m_hait_8866/holding.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/input/post_trddata/20210201/3004_m_hait_8866/holding.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/input/post_trddata/20210201/3004_m_hait_8866/鸣石满天星4号未结利息-20210202.htm" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/input/post_trddata/20210201/3004_m_hait_8866/鸣石满天星4号每日交割单-20210202.htm" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/input/post_trddata/20210201/8111_m_huat_9239/fee_from_security_loan.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/input/post_trddata/20210201/8111_m_huat_9239/fee_from_security_loan.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/input/post_trddata/20210202/8111_m_huat_9239/fee_from_security_loan.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/input/post_trddata/20210202/8111_m_huat_9239/fee_from_security_loan.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/input/post_trddata/20210202/8111_m_huat_9239/fund.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/input/post_trddata/20210202/8111_m_huat_9239/fund.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/input/post_trddata/20210202/8111_m_huat_9239/holding.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/input/post_trddata/20210202/8111_m_huat_9239/holding.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/input/post_trddata/20210202/8111_m_huat_9239/private_security_loan.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/input/post_trddata/20210202/8111_m_huat_9239/private_security_loan.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/input/post_trddata/20210202/8111_m_huat_9239/short_position.xls" beforeDir="false" afterPath="$PROJECT_DIR$/data/input/post_trddata/20210202/8111_m_huat_9239/short_position.xls" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/input/pretrddata/excluded_secids.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/input/pretrddata/market_data/hait/每日券池-20210113.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/data/input/pretrddata/market_data/hait/每日券池-20210113.xlsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/data/input/trade_data_patch/huat/private_security_loan.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/data/input/trade_data_patch/huat/private_security_loan.xlsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/data/output/posttrd_analysis.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/data/output/posttrd_analysis.xlsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/output/security_loan_order/8111_m_huat_9239_secloan_order.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/output/security_loan_order/8111_m_huat_9239_secloan_order.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/globals.py" beforeDir="false" afterPath="$PROJECT_DIR$/globals.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/posttrdmng.py" beforeDir="false" afterPath="$PROJECT_DIR$/posttrdmng.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pretrdmng_hait.py" beforeDir="false" afterPath="$PROJECT_DIR$/pretrdmng_hait.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pretrdmng_huat.py" beforeDir="false" afterPath="$PROJECT_DIR$/pretrdmng_huat.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/secloan_order.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/temp.py" beforeDir="false" afterPath="$PROJECT_DIR$/temp.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/trading_mng.py" beforeDir="false" afterPath="$PROJECT_DIR$/trading_mng.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/鸣石满天星4号每日交割单-20201228.htm" beforeDir="false" afterPath="$PROJECT_DIR$/data/memo/307_m_hait_2000AutoT0策略数据备份/鸣石满天星4号每日交割单-20201228.htm" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -162,7 +154,7 @@
       <recent name="D:\projects\autot0\data\input" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.posttrdmng">
+  <component name="RunManager" selected="Python.trading_mng">
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
       <module name="autot0" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -211,9 +203,6 @@
       <module name="autot0" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
       <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="true" />
@@ -255,9 +244,6 @@
       <module name="autot0" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
       <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="true" />
@@ -304,11 +290,11 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.posttrdmng" />
         <item itemvalue="Python.trading_mng" />
-        <item itemvalue="Python.pretrdmng_huat" />
+        <item itemvalue="Python.posttrdmng" />
         <item itemvalue="Python.globals" />
         <item itemvalue="Python.temp" />
+        <item itemvalue="Python.pretrdmng_huat" />
       </list>
     </recent_temporary>
   </component>
@@ -391,7 +377,8 @@
       <workItem from="1612187566004" duration="13148000" />
       <workItem from="1612236381680" duration="1280000" />
       <workItem from="1612244851300" duration="9284000" />
-      <workItem from="1612273699147" duration="5833000" />
+      <workItem from="1612273699147" duration="38864000" />
+      <workItem from="1612424877752" duration="66604000" />
     </task>
     <task id="LOCAL-00001" summary="initialize">
       <created>1604806214551</created>
@@ -533,7 +520,14 @@
       <option name="project" value="LOCAL" />
       <updated>1611832133826</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="update rawdata for hait_ehfz">
+      <created>1612279557857</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1612279557857</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -564,19 +558,20 @@
     <MESSAGE value="rawdata auto update" />
     <MESSAGE value="update indirect method" />
     <MESSAGE value="update indirect method for hait_ehfz" />
-    <option name="LAST_COMMIT_MESSAGE" value="update indirect method for hait_ehfz" />
+    <MESSAGE value="update rawdata for hait_ehfz" />
+    <option name="LAST_COMMIT_MESSAGE" value="update rawdata for hait_ehfz" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/autot0$pretrdmng.coverage" NAME="pretrdmng Coverage Results" MODIFIED="1609116691839" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/autot0$trading_mng.coverage" NAME="trading_mng Coverage Results" MODIFIED="1612274489596" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/autot0$trading_mng.coverage" NAME="trading_mng Coverage Results" MODIFIED="1612503867425" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/autot0$temp.coverage" NAME="temp Coverage Results" MODIFIED="1611647349585" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/autot0$globals.coverage" NAME="globals Coverage Results" MODIFIED="1612228638985" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/autot0$globals.coverage" NAME="globals Coverage Results" MODIFIED="1612494627467" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/autot0$secloan_mng.coverage" NAME="secloan_mng Coverage Results" MODIFIED="1604989924798" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/autot0$pretrdmng__1_.coverage" NAME="pretrdmng (1) Coverage Results" MODIFIED="1607560772704" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/autot0$307_vs_918__1_.coverage" NAME="307_vs_918 (1) Coverage Results" MODIFIED="1608881790987" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/autot0$scheduler.coverage" NAME="scheduler Coverage Results" MODIFIED="1607271714200" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/autot0$pretrdmng_huat.coverage" NAME="pretrdmng_huat Coverage Results" MODIFIED="1612231533011" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/autot0$posttrdmng.coverage" NAME="posttrdmng Coverage Results" MODIFIED="1612279425355" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/autot0$posttrdmng.coverage" NAME="posttrdmng Coverage Results" MODIFIED="1612496309027" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/autot0$pretrdmng_hait__1_.coverage" NAME="pretrdmng_hait (1) Coverage Results" MODIFIED="1610499566012" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

@@ -48,8 +48,8 @@ class Globals:
         self.str_next_trddate = self.list_str_trdcalendar[idx_str_today + 1]
         self.str_last_last_trddate = self.list_str_trdcalendar[idx_str_today - 2]
         self.str_next_next_trddate = self.list_str_trdcalendar[idx_str_today + 2]
-        # self.list_acctidsbymxz = ['8111_m_huat_9239']
-        self.list_acctidsbymxz = ['3004_m_hait_8866']
+        self.list_acctidsbymxz = ['8111_m_huat_9239']
+        # self.list_acctidsbymxz = ['3004_m_hait_8866']
 
         # 配置文件部分: basicinfo
         self.db_basicinfo = self.server_mongodb['basicinfo']
@@ -76,7 +76,7 @@ class Globals:
         self.email_subject_to_hait = f'【券源需求】鸣石满天星四号-{self.str_today}'
 
         # pre-trade
-        self.fpath_input_csv_excluded_secids = 'data/input/pretrddata/excluded_secids.csv'
+        self.fpath_input_csv_excluded_secids = 'data/input/pretrddata/tgtsecids/excluded_secids.csv'
         self.fpath_output_xlsx_provided_secloan_analysis = (
             'data/output/security_loan/provided_security_loan_analysis.xlsx'
         )
@@ -95,7 +95,7 @@ class Globals:
         self.fpath_output_csv_secloan_demand_analysis = (
             f"data/output/security_loan_demand_analysis/{self.str_today}_security_loan_demand_analysis.csv"
         )
-        self.dirpath_output_csv_secloan_order = "data/output/security_loan_order"
+        self.dirpath_output_secloan_order = "data/output/security_loan_order"
 
         # trade
         self.db_trade_data = self.server_mongodb['trade_data']
@@ -155,7 +155,7 @@ class Globals:
             wset = w.wset("sectorconstituent", f"date={self.str_today};sectorid=a001010100000000")
             try:
                 list_windcodes = wset.Data[1]
-                list_windcodes_patch = ['511990.SH']
+                list_windcodes_patch = ['511990.SH', '510500.SH']
                 list_windcodes = list_windcodes + list_windcodes_patch
             except IndexError as e:
                 print(e)
@@ -226,7 +226,7 @@ class Globals:
         ret = formataddr((Header(name, 'utf-8').encode(), addr))
         return ret
 
-    def get_attachment(self, msg, dirpath_output_attachment):
+    def get_attachment(self, msg, dirpath_output_attachment, date_in_fn=1):
         for part in msg.walk():
             # 获取附件名称类型
             file_name = part.get_filename()
@@ -237,7 +237,11 @@ class Globals:
                 fn = dh[0][0]
                 if dh[0][1]:
                     # 将附件名称可读化
-                    fn = self.decode_str(str(fn, dh[0][1])).replace('-', '').replace(self.str_today, '')
+                    if date_in_fn:
+                        fn = self.decode_str(str(fn, dh[0][1]))
+                    else:
+                        fn = self.decode_str(str(fn, dh[0][1])).replace('-', '').replace(self.str_today, '')
+
                 # 下载附件
                 data = part.get_payload(decode=True)
                 # 在指定目录下创建文件，注意二进制文件需要用wb模式打开
@@ -248,7 +252,7 @@ class Globals:
                     f.write(data)  # 保存附件
                     print(f"The attachment {fn} has been downloaded to {dirpath_output_attachment}.")
 
-    def update_attachments_from_email(self, str_email_subject, str_email_tgtdate, dirpath_output_attachment):
+    def update_attachments_from_email(self, str_email_subject, str_email_tgtdate, dirpath_output_attachment, date_in_fn):
         # 下载指定邮件中的所有附件到指定文件夹中(文件名、格式均不变)，如果文件夹不存在，则新建文件夹
         # 从邮件中下载数据
         addr_pop3_server = 'pop.exmail.qq.com'
@@ -273,7 +277,7 @@ class Globals:
 
             str_email_recvdate = dt_email_recvdate.strftime('%Y%m%d')
             if subject == str_email_subject and str_email_recvdate == str_email_tgtdate:
-                self.get_attachment(msg, dirpath_output_attachment)
+                self.get_attachment(msg, dirpath_output_attachment, date_in_fn)
                 mark_tgtmail_exist = 1
                 break
         if not mark_tgtmail_exist:
@@ -448,6 +452,6 @@ class Globals:
 
 if __name__ == '__main__':
     # 盘后运行, 更新数据库
-    task = Globals(download_winddata_mark=1)
+    task = Globals('20210202', download_winddata_mark=1)
     # task.output_provided_secloan_analysis_xlsx()
     print('Done')

@@ -1,17 +1,13 @@
-from dbfread import DBF
-import pandas as pd
+import orjson
+import redis
 
-table1 = DBF(r'D:\projects\autot0\data\rzrq_dzls.DBF')
-table2 = DBF(r'D:\projects\autot0\data\rzrq_jyls.DBF')
+REDIS_HOST = '47.103.187.110'
+REDIS_PORT = 6379
+REDIS_PASS = 'Ms123456'
 
-df1 = pd.DataFrame(table1)
-df1.to_excel('df1.xlsx')
-print(df1)
+r = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, password=REDIS_PASS)
 
-df2 = pd.DataFrame(table2)
-df2.to_excel('df2.xlsx')
 
-print(df2)
-
+print(orjson.loads(r.get('market_511990.SH').decode('utf-8')))
 
 
