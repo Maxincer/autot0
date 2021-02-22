@@ -397,9 +397,9 @@ class UpdateTradeFmtDataHolding(Thread):
             list_dicts_trade_fmtdata_holding = []
             if data_srctype in ['hait_ehfz']:
                 for dict_trade_rawdata_holding in iter_trade_rawdata_holding:
-                    secid = str(dict_trade_rawdata_holding['代码']).zfill(6)
+                    secid = str(dict_trade_rawdata_holding['证券代码']).zfill(6)
                     dict_exg = {'1': 'SZSE', '2': 'SSE'}
-                    secidsrc = dict_exg[dict_trade_rawdata_holding['市场']]
+                    secidsrc = dict_exg[dict_trade_rawdata_holding['市场类型']]
                     str_code = f"{secid}.{secidsrc}"
                     sectype = Globals.get_mingshi_sectype_from_code(str_code)
                     longqty = float(dict_trade_rawdata_holding['当前拥股数量'])
@@ -478,6 +478,7 @@ class UpdateTradeFmtDataOrder(Thread):
             # 确认side:
             # todo fix 协议中只有3个方向： 1. 1 = buy, 2. 2 = sell, 5 = Sell Short, 字符串: str
             # todo 但国内在交易环节可以提供这部分信息： BC: 买券还券 和 现券还券 B: 担保品买入
+            # todo 委托状态OrdStatus: 每家券商不一样
             list_dicts_trade_fmtdata_order = []
             if data_srctype in ['hait_xtpb']:
                 for dict_trade_rawdata_order in iter_trade_rawdata_order:
@@ -512,6 +513,7 @@ class UpdateTradeFmtDataOrder(Thread):
                         'OrderTime': order_time,
                     }
                     list_dicts_trade_fmtdata_order.append(dict_trade_fmtdata_order)
+
             elif data_srctype in ['hait_ehfz']:
                 for dict_trade_rawdata_order in iter_trade_rawdata_order:
                     secid = str(dict_trade_rawdata_order['证券代码']).zfill(6)
@@ -521,12 +523,25 @@ class UpdateTradeFmtDataOrder(Thread):
                     secidsrc = {'1': 'SSE', '2': 'SZSE'}[exg]
                     cumqty = float(dict_trade_rawdata_order['成交数量'])
                     avgpx = float(dict_trade_rawdata_order['成交价格'])
+                    # 海通的style:
+                    # ①待撤：撤单指令还未报到场内。
+                    # ②正撤：撤单指令已送达公司，正在等待处理，此时不能确定是否已进场；
+                    # ③部撤：下单指令中的一部份数量已被撤消；
+                    # ④已撤：委托指令全部被撤消；
+                    # ⑤未报：下单指令还未送入数据处理；
+                    # ⑥待报：下单指令还未被数据处理报到场内；
+                    # ⑦正报：下单指令已送达公司，正在等待处理，此时不能确定是否已进场；
+                    # ⑧已报：已收到下单反馈；
+                    # ⑨部成：下单指令部份成交；
+                    # ⑩已成：下单指令全部成交；
+                    # ⑾撤废：撤单废单，表示撤单指令失败，原因可能是被撤的下单指令已经成交了或场内无法找到这条下单记录；
+                    # ⑿废单：交易所反馈的信息，表示该定单无效。
                     ordstatus = dict_trade_rawdata_order['@委托状态']
                     if trade_mark in ['1', '2']:
                         side = trade_mark
                     elif trade_mark in ['12']:
                         side = '5'
-                    elif trade_mark in ['15', '0']:  # todo 抽象现券还券划转和买券还券划转， 目前只看到了现券还券划转
+                    elif trade_mark in ['15', '0']:
                         side = 'XQHQ'
                     else:
                         raise ValueError('Unknown trade mark.')
@@ -545,6 +560,7 @@ class UpdateTradeFmtDataOrder(Thread):
                         'OrderTime': order_time,
                     }
                     list_dicts_trade_fmtdata_order.append(dict_trade_fmtdata_order)
+
             elif data_srctype in ['huat_matic_tsi']:
                 pass
 
@@ -660,7 +676,7 @@ class UpdateTradeFmtDataPrivateSecLoan(Thread):
                     open_date = str(dict_trade_rawdata_private_secloan['起始日'])
                     ir = float(dict_trade_rawdata_private_secloan['占用利率'])
                     if ir > 1:
-                        ir = ir / 100
+                        ir = ir / 10
 
                     dict_trade_fmtdata_private_secloan = {
                         'DataDate': self.str_today,
@@ -824,12 +840,11 @@ class UpdateTradePosition(Thread):
             # 获取position的secid全集
             # # 昨夜清算后持仓col_posttrd_position
             list_dicts_trade_position = []
-            if data_srctype in ['hait_xtpb']:
-                iter_posttrd_position_last_trddate = col_posttrd_position.find(
-                    {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': self.acctidbymxz}
-                )
+            if data_srctype in ['hait_ehfz']:  # 方舟的short position 不能实时更新
                 set_secids_in_position_predate = set()
-                for dict_posttrd_position in iter_posttrd_position_last_trddate:
+                for dict_posttrd_position in col_posttrd_position.find(
+                    {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': self.acctidbymxz}
+                ):
                     secid_in_predate_position = dict_posttrd_position['SecurityID']
                     set_secids_in_position_predate.add(secid_in_predate_position)
 
@@ -842,12 +857,11 @@ class UpdateTradePosition(Thread):
                     secid_in_trade_order = dict_trade_fmtdata_order['SecurityID']
                     set_secids_in_trade_fmtdata_order.add(secid_in_trade_order)
 
-                # # 获取trade data_holding的所有secid
-                iter_trade_fmtdata_holding = col_trade_fmtdata_holding.find(
-                    {'DataDate': self.gl.str_today, 'AcctIDByMXZ': self.acctidbymxz}
-                )
+                # # 获取trade_data_holding的所有secid
                 set_secids_in_trade_fmtdata_holding = set()
-                for dict_trade_fmtdata_holding in iter_trade_fmtdata_holding:
+                for dict_trade_fmtdata_holding in col_trade_fmtdata_holding.find(
+                    {'DataDate': self.gl.str_today, 'AcctIDByMXZ': self.acctidbymxz}
+                ):
                     secid = dict_trade_fmtdata_holding['SecurityID']
                     set_secids_in_trade_fmtdata_holding.add(secid)
 
@@ -860,10 +874,9 @@ class UpdateTradePosition(Thread):
                 for secid in list_secids_in_trade_position:
                     # 计算longqty 取当前持仓： todo 注意 hait_xtpb 的 当日拥股字段 为扣除划转的余额
                     longqty = 0
-                    iter_trade_fmtdata_holding_find_secid = col_trade_fmtdata_holding.find(
+                    for dict_trade_fmtdata_holding in col_trade_fmtdata_holding.find(
                         {'DataDate': self.gl.str_today, 'AcctIDByMXZ': self.acctidbymxz, 'SecurityID': secid}
-                    )
-                    for dict_trade_fmtdata_holding in iter_trade_fmtdata_holding_find_secid:
+                    ):
                         longqty += dict_trade_fmtdata_holding['LongQty']
 
                     # 计算shortqty： 昨日shortqty余额 + 今融券卖出 - 还券(现券还券，买入还券)
@@ -880,10 +893,13 @@ class UpdateTradePosition(Thread):
                     for dict_trade_fmtdata_order in list_dicts_trade_fmtdata_order:
                         if dict_trade_fmtdata_order['SecurityID'] == secid and dict_trade_fmtdata_order['Side'] in ['5']:
                             shortqty_delta_today += dict_trade_fmtdata_order['CumQty']
+
+                        # todo 需要添加买券还券
+
                         if (
                                 dict_trade_fmtdata_order['SecurityID'] == secid
                                 and dict_trade_fmtdata_order['Side'] in ['XQHQ']
-                                and dict_trade_fmtdata_order['OrdStatus'] in ['2', '8']
+                                and dict_trade_fmtdata_order['OrdStatus'] in ['8', '10']  # xtpb是2和8
                         ):
                             shortqty_delta_today += -dict_trade_fmtdata_order['CumQty']
                             longqty_delta_from_xqhq += dict_trade_fmtdata_order['CumQty']
@@ -921,11 +937,10 @@ class UpdateTradePosition(Thread):
                     set_secids_in_trade_rawdata_rqmx.add(secid_in_rawdata_rqmx)
 
                 # # 获取trade_fmtdata_holding的所有secid
-                iter_trade_fmtdata_holding = col_trade_fmtdata_holding.find(
-                    {'DataDate': self.gl.str_today, 'AcctIDByMXZ': self.acctidbymxz}
-                )
                 set_secids_in_trade_fmtdata_holding = set()
-                for dict_trade_fmtdata_holding in iter_trade_fmtdata_holding:
+                for dict_trade_fmtdata_holding in col_trade_fmtdata_holding.find(
+                    {'DataDate': self.gl.str_today, 'AcctIDByMXZ': self.acctidbymxz}
+                ):
                     secid = dict_trade_fmtdata_holding['SecurityID']
                     set_secids_in_trade_fmtdata_holding.add(secid)
 
@@ -940,10 +955,9 @@ class UpdateTradePosition(Thread):
                 for secid in list_secids_in_trade_position:
                     # 计算longqty 取当前持仓：
                     longqty = 0
-                    iter_trade_fmtdata_holding_find_secid = col_trade_fmtdata_holding.find(
+                    for dict_trade_fmtdata_holding in col_trade_fmtdata_holding.find(
                         {'DataDate': self.gl.str_today, 'AcctIDByMXZ': self.acctidbymxz, 'SecurityID': secid}
-                    )
-                    for dict_trade_fmtdata_holding in iter_trade_fmtdata_holding_find_secid:
+                    ):
                         longqty += dict_trade_fmtdata_holding['LongQty']
 
                     # 计算shortqty： rqmx 汇总
@@ -963,6 +977,7 @@ class UpdateTradePosition(Thread):
                         'NetQty': longqty - shortqty,
                     }
                     list_dicts_trade_position.append(dict_trade_position)
+
             else:
                 raise ValueError('Unknown data source type.')
 
@@ -976,7 +991,7 @@ class UpdateTradePosition(Thread):
 class UpdateTradeDataBase:
     def __init__(self, str_trddate=STR_TODAY):
         self.gl = Globals(str_today=str_trddate)
-        self.list_acctidsbymxz = ['8111_m_huat_9239']
+        self.list_acctidsbymxz = ['8111_m_huat_9239', '3004_m_hait_8866']
 
     def update_raw_data_and_fmtdata(self, acctidbymxz):
         # rawdata

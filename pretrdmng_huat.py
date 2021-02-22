@@ -138,10 +138,12 @@ class PreTrdMng:
 
         elif broker_abbr in ['hait']:
             # 上传融券券池-普通融券市场行情
+            fpath_pretrd_md_public_secloan = fpath_pretrd_md_public_secloan.replace('<YYYYMMDD>', self.gl.str_today)
             df_xlsx_public_secloan = pd.read_excel(fpath_pretrd_md_public_secloan, sheet_name='公共券池', dtype='str')
             list_dicts_md_public_secloan = df_xlsx_public_secloan.to_dict('records')
             
             # 上传融券券池-专项融券市场行情
+            fpath_pretrd_md_private_secloan = fpath_pretrd_md_private_secloan.replace('<YYYYMMDD>', self.gl.str_today)
             df_xlsx_private_secloan = pd.read_excel(
                 fpath_pretrd_md_private_secloan, sheet_name='即时可用券池', dtype='str'
             )
@@ -178,15 +180,18 @@ class PreTrdMng:
             windcode = self.gl.get_secid2windcode(secid)
             if secid in dict_secid2cpssrc:
                 excluded_mark = 1
+                cpssrc = dict_secid2cpssrc[secid]
             else:
                 excluded_mark = 0
+                cpssrc = 'AutoT0'
+
             dict_pretrd_fmtdata_tgtsecids = {
                 'DataDate': self.gl.str_today,
                 'AcctIDByMXZ': acctidbymxz,
                 'SecurityID': secid,
                 'WindCode': windcode,
                 'ExcludedMark': excluded_mark,
-                'CompositeSource': dict_secid2cpssrc[secid],
+                'CompositeSource': cpssrc,
             }
             list_pretrd_fmtdata_tgtsecids.append(dict_pretrd_fmtdata_tgtsecids)
         self.gl.col_pretrd_fmtdata_tgtsecids.delete_many({'DataDate': self.gl.str_today})
@@ -764,15 +769,15 @@ class PreTrdMng:
                         continue
                     if (secid[:3] in ['688', '300']) and ordqty_from_outside_secloan < 1000:
                         continue
-                    secname = dict_pretrd_secloan_demand_analysis['SecName']
+                    symbol = dict_pretrd_secloan_demand_analysis['Symbol']
                     dict_secloan_order = {
                         '证券代码': secid,
-                        '证券名称': secname,
+                        '证券名称': symbol,
                         '需求数量（股）': ordqty_from_outside_secloan,
                         '期限（天）': 28,
-                        '营业部名称': '贵阳长岭北路',  # todo 更改
-                        '客户号': '1882842000',  # todo 更改
-                        '客户名称': '鸣石满天星七号',  # todo 更改
+                        '营业部名称': '南京常府街',
+                        '客户号': '1880921905',
+                        '客户名称': '鸣石满天星三号1期',
                         '筹券日期': str_date,
                         '特殊备注': '',
                     }

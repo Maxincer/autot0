@@ -179,8 +179,9 @@ class PostTrdMng:
             df_input_rawdata_fund['AcctIDByMXZ'] = acctidbymxz
             list_dicts_rawdata_fund = df_input_rawdata_fund.to_dict('records')
 
-        elif data_srctype in ['huat_matic_tsi', 'hait_ehfz']:
+        elif data_srctype in ['huat_matic_tsi', 'hait_ehfz_api']:
             list_dicts_rawdata_fund = []
+            fpath_posttrd_rawdata_fund = fpath_posttrd_rawdata_fund.replace('<ID>', dldfilter)
             with open(fpath_posttrd_rawdata_fund, 'rb') as f:
                 list_list_datalines = f.readlines()
                 list_fields = [_.decode('ansi', errors='replace') for _ in list_list_datalines[0].split(b',')]
@@ -225,8 +226,9 @@ class PostTrdMng:
             df_input_rawdata_holding['AcctIDByMXZ'] = acctidbymxz
             list_dicts_rawdata_holding = df_input_rawdata_holding.to_dict('records')
 
-        elif data_srctype in ['huat_matic_tsi', 'hait_ehfz']:
+        elif data_srctype in ['huat_matic_tsi', 'hait_ehfz_api']:
             list_dicts_rawdata_holding = []
+            fpath_posttrd_rawdata_holding = fpath_posttrd_rawdata_holding.replace('<ID>', dldfilter)
             with open(fpath_posttrd_rawdata_holding, 'rb') as f:
                 list_list_datalines = f.readlines()
                 list_fields = [_.decode('ansi', errors='replace') for _ in list_list_datalines[0].split(b',')]
@@ -264,8 +266,9 @@ class PostTrdMng:
             df_xlsx_shortqty['AcctIDByMXZ'] = acctidbymxz
             list_dicts_posttrd_rawdata_short_position = df_xlsx_shortqty.to_dict('records')
 
-        elif data_srctype in ['hait_ehfz']:
+        elif data_srctype in ['hait_ehfz_api']:
             list_dicts_posttrd_rawdata_short_position = []
+            fpath_posttrd_rawdata_short_position = fpath_posttrd_rawdata_short_position.replace('<ID>', dldfilter)
             with open(fpath_posttrd_rawdata_short_position) as f:
                 list_list_datalines = f.readlines()
                 list_fields = list_list_datalines[0].split(',')
@@ -337,7 +340,7 @@ class PostTrdMng:
             if list_dicts_public_secloan:
                 self.gl.col_posttrd_rawdata_public_secloan.insert_many(list_dicts_public_secloan)
 
-        elif data_srctype in ['hait_ehfz']:
+        elif data_srctype in ['hait_ehfz_api']:
             # 由于目前方舟不支持公用券池交易，故假设公共券池合约为空
             list_dicts_posttrd_rawdata_public_secloan = []
             self.gl.col_posttrd_rawdata_public_secloan.delete_many(
@@ -393,7 +396,7 @@ class PostTrdMng:
             df_private_secloan['AcctIDByMXZ'] = acctidbymxz
             list_dicts_posttrd_rawdata_private_secloan = df_private_secloan.to_dict('records')
 
-        elif data_srctype in ['hait_ehfz']:
+        elif data_srctype in ['hait_ehfz_api']:
             df_private_secloan = pd.read_html(fpath_posttrd_rawdata_private_secloan, header=0)[0]
             df_private_secloan = df_private_secloan.where(df_private_secloan.notnull(), None)
             df_private_secloan['DataDate'] = self.gl.str_last_trddate
@@ -453,7 +456,7 @@ class PostTrdMng:
             df_xls_fee_from_secloan['AcctIDByMXZ'] = acctidbymxz
             list_dicts_posttrd_rawdata_fee_from_secloan = df_xls_fee_from_secloan.to_dict('records')
 
-        elif data_srctype in ['hait_ehfz']:
+        elif data_srctype in ['hait_ehfz_api']:
             df_posttrd_rawdata_fee_from_secloan = (
                 pd.read_html(fpath_posttrd_rawdata_fee_from_security_loan, header=0)[0]
             )
@@ -500,7 +503,7 @@ class PostTrdMng:
                         dict_rawdata_jgd['DataDate'] = self.gl.str_last_trddate
                         list_dicts_posttrd_rawdata_jgd.append(dict_rawdata_jgd)
 
-        elif data_srctype in ['hait_ehfz']:
+        elif data_srctype in ['hait_ehfz_api']:
             df_posttrd_rawdata_jgd = pd.read_html(
                 fpath_posttrd_rawdata_jgd, header=0, converters={'证券代码': lambda x: str(x)}
             )[0]
@@ -527,8 +530,7 @@ class PostTrdMng:
 
         # col_posttrd_fmtdata_excluded_secids
         list_dicts_posttrd_fmtdata_excluded_secids = []
-        fpath_csv_excluded_secids = r'D:\projects\autot0\data\input\pretrddata\excluded_secids.csv'
-        with open(fpath_csv_excluded_secids, encoding='utf-8') as f:
+        with open(self.gl.fpath_input_csv_excluded_secids, encoding='utf-8') as f:
             list_list_datalines = [_.strip() for _ in f.readlines()]
             list_fields = list_list_datalines[0].split(',')
             if len(list_list_datalines) > 1:
@@ -793,7 +795,7 @@ class PostTrdMng:
                 }
                 list_dicts_posttrd_fmtdata_jgd.append(dict_posttrd_fmtdata_jgd)
 
-        elif data_srctype in ['hait_ehfz']:
+        elif data_srctype in ['hait_ehfz_api']:
             # col_posttrd_fmtdata_fund
             list_dicts_posttrd_fmtdata_fund = []
             for dict_posttrd_rawdata_fund in self.gl.col_posttrd_rawdata_fund.find(
@@ -859,28 +861,30 @@ class PostTrdMng:
             for dict_posttrd_rawdata_short_position in self.gl.col_posttrd_rawdata_short_position.find(
                 {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': acctidbymxz}
             ):
-                secid = str(dict_posttrd_rawdata_short_position['证券代码']).zfill(6)
-                if secid in set_secids_nic:
-                    cpssrc = 'NotInComposite'
-                else:
-                    cpssrc = 'AutoT0'
-                symbol = dict_posttrd_rawdata_short_position['证券名称']
-                shortqty = (
-                        float(dict_posttrd_rawdata_short_position['发生数量'])
-                        - float(dict_posttrd_rawdata_short_position['归还数量'])
-                )
-                contract_id = str(dict_posttrd_rawdata_short_position['开仓流水号'])
-                dict_posttrd_fmtdata_shortqty_from_secloan = {
-                    'DataDate': self.gl.str_last_trddate,
-                    'AcctIDByMXZ': acctidbymxz,
-                    'SecurityID': secid,
-                    'Symbol': symbol,
-                    'ShortQty': shortqty,
-                    'ContractID': contract_id,
-                    'CompositeSource': cpssrc,
-                }
-                list_dicts_posttrd_fmtdata_short_position.append(dict_posttrd_fmtdata_shortqty_from_secloan)
-                set_secid_in_fmtdata_short_position.add(secid)
+                if dict_posttrd_rawdata_short_position['证券代码']:
+                    secid = str(dict_posttrd_rawdata_short_position['证券代码']).zfill(6)
+                    if secid in set_secids_nic:
+                        cpssrc = 'NotInComposite'
+                    else:
+                        cpssrc = 'AutoT0'
+                    symbol = dict_posttrd_rawdata_short_position['证券名称']
+                    shortqty = (
+                            float(dict_posttrd_rawdata_short_position['发生数量'])
+                            - float(dict_posttrd_rawdata_short_position['归还数量'])
+                    )
+
+                    contract_id = ''  # todo contract 已有“开仓流水号” 目前不查这个，暂且搁置
+                    dict_posttrd_fmtdata_shortqty_from_secloan = {
+                        'DataDate': self.gl.str_last_trddate,
+                        'AcctIDByMXZ': acctidbymxz,
+                        'SecurityID': secid,
+                        'Symbol': symbol,
+                        'ShortQty': shortqty,
+                        'ContractID': contract_id,
+                        'CompositeSource': cpssrc,
+                    }
+                    list_dicts_posttrd_fmtdata_short_position.append(dict_posttrd_fmtdata_shortqty_from_secloan)
+                    set_secid_in_fmtdata_short_position.add(secid)
 
             # col_posttrd_fmtdata_public_secloan  # todo 目前方舟不支持public_secloan
             set_secid_in_fmtdata_public_secloan = set()
@@ -1040,10 +1044,16 @@ class PostTrdMng:
             for dict_posttrd_rawdata_jgd in self.gl.col_posttrd_rawdata_jgd.find(
                     {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': acctidbymxz}
             ):
-                serial_number = dict_posttrd_rawdata_jgd['流水号']
-                if not serial_number:
-                    continue
+                if '流水号' not in dict_posttrd_rawdata_jgd:
+                    serial_number = '0'
+                else:
+                    serial_number = dict_posttrd_rawdata_jgd['流水号']
+
+                # if not serial_number:
+                #     continue
                 str_trddate = dict_posttrd_rawdata_jgd['成交日期']
+                if not str_trddate:
+                    continue
                 secid = str(dict_posttrd_rawdata_jgd['证券代码']).zfill(6)
                 symbol = dict_posttrd_rawdata_jgd['证券简称'].split()[0]
                 business_type = dict_posttrd_rawdata_jgd['业务类别']
@@ -1153,25 +1163,29 @@ class PostTrdMng:
             for dict_posttrd_rawdata_short_position in self.gl.col_posttrd_rawdata_short_position.find(
                 {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': acctidbymxz}
             ):
-                secid = str(dict_posttrd_rawdata_short_position['证券代码']).zfill(6)
-                if secid in set_secids_nic:
-                    cpssrc = 'NotInComposite'
-                else:
-                    cpssrc = 'AutoT0'
-                symbol = dict_posttrd_rawdata_short_position['证券名称']
-                shortqty = float(dict_posttrd_rawdata_short_position['未还数量'])
-                contract_id = dict_posttrd_rawdata_short_position['合约编号']
-                dict_posttrd_fmtdata_shortqty_from_secloan = {
-                    'DataDate': self.gl.str_last_trddate,
-                    'AcctIDByMXZ': acctidbymxz,
-                    'SecurityID': secid,
-                    'Symbol': symbol,
-                    'ShortQty': shortqty,
-                    'ContractID': contract_id,
-                    'CompositeSource': cpssrc,
-                }
-                list_dicts_posttrd_fmtdata_short_position.append(dict_posttrd_fmtdata_shortqty_from_secloan)
-                set_secid_in_fmtdata_short_position.add(secid)
+                if dict_posttrd_rawdata_short_position['证券代码']:
+                    secid = str(dict_posttrd_rawdata_short_position['证券代码']).zfill(6)
+                    if secid in set_secids_nic:
+                        cpssrc = 'NotInComposite'
+                    else:
+                        cpssrc = 'AutoT0'
+                    symbol = dict_posttrd_rawdata_short_position['证券名称']
+                    if dict_posttrd_rawdata_short_position['未还数量']:
+                        shortqty = float(dict_posttrd_rawdata_short_position['未还数量'])
+                    else:
+                        shortqty = 0
+                    contract_id = dict_posttrd_rawdata_short_position['合约编号']
+                    dict_posttrd_fmtdata_shortqty_from_secloan = {
+                        'DataDate': self.gl.str_last_trddate,
+                        'AcctIDByMXZ': acctidbymxz,
+                        'SecurityID': secid,
+                        'Symbol': symbol,
+                        'ShortQty': shortqty,
+                        'ContractID': contract_id,
+                        'CompositeSource': cpssrc,
+                    }
+                    list_dicts_posttrd_fmtdata_short_position.append(dict_posttrd_fmtdata_shortqty_from_secloan)
+                    set_secid_in_fmtdata_short_position.add(secid)
 
             # col_posttrd_fmtdata_public_secloan
             set_secid_in_fmtdata_public_secloan = set()
@@ -1486,6 +1500,7 @@ class PostTrdMng:
         if data_srctype in ['hait_ehfz']:
             # 已经在fmt中录入每支票的利息
             pass
+
         elif data_srctype in ['huat_matic_tsi']:
             for dict_posttrd_rawdata_fee_from_secloan in self.gl.col_posttrd_rawdata_fee_from_secloan.find(
                     {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': acctidbymxz}
@@ -1881,15 +1896,15 @@ class PostTrdMng:
         )
         self.gl.col_posttrd_secloan_utility_analysis.insert_one(dict_secloan_utility_analysis)
 
-    def output_xlsx_posttrd_analysis(self, acctidbymxz):
+    def output_xlsx_posttrd_analysis(self):
         # 输出pnl_analysis （应当改名， 由于已经使用，故不改名）
         list_dicts_output_sheet_pnl_analysis = []
         for dict_posttrd_pnl_by_acctidbymxz_cps in self.gl.col_posttrd_pnl_by_acctidbymxz_cps.find(
-                {'AcctIDByMXZ': acctidbymxz}, {'_id': 0}
+                {'AcctIDByMXZ': {"$in": self.gl.list_acctidsbymxz}}, {'_id': 0}
         ):
             dict_output_sheet_pnl_analysis = {
                 'DataDate': dict_posttrd_pnl_by_acctidbymxz_cps['DataDate'],
-                'AcctIDByMXZ': acctidbymxz,
+                'AcctIDByMXZ': dict_posttrd_pnl_by_acctidbymxz_cps['AcctIDByMXZ'],
                 'CompositeSource': dict_posttrd_pnl_by_acctidbymxz_cps['CompositeSource'],
                 'PNL_Part1': round(dict_posttrd_pnl_by_acctidbymxz_cps['PNL_Part1'], 2),
                 'PNL_Part2': round(dict_posttrd_pnl_by_acctidbymxz_cps['PNL_Part2'], 2),
@@ -1907,7 +1922,7 @@ class PostTrdMng:
         # df_output_sheet_pnl_analysis_by_acctidbymxz
         list_output_sheet_pnl_analysis_by_acctidbymxz = []
         for dict_posttrd_pnl_by_acctidbymxz in self.gl.col_posttrd_pnl_by_acctidbymxz.find(
-            {'AcctIDByMXZ': acctidbymxz}, {'_id': 0}
+            {'AcctIDByMXZ': {"$in": self.gl.list_acctidsbymxz}}, {'_id': 0}
         ):
             _datadate = dict_posttrd_pnl_by_acctidbymxz['DataDate']
             pnl_part_sum = round(dict_posttrd_pnl_by_acctidbymxz['PNL_PartSum'], 2)
@@ -1915,7 +1930,7 @@ class PostTrdMng:
             fee_from_secloan = round(dict_posttrd_pnl_by_acctidbymxz['FeeFromSecLoan'], 2)
             pnl_by_acctidbymxz = round(dict_posttrd_pnl_by_acctidbymxz['PNLBySecID'], 2)
             dict_posttrd_cf_from_indirect_method = self.gl.col_posttrd_cf_from_indirect_method.find_one(
-                {'DataDate': _datadate, 'AcctIDByMXZ': acctidbymxz}
+                {'DataDate': _datadate, 'AcctIDByMXZ': dict_posttrd_pnl_by_acctidbymxz['AcctIDByMXZ']}
             )
             if dict_posttrd_cf_from_indirect_method:
                 dif_cf_from_indirect_method = dict_posttrd_cf_from_indirect_method['DifCFFromIndirectMethod']
@@ -1936,17 +1951,17 @@ class PostTrdMng:
         df_output_sheet_pnl_analysis_by_acctidbymxz.sort_values(by=['DataDate'], inplace=True)
 
         # 输出fund
-        iter_dicts_posttrd_fund_by_acctidbymxz = self.gl.col_posttrd_fmtdata_fund.find(
-            {'AcctIDByMXZ': acctidbymxz}, {'_id': 0}
+        df_output_sheet_fund_rpt = pd.DataFrame(
+            self.gl.col_posttrd_fmtdata_fund.find({'AcctIDByMXZ': {"$in": self.gl.list_acctidsbymxz}}, {'_id': 0})
         )
-        df_output_sheet_fund_rpt = pd.DataFrame(iter_dicts_posttrd_fund_by_acctidbymxz)
         df_output_sheet_fund_rpt.sort_values(by=['DataDate'], inplace=True)
 
         # 输出security_loan_utility_analysis
-        iter_dicts_posttrd_security_loan_utility_analysis = self.gl.col_posttrd_secloan_utility_analysis.find(
-            {'AcctIDByMXZ': acctidbymxz}, {'_id': 0}
+        df_output_sheet_security_loan_utility_analysis = pd.DataFrame(
+            self.gl.col_posttrd_secloan_utility_analysis.find(
+                {'AcctIDByMXZ': {"$in": self.gl.list_acctidsbymxz}}, {'_id': 0}
+            )
         )
-        df_output_sheet_security_loan_utility_analysis = pd.DataFrame(iter_dicts_posttrd_security_loan_utility_analysis)
         df_output_sheet_security_loan_utility_analysis.sort_values(by=['DataDate'], inplace=True)
 
         with pd.ExcelWriter(self.gl.fpath_output_xlsx_posttrd_analysis) as writer:
@@ -2085,7 +2100,7 @@ class PostTrdMng:
             self.get_col_secloan_utility_analysis(acctidbymxz)
             self.get_longamt_histogram(acctidbymxz)
             self.check_pnl_via_indirect_method(acctidbymxz)
-            self.output_xlsx_posttrd_analysis(acctidbymxz)
+        self.output_xlsx_posttrd_analysis()
 
 
 if __name__ == '__main__':

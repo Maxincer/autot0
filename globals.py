@@ -27,7 +27,7 @@ from pymongo import MongoClient
 from WindPy import w
 
 STR_TODAY = datetime.today().strftime('%Y%m%d')
-# STR_TODAY = '20210126'
+STR_TODAY = '20210222'
 
 
 class Globals:
@@ -48,8 +48,7 @@ class Globals:
         self.str_next_trddate = self.list_str_trdcalendar[idx_str_today + 1]
         self.str_last_last_trddate = self.list_str_trdcalendar[idx_str_today - 2]
         self.str_next_next_trddate = self.list_str_trdcalendar[idx_str_today + 2]
-        self.list_acctidsbymxz = ['8111_m_huat_9239']
-        # self.list_acctidsbymxz = ['3004_m_hait_8866']
+        self.list_acctidsbymxz = ['3031_m_hait_1905']
 
         # 配置文件部分: basicinfo
         self.db_basicinfo = self.server_mongodb['basicinfo']
@@ -73,7 +72,7 @@ class Globals:
         self.email_from_addr = 'maxinzhe@mingshiim.com'
         self.email_pwd = 'D3cqJ7GpDiPNCubu'
         self.email_addr_to_hait = '009995@htsec.com'
-        self.email_subject_to_hait = f'【券源需求】鸣石满天星四号-{self.str_today}'
+        self.email_subject_to_hait = f'【券源需求】鸣石满天星三号1期-{self.str_today}'
 
         # pre-trade
         self.fpath_input_csv_excluded_secids = 'data/input/pretrddata/tgtsecids/excluded_secids.csv'
@@ -107,6 +106,7 @@ class Globals:
         self.col_trade_fmtdata_public_secloan = self.db_trade_data['trade_fmtdata_public_security_loan']
         self.col_trade_fmtdata_private_secloan = self.db_trade_data['trade_fmtdata_private_security_loan']
         self.col_trade_ssquota_from_secloan = self.db_trade_data['trade_ssquota_from_security_loan']
+        self.col_trade_rawdata_order_from_kdb_102_116 = self.db_trade_data['trade_raw_data_order_from_kdb_102_116']
 
         # post-trade
         self.db_posttrddata = self.server_mongodb['post_trade_data']
@@ -147,6 +147,9 @@ class Globals:
         )
 
         self.fpath_output_xlsx_posttrd_analysis = 'D:/projects/autot0/data/output/posttrd_analysis.xlsx'
+        self.fpath_output_xlsx_tpa_autot0 = 'D:/projects/autot0/data/output/tpa_autot0.xlsx'
+
+        self.col_tpa_autot0 = self.db_posttrddata['trading_performance_analysis_autot0']
 
         # # wind的公共数据下载， 下载的时间为自然时间， 交易日为查询日当天
         self.col_fmtted_wssdata = self.db_global['fmtted_wssdata']
@@ -240,7 +243,7 @@ class Globals:
                     if date_in_fn:
                         fn = self.decode_str(str(fn, dh[0][1]))
                     else:
-                        fn = self.decode_str(str(fn, dh[0][1])).replace('-', '').replace(self.str_today, '')
+                        fn = self.decode_str(str(fn, dh[0][1])).replace('-', '').replace(self.str_today, '').replace(self.str_last_trddate,'')
 
                 # 下载附件
                 data = part.get_payload(decode=True)
@@ -411,47 +414,47 @@ class Globals:
             set_matched_secloan_secids = set()
         return i_secloan_secids, set_matched_secloan_secids
 
-    def output_provided_secloan_analysis_xlsx(self):
-        list_broker_alias_for_secloan_analysis = ['hait', 'huat', 'swhy', 'gtja', 'zx']
-        list_dicts_secloan_analysis_among_brokers = []
-        set_matched_secloan_secids = set()
-        for broker_alias in list_broker_alias_for_secloan_analysis:
-            i_secloan_secids, set_matched_secloan_secids_delta = task.secloan_match(
-                f'D:/projects/autot0/data/input/pretrddata/tgtsecids/{self.str_today}_target_secids.csv',
-                f'D:/projects/autot0/data/input/pretrddata/market_data/{broker_alias}/'
-                f'每日券池-{self.str_today}.xlsx'
-            )
-            set_matched_secloan_secids = set_matched_secloan_secids | set_matched_secloan_secids_delta
-            dict_secloan_analysis_among_brokers = {
-                'DataDate': self.str_today,
-                'BrokerAlias': broker_alias,
-                'IntersectionSecurityCount': i_secloan_secids
-            }
-            list_dicts_secloan_analysis_among_brokers.append(dict_secloan_analysis_among_brokers)
-        self.col_provided_secloan_analysis.delete_many({'DataDate': self.str_today})
-        if list_dicts_secloan_analysis_among_brokers:
-            self.col_provided_secloan_analysis.insert_many(list_dicts_secloan_analysis_among_brokers)
-        # print(len(set_matched_secloan_secids), set_matched_secloan_secids)
-        iter_col_trade_secloan = self.db_trade_data['trade_ssquota_from_security_loan']
-        set_secloan_secids_in_ssquota = set()
-        for secid in iter_col_trade_secloan.find({'DataDate': self.str_today}):
-            set_secloan_secids_in_ssquota.add(secid['SecurityID'])
-
-        # print(len(set_secloan_secids_in_ssquota))
-
-        set_secloan_secids_tgt = set_matched_secloan_secids | set_secloan_secids_in_ssquota
-        # print(len(set_secloan_secids_tgt), set_secloan_secids_tgt)
-
-
-        iter_secloan_analysis = self.col_provided_secloan_analysis.find({}, {'_id': 0})
-        df_secloan_analysis = pd.DataFrame(iter_secloan_analysis)
-        df_secloan_analysis.to_excel(self.fpath_output_xlsx_provided_secloan_analysis, index=False)
-
-        print('Output provided_security_loan_analysis.xlsx Finished.')
+    # def output_provided_secloan_analysis_xlsx(self):
+    #     list_broker_alias_for_secloan_analysis = ['hait', 'huat', 'swhy', 'gtja', 'zx']
+    #     list_dicts_secloan_analysis_among_brokers = []
+    #     set_matched_secloan_secids = set()
+    #     for broker_alias in list_broker_alias_for_secloan_analysis:
+    #         i_secloan_secids, set_matched_secloan_secids_delta = task.secloan_match(
+    #             f'D:/projects/autot0/data/input/pretrddata/tgtsecids/{self.str_today}_target_secids.csv',
+    #             f'D:/projects/autot0/data/input/pretrddata/market_data/{broker_alias}/'
+    #             f'每日券池-{self.str_today}.xlsx'
+    #         )
+    #         set_matched_secloan_secids = set_matched_secloan_secids | set_matched_secloan_secids_delta
+    #         dict_secloan_analysis_among_brokers = {
+    #             'DataDate': self.str_today,
+    #             'BrokerAlias': broker_alias,
+    #             'IntersectionSecurityCount': i_secloan_secids
+    #         }
+    #         list_dicts_secloan_analysis_among_brokers.append(dict_secloan_analysis_among_brokers)
+    #     self.col_provided_secloan_analysis.delete_many({'DataDate': self.str_today})
+    #     if list_dicts_secloan_analysis_among_brokers:
+    #         self.col_provided_secloan_analysis.insert_many(list_dicts_secloan_analysis_among_brokers)
+    #     # print(len(set_matched_secloan_secids), set_matched_secloan_secids)
+    #     iter_col_trade_secloan = self.db_trade_data['trade_ssquota_from_security_loan']
+    #     set_secloan_secids_in_ssquota = set()
+    #     for secid in iter_col_trade_secloan.find({'DataDate': self.str_today}):
+    #         set_secloan_secids_in_ssquota.add(secid['SecurityID'])
+    #
+    #     # print(len(set_secloan_secids_in_ssquota))
+    #
+    #     set_secloan_secids_tgt = set_matched_secloan_secids | set_secloan_secids_in_ssquota
+    #     # print(len(set_secloan_secids_tgt), set_secloan_secids_tgt)
+    #
+    #
+    #     iter_secloan_analysis = self.col_provided_secloan_analysis.find({}, {'_id': 0})
+    #     df_secloan_analysis = pd.DataFrame(iter_secloan_analysis)
+    #     df_secloan_analysis.to_excel(self.fpath_output_xlsx_provided_secloan_analysis, index=False)
+    #
+    #     print('Output provided_security_loan_analysis.xlsx Finished.')
 
 
 if __name__ == '__main__':
     # 盘后运行, 更新数据库
-    task = Globals('20210202', download_winddata_mark=1)
+    # task = Globals('20210202', download_winddata_mark=1)
     # task.output_provided_secloan_analysis_xlsx()
     print('Done')
