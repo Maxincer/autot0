@@ -52,7 +52,10 @@ class UpdateTradeRawDataFund(Thread):
         while True:
             str_update_time = datetime.now().strftime('%H%M%S')
             list_dicts_trade_rawdata_fund = []
-            if data_srctype in ['hait_ehfz']:
+            if data_srctype in ['hait_ehfz_api']:
+                fpath_input_csv_margin_account_fund = (
+                    fpath_input_csv_margin_account_fund.replace('<ID>', acctidbybroker)
+                )
                 with open(fpath_input_csv_margin_account_fund) as f:
                     list_datalines_of_file = f.readlines()
                     list_fields = list_datalines_of_file[0].strip().split(',')
@@ -115,7 +118,10 @@ class UpdateTradeRawDataHolding(Thread):
         while True:
             str_update_time = datetime.now().strftime('%H%M%S')
             list_dicts_trade_rawdata_holding = []
-            if data_srctype in ['hait_ehfz']:
+            if data_srctype in ['hait_ehfz_api']:
+                fpath_input_csv_margin_account_holding = (
+                    fpath_input_csv_margin_account_holding.replace('<ID>', acctidbybroker)
+                )
                 with open(fpath_input_csv_margin_account_holding) as f:
                     list_datalines_of_file = f.readlines()
                     list_fields = list_datalines_of_file[0].strip().split(',')
@@ -177,7 +183,10 @@ class UpdateTradeRawDataOrder(Thread):
         while True:
             str_update_time = datetime.now().strftime('%H%M%S')
             list_dicts_trade_rawdata_order = []
-            if data_srctype in ['hait_ehfz']:
+            if data_srctype in ['hait_ehfz_api']:
+                fpath_input_csv_margin_account_order = (
+                    fpath_input_csv_margin_account_order.replace('<ID>', acctidbybroker)
+                )
                 with open(fpath_input_csv_margin_account_order) as f:
                     list_datalines_of_file = f.readlines()
                     list_fields = list_datalines_of_file[0].strip().split(',')
@@ -332,7 +341,7 @@ class UpdateTradeFmtDataFund(Thread):
             )
 
             list_dicts_trade_fmtdata_fund = []
-            if data_srctype in ['hait_ehfz']:
+            if data_srctype in ['hait_ehfz_api']:
                 for dict_trade_rawdata_fund in iter_trade_rawdata_fund:
                     cash_available_for_collateral_trade = float(dict_trade_rawdata_fund['可用余额'])
                     tt_asset = float(dict_trade_rawdata_fund['资产总值'])
@@ -395,7 +404,7 @@ class UpdateTradeFmtDataHolding(Thread):
                 {'DataDate': self.str_today, 'AcctIDByMXZ': self.acctidbymxz}
             )
             list_dicts_trade_fmtdata_holding = []
-            if data_srctype in ['hait_ehfz']:
+            if data_srctype in ['hait_ehfz_api']:
                 for dict_trade_rawdata_holding in iter_trade_rawdata_holding:
                     secid = str(dict_trade_rawdata_holding['证券代码']).zfill(6)
                     dict_exg = {'1': 'SZSE', '2': 'SSE'}
@@ -514,7 +523,7 @@ class UpdateTradeFmtDataOrder(Thread):
                     }
                     list_dicts_trade_fmtdata_order.append(dict_trade_fmtdata_order)
 
-            elif data_srctype in ['hait_ehfz']:
+            elif data_srctype in ['hait_ehfz_api']:
                 for dict_trade_rawdata_order in iter_trade_rawdata_order:
                     secid = str(dict_trade_rawdata_order['证券代码']).zfill(6)
                     symbol = dict_trade_rawdata_order['证券名称']
@@ -598,7 +607,7 @@ class UpdateTradeFmtDataPublicSecLoan(Thread):
                 {'DataDate': self.str_today, 'AcctIDByMXZ': self.acctidbymxz}
             )
             list_dicts_trade_fmtdata_public_secloan = []
-            if data_srctype in ['hait_ehfz']:
+            if data_srctype in ['hait_ehfz_api']:
                 pass
 
             elif data_srctype in ['huat_matic_tsi']:
@@ -659,7 +668,8 @@ class UpdateTradeFmtDataPrivateSecLoan(Thread):
             str_update_time = datetime.now().strftime('%H%M%S')
 
             list_dicts_trade_fmtdata_private_secloan = []
-            if data_srctype in ['hait_ehfz']:
+            if data_srctype in ['hait_ehfz_api']:
+                # 海通无trade_data 私用券池
                 pass
 
             elif data_srctype in ['huat_matic_tsi']:
@@ -840,7 +850,7 @@ class UpdateTradePosition(Thread):
             # 获取position的secid全集
             # # 昨夜清算后持仓col_posttrd_position
             list_dicts_trade_position = []
-            if data_srctype in ['hait_ehfz']:  # 方舟的short position 不能实时更新
+            if data_srctype in ['hait_ehfz_api']:  # 方舟的short position 不能实时更新
                 set_secids_in_position_predate = set()
                 for dict_posttrd_position in col_posttrd_position.find(
                     {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': self.acctidbymxz}
@@ -849,11 +859,10 @@ class UpdateTradePosition(Thread):
                     set_secids_in_position_predate.add(secid_in_predate_position)
 
                 # # 今日交易记录中的所有secid: todo 此处使用hait_xtpb格式(视野受限，假设划款事项与交易的完全记录都在同一张表里)：
-                list_dicts_trade_fmtdata_order = list(
-                    col_trade_fmtdata_order.find({'DataDate': self.gl.str_today, 'AcctIDByMXZ': self.acctidbymxz})
-                )
                 set_secids_in_trade_fmtdata_order = set()
-                for dict_trade_fmtdata_order in list_dicts_trade_fmtdata_order:
+                for dict_trade_fmtdata_order in col_trade_fmtdata_order.find(
+                        {'DataDate': self.gl.str_today, 'AcctIDByMXZ': self.acctidbymxz}
+                ):
                     secid_in_trade_order = dict_trade_fmtdata_order['SecurityID']
                     set_secids_in_trade_fmtdata_order.add(secid_in_trade_order)
 
@@ -890,7 +899,9 @@ class UpdateTradePosition(Thread):
 
                     shortqty_delta_today = 0
                     longqty_delta_from_xqhq = 0
-                    for dict_trade_fmtdata_order in list_dicts_trade_fmtdata_order:
+                    for dict_trade_fmtdata_order in col_trade_fmtdata_order.find(
+                        {'DataDate': self.gl.str_today, 'AcctIDByMXZ': self.acctidbymxz}
+                    ):
                         if dict_trade_fmtdata_order['SecurityID'] == secid and dict_trade_fmtdata_order['Side'] in ['5']:
                             shortqty_delta_today += dict_trade_fmtdata_order['CumQty']
 
@@ -899,13 +910,14 @@ class UpdateTradePosition(Thread):
                         if (
                                 dict_trade_fmtdata_order['SecurityID'] == secid
                                 and dict_trade_fmtdata_order['Side'] in ['XQHQ']
-                                and dict_trade_fmtdata_order['OrdStatus'] in ['8', '10']  # xtpb是2和8
+                                and dict_trade_fmtdata_order['OrdStatus'] in ['8', '10']
                         ):
                             shortqty_delta_today += -dict_trade_fmtdata_order['CumQty']
                             longqty_delta_from_xqhq += dict_trade_fmtdata_order['CumQty']
 
                     shortqty = shortqty_last_trddate + shortqty_delta_today
                     longqty = longqty - longqty_delta_from_xqhq
+
                     str_update_time = datetime.now().strftime('%H%M%S')
                     dict_trade_position = {
                         'DataDate': self.gl.str_today,
@@ -991,7 +1003,6 @@ class UpdateTradePosition(Thread):
 class UpdateTradeDataBase:
     def __init__(self, str_trddate=STR_TODAY):
         self.gl = Globals(str_today=str_trddate)
-        self.list_acctidsbymxz = ['8111_m_huat_9239', '3004_m_hait_8866']
 
     def update_raw_data_and_fmtdata(self, acctidbymxz):
         # rawdata
@@ -1026,7 +1037,7 @@ class UpdateTradeDataBase:
         t9_update_trade_ssquota_from_secloan.start()
 
     def run(self):
-        for acctidbymxz in self.list_acctidsbymxz:
+        for acctidbymxz in self.gl.list_acctidsbymxz:
             self.update_raw_data_and_fmtdata(acctidbymxz)
 
 

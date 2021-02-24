@@ -932,6 +932,8 @@ class PostTrdMng:
                         float(dict_posttrd_rawdata_private_secloan['合约数量'])
                         - float(dict_posttrd_rawdata_private_secloan['收回数量'])
                 )
+                if not qty_to_be_charged_interest:
+                    continue
                 interest = float(dict_posttrd_rawdata_private_secloan['私用转融券费率'])
                 str_startdate = dict_posttrd_rawdata_private_secloan['发生日期']
                 str_maturity_date = dict_posttrd_rawdata_private_secloan['合约理论到期日期']
@@ -1067,11 +1069,6 @@ class PostTrdMng:
                 avgpx = abs(float(dict_posttrd_rawdata_jgd['成交价格']))
                 cumamt = abs(float(dict_posttrd_rawdata_jgd['成交金额']))
                 cash_balance = float(dict_posttrd_rawdata_jgd['资金余额'])
-                str_entrust_time = dict_posttrd_rawdata_jgd['报盘时间']
-                if str_entrust_time:
-                    str_entrust_datetime = f"{str_trddate}{str_entrust_time.replace(':', '')}"
-                else:
-                    str_entrust_datetime = ''
 
                 fee_from_trdactivity = (
                         + dict_posttrd_rawdata_jgd['佣金']
@@ -1096,7 +1093,6 @@ class PostTrdMng:
                     'AvgPx': avgpx,
                     'CumAmt': cumamt,
                     'CashBalance': cash_balance,
-                    'EntrustDateTime': str_entrust_datetime,
                     'SerialNumber': serial_number,
                     '佣金': dict_posttrd_rawdata_jgd['佣金'],
                     '印花税': dict_posttrd_rawdata_jgd['印花税'],
@@ -1497,7 +1493,7 @@ class PostTrdMng:
             )
 
         # col_posttrd_fmtdata_fee_from_secloan  专属业务表，特指融券费用(券息+额度占用费)， 各家券商可能不同
-        if data_srctype in ['hait_ehfz']:
+        if data_srctype in ['hait_ehfz_api']:
             # 已经在fmt中录入每支票的利息
             pass
 
@@ -1758,6 +1754,16 @@ class PostTrdMng:
                     list_dicts_posttrd_pnl_by_acctidbymxz_cps_after_fee_from_secloan
                 )
 
+        elif data_srctype in ['hait_ehfz_api']:
+            self.gl.col_posttrd_pnl_by_acctidbymxz_cps.delete_many(
+                {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': acctidbymxz}
+            )
+            if list_dicts_posttrd_pnl_by_acctidbymxz_cps:
+                self.gl.col_posttrd_pnl_by_acctidbymxz_cps.insert_many(list_dicts_posttrd_pnl_by_acctidbymxz_cps)
+
+        else:
+            raise ValueError('Unknown data source type.')
+
         # 4. 计算： 按账户归集
         if list_dicts_posttrd_pnl_by_acctidbymxz_cps:
             df_posttrd_pnl_by_secid = pd.DataFrame(list_dicts_posttrd_pnl_by_acctidbymxz_cps)
@@ -1882,6 +1888,7 @@ class PostTrdMng:
             ),
             'PctOfShortExposureBySecLoanQuotaMarketValue': pct_short_exposure2ssquota_mv,
         }
+
         print(
             f'昨日交易股票数量{i_secids_from_trading}支，'
             f'借入股票实际数量{i_secids_from_ssquota_from_secloan}支，占比{pct_i:.0%}.; '
@@ -2028,7 +2035,6 @@ class PostTrdMng:
         non_current_asset_last_last_trddate = longamt_last_last_trddate
 
         # # last_trddate
-
         shortamt_last_trddate = 0
         for dict_posttrd_position_last_trddate in self.gl.col_posttrd_position.find(
                 {'DataDate': self.gl.str_last_trddate, 'AcctIDByMXZ': acctidbymxz}

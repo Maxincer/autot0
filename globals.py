@@ -27,7 +27,6 @@ from pymongo import MongoClient
 from WindPy import w
 
 STR_TODAY = datetime.today().strftime('%Y%m%d')
-STR_TODAY = '20210222'
 
 
 class Globals:
