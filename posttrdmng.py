@@ -627,6 +627,13 @@ class PostTrdMng:
                 secidsrc = dict_posttrd_rawdata_holding['exchange_type'].map({'2': 'SZSE', '1': 'SSE'})
                 code = f"{secid}.{secidsrc}"
                 sectype = self.gl.get_mingshi_sectype_from_code(code)
+                windcode_suffix = {'SZSE': '.SZ', 'SSE': '.SH'}[secidsrc]
+                windcode = secid + windcode_suffix
+                if sectype != 'IrrelevantItem':
+                    close = self.gl.dict_fmtted_wssdata_last_trddate['Close'][windcode]
+                else:
+                    close = 0
+                longamt = longqty * close
                 dict_posttrd_fmtdata_holding = {
                     'DataDate': self.gl.str_last_trddate,
                     'AcctIDByMXZ': acctidbymxz,
@@ -635,6 +642,7 @@ class PostTrdMng:
                     'SecurityType': sectype,
                     'Symbol': symbol,
                     'LongQty': longqty,
+                    'LongAmt': longamt,
                     'CompositeSource': cpssrc,
                 }
                 list_dicts_posttrd_fmtdata_holding.append(dict_posttrd_fmtdata_holding)
@@ -843,6 +851,13 @@ class PostTrdMng:
                 secidsrc = {'2': 'SSE', '1': 'SZSE'}[dict_posttrd_rawdata_holding['市场类型']]
                 code = f"{secid}.{secidsrc}"
                 sectype = self.gl.get_mingshi_sectype_from_code(code)
+                windcode_suffix = {'SZSE': '.SZ', 'SSE': '.SH'}[secidsrc]
+                windcode = secid + windcode_suffix
+                if sectype != 'IrrelevantItem':
+                    close = self.gl.dict_fmtted_wssdata_last_trddate['Close'][windcode]
+                else:
+                    close = 0
+                longamt = longqty * close
                 dict_posttrd_fmtdata_holding = {
                     'DataDate': self.gl.str_last_trddate,
                     'AcctIDByMXZ': acctidbymxz,
@@ -851,6 +866,7 @@ class PostTrdMng:
                     'SecurityType': sectype,
                     'Symbol': symbol,
                     'LongQty': longqty,
+                    'LongAmt': longamt,
                     'CompositeSource': cpssrc,
                 }
                 list_dicts_posttrd_fmtdata_holding.append(dict_posttrd_fmtdata_holding)

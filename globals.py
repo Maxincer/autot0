@@ -27,6 +27,7 @@ from pymongo import MongoClient
 from WindPy import w
 
 STR_TODAY = datetime.today().strftime('%Y%m%d')
+# STR_TODAY = '20210303'
 
 
 class Globals:
@@ -68,8 +69,12 @@ class Globals:
                 )
 
         # 预约券申请文件发送邮箱参数信息
+        # self.email_from_addr = 'maxinzhe@mingshimeet.com'
+        # self.email_pwd = 'D3cqJ7GpDiPNCubu'
+
         self.email_from_addr = 'maxinzhe@mingshiim.com'
-        self.email_pwd = 'D3cqJ7GpDiPNCubu'
+        self.email_pwd = 'Ms540436'
+
         self.email_addr_to_hait = '009995@htsec.com'
         self.email_subject_to_hait = f'【券源需求】鸣石满天星三号1期-{self.str_today}'
 
@@ -257,7 +262,7 @@ class Globals:
     def update_attachments_from_email(self, str_email_subject, str_email_tgtdate, dirpath_output_attachment, date_in_fn):
         # 下载指定邮件中的所有附件到指定文件夹中(文件名、格式均不变)，如果文件夹不存在，则新建文件夹
         # 从邮件中下载数据
-        addr_pop3_server = 'pop.exmail.qq.com'
+        addr_pop3_server = 'partner.outlook.cn'
         server_pop3 = POP3_SSL(addr_pop3_server, 995)
         server_pop3.user(self.email_from_addr)
         server_pop3.pass_(self.email_pwd)
@@ -290,8 +295,34 @@ class Globals:
     def send_file_via_email(self, email_to_addr, subject, fpath_file, fn_attachment):
         # 通过邮件发送文件
         # 发送的文件为单一附件
-        addr_smtp_server = 'smtp.exmail.qq.com'
+        # addr_smtp_server = 'smtp.exmail.qq.com'
+        #
+        # msg = MIMEMultipart()
+        # email_from_addr = 'maxinzhe@mingshimeet.com'
+        # email_pwd = 'D3cqJ7GpDiPNCubu'
+        # msg['From'] = self.fmt_email_addr(f'马新哲<maxinzhe@mingshimeet.com>')
+        # msg['To'] = self.fmt_email_addr(f'<{email_to_addr}>')
+        # msg['Subject'] = Header(subject, 'utf-8').encode()
+        # with open(fpath_file, 'rb') as f:
+        #     mime = MIMEBase('application', 'octet-stream')
+        #     mime.set_payload(f.read())
+        #     encoders.encode_base64(mime)
+        #     mime.add_header('Content-Disposition', 'attachment', filename=fn_attachment)
+        #     msg.attach(mime)
+        #
+        # server_smtp = smtplib.SMTP_SSL(addr_smtp_server, 465)
+        # # server_smtp.starttls()
+        # server_smtp.login(email_from_addr, email_pwd)
+        #
+        # server_smtp.sendmail(email_from_addr, email_to_addr, msg.as_string())
+        # print('The mail has been sent.')
+        # server_smtp.quit()
+        #
+        addr_smtp_server = 'smtp.partner.outlook.cn'
+
         msg = MIMEMultipart()
+        email_from_addr = 'maxinzhe@mingshiim.com'
+        email_pwd = 'Ms540436'
         msg['From'] = self.fmt_email_addr(f'马新哲<{self.email_from_addr}>')
         msg['To'] = self.fmt_email_addr(f'<{email_to_addr}>')
         msg['Subject'] = Header(subject, 'utf-8').encode()
@@ -301,10 +332,12 @@ class Globals:
             encoders.encode_base64(mime)
             mime.add_header('Content-Disposition', 'attachment', filename=fn_attachment)
             msg.attach(mime)
-        server_smtp = smtplib.SMTP(addr_smtp_server)
+
+        server_smtp = smtplib.SMTP(addr_smtp_server, 587)
         server_smtp.starttls()
-        server_smtp.login(self.email_from_addr, self.email_pwd)
-        server_smtp.sendmail(self.email_from_addr, email_to_addr, msg.as_string())
+        server_smtp.login(email_from_addr, email_pwd)
+
+        server_smtp.sendmail(email_from_addr, email_to_addr, msg.as_string())
         print('The mail has been sent.')
         server_smtp.quit()
 
@@ -413,47 +446,6 @@ class Globals:
             set_matched_secloan_secids = set()
         return i_secloan_secids, set_matched_secloan_secids
 
-    # def output_provided_secloan_analysis_xlsx(self):
-    #     list_broker_alias_for_secloan_analysis = ['hait', 'huat', 'swhy', 'gtja', 'zx']
-    #     list_dicts_secloan_analysis_among_brokers = []
-    #     set_matched_secloan_secids = set()
-    #     for broker_alias in list_broker_alias_for_secloan_analysis:
-    #         i_secloan_secids, set_matched_secloan_secids_delta = task.secloan_match(
-    #             f'D:/projects/autot0/data/input/pretrddata/tgtsecids/{self.str_today}_target_secids.csv',
-    #             f'D:/projects/autot0/data/input/pretrddata/market_data/{broker_alias}/'
-    #             f'每日券池-{self.str_today}.xlsx'
-    #         )
-    #         set_matched_secloan_secids = set_matched_secloan_secids | set_matched_secloan_secids_delta
-    #         dict_secloan_analysis_among_brokers = {
-    #             'DataDate': self.str_today,
-    #             'BrokerAlias': broker_alias,
-    #             'IntersectionSecurityCount': i_secloan_secids
-    #         }
-    #         list_dicts_secloan_analysis_among_brokers.append(dict_secloan_analysis_among_brokers)
-    #     self.col_provided_secloan_analysis.delete_many({'DataDate': self.str_today})
-    #     if list_dicts_secloan_analysis_among_brokers:
-    #         self.col_provided_secloan_analysis.insert_many(list_dicts_secloan_analysis_among_brokers)
-    #     # print(len(set_matched_secloan_secids), set_matched_secloan_secids)
-    #     iter_col_trade_secloan = self.db_trade_data['trade_ssquota_from_security_loan']
-    #     set_secloan_secids_in_ssquota = set()
-    #     for secid in iter_col_trade_secloan.find({'DataDate': self.str_today}):
-    #         set_secloan_secids_in_ssquota.add(secid['SecurityID'])
-    #
-    #     # print(len(set_secloan_secids_in_ssquota))
-    #
-    #     set_secloan_secids_tgt = set_matched_secloan_secids | set_secloan_secids_in_ssquota
-    #     # print(len(set_secloan_secids_tgt), set_secloan_secids_tgt)
-    #
-    #
-    #     iter_secloan_analysis = self.col_provided_secloan_analysis.find({}, {'_id': 0})
-    #     df_secloan_analysis = pd.DataFrame(iter_secloan_analysis)
-    #     df_secloan_analysis.to_excel(self.fpath_output_xlsx_provided_secloan_analysis, index=False)
-    #
-    #     print('Output provided_security_loan_analysis.xlsx Finished.')
-
 
 if __name__ == '__main__':
-    # 盘后运行, 更新数据库
-    # task = Globals('20210202', download_winddata_mark=1)
-    # task.output_provided_secloan_analysis_xlsx()
     print('Done')

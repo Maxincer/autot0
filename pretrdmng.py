@@ -81,10 +81,15 @@ class PreTrdMng:
         broker_abbr = self.gl.col_acctinfo.find_one(
             {'DataDate': self.gl.str_today, 'AcctIDByMXZ': acctidbymxz}
         )['BrokerAbbr']
-
+        fpath_input_csv_target_secids = self.gl.fpath_input_csv_target_secids
         # 上传信号券池原始数据: 目标券池 - 排除券池
+        if not os.path.exists(fpath_input_csv_target_secids):
+            fpath_input_csv_target_secids = (
+                self.gl.fpath_input_csv_target_secids.replace(self.gl.str_today, self.gl.str_last_trddate)
+            )
+
         df_csv_tgtsecids = pd.read_csv(
-            self.gl.fpath_input_csv_target_secids,
+            fpath_input_csv_target_secids,
             converters={'SecurityID': lambda x: str(x).zfill(6)}
         )
         df_csv_tgtsecids['DataDate'] = self.gl.str_today
@@ -378,7 +383,7 @@ class PreTrdMng:
                     quota_last_trddate += dict_posttrd_fmtdata_ssquota_from_secloan_last_trddate['SSQuota']
 
                 # 根据tgtamt计算tgtqty
-                tgtamt = 200000  # 每只股票标杆20万元，近似后取ceiling
+                tgtamt = 200000  # 每只股票标杆30万元，近似后取ceiling
                 tgtqty = ceil((tgtamt / preclose) / 100) * 100
                 # 由于现有交易系统无法进行挂单成交，故对盘口价差大的股票交易成本很大，导致实际收益与策略收益偏离。暂时不建仓。
                 if preclose <= 5:
@@ -463,7 +468,7 @@ class PreTrdMng:
                     quota_last_trddate += dict_posttrd_fmtdata_ssquota_from_secloan_last_trddate['SSQuota']
 
                 # 根据tgtamt计算tgtqty
-                tgtamt = 200000  # 每只股票标杆20万元，近似后取ceiling
+                tgtamt = 300000  # 每只股票标杆20万元，近似后取ceiling
                 tgtqty = ceil((tgtamt / preclose) / 100) * 100
                 # 由于现有交易系统无法进行挂单成交，故对盘口价差大的股票交易成本很大，导致实际收益与策略收益偏离。暂时不建仓。
                 if preclose <= 5:
@@ -769,6 +774,8 @@ class PreTrdMng:
                     {'DataDate': self.gl.str_today, 'AcctIDByMXZ': acctidbymxz}
             ):
                 ordqty_from_outside_secloan = dict_pretrd_secloan_demand_analysis['OrdQtyFromOutsideSource']
+                if ordqty_from_outside_secloan == 'N/A':
+                    continue
                 if ordqty_from_outside_secloan > 0:
                     secid = dict_pretrd_secloan_demand_analysis['SecurityID']
                     # 筛选最小数量限制：外界询券状态下，非双创最少10000股，双创最少1000股
@@ -802,13 +809,13 @@ class PreTrdMng:
             )
             print('券源需求已生成.')
 
-            # 邮件发送
-            self.gl.send_file_via_email(
-                self.gl.email_addr_to_hait,
-                self.gl.email_subject_to_hait,
-                fpath_output_secloan_order,
-                '需要预约的券源需求.xlsx'
-            )
+            # # 邮件发送
+            # self.gl.send_file_via_email(
+            #     self.gl.email_addr_to_hait,
+            #     self.gl.email_subject_to_hait,
+            #     fpath_output_secloan_order,
+            #     '需要预约的券源需求.xlsx'
+            # )
 
         else:
             raise ValueError('Unknown broker abbr.')

@@ -24,7 +24,7 @@
 
 """
 
-from globals import Globals, pd
+from globals import Globals, pd, datetime
 from pymongo import ASCENDING
 
 
@@ -35,7 +35,7 @@ class AutoT0TradingPerformanceAnalysis:
         for _ in self.gl.col_acctinfo.find({'DataDate': self.gl.str_today}):
             if _['StrategiesAllocationByAcct']:
                 list_strategies = _['StrategiesAllocationByAcct'].split(';')
-                if 'AutoT0_IF' in list_strategies or 'AutoT0_SecurityLoan' in list_strategies:
+                if 'AutoT0_IndexFuture' in list_strategies or 'AutoT0_SecurityLoan' in list_strategies:
                     self.dict_acctidbyxxq2acctidbymxz.update({_['AcctIDByXuXiaoQiang4Trd']: _['AcctIDByMXZ']})
             else:
                 continue
@@ -180,6 +180,7 @@ class AutoT0TradingPerformanceAnalysis:
 
     def run(self):
         self.update_col_autot0_tpa()
+        print(f'Task Finished at {datetime.now().strftime("%Y%m%d %H:%M:s%S")}')
 
 
 if __name__ == '__main__':
